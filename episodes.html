@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Browse 300+ episodes of An Eternity of Basketball — the definitive PBA history podcast covering every era from the league's founding to today.">
+    <meta name="keywords" content="PBA podcast episodes, Philippine basketball history, An Eternity of Basketball, PBA archive, Crispa, Toyota, Ginebra, San Miguel">
+    <meta name="author" content="An Eternity of Basketball">
+    <meta property="og:title" content="Episode Archive — An Eternity of Basketball">
+    <meta property="og:description" content="Browse 300+ episodes of the definitive PBA history podcast. Filter by era, team, or host.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://aeob.globallyballin.com/episodes">
+    <meta property="og:image" content="/images/aeob-og.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Episode Archive — An Eternity of Basketball">
+    <meta name="twitter:description" content="Browse 300+ episodes of the definitive PBA history podcast.">
+    <title>Episode Archive — An Eternity of Basketball</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+</head>
+<body>
+
+    <!-- Preloader -->
+    <div class="preloader" id="preloader">
+        <div class="preloader-inner">
+            <div class="preloader-logo">AEOB</div>
+            <div class="preloader-spinner"></div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header" id="header">
+        <div class="container header-container">
+            <a href="/" class="logo">
+                <span class="logo-icon">🏀</span>
+                <span class="logo-text">AEOB</span>
+            </a>
+            <nav class="nav" id="nav">
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="/" class="nav-link">Home</a></li>
+                    <li class="nav-item"><a href="/episodes.html" class="nav-link active">Episodes</a></li>
+                    <li class="nav-item"><a href="/about.html" class="nav-link">About</a></li>
+                    <li class="nav-item"><a href="/hosts.html" class="nav-link">Hosts</a></li>
+                    <li class="nav-item"><a href="/contact.html" class="nav-link">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="header-actions">
+                <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode">
+                    <span class="dark-toggle-icon">🌙</span>
+                </button>
+                <button class="btn btn-sm btn-outline login-btn" id="loginBtn">Log In</button>
+                <button class="hamburger" id="hamburger" aria-label="Toggle navigation">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+
+        <!-- Page Hero -->
+        <section class="page-hero">
+            <div class="container">
+                <h1 class="page-hero-title">Episode Archive</h1>
+                <p class="page-hero-subtitle">Over 300 episodes spanning every era of PBA history — from the league's founding in 1975 to the modern game. Search, filter, and revisit the stories that shaped Philippine basketball.</p>
+            </div>
+        </section>
+
+        <!-- Episodes Section -->
+        <section class="section episodes-section">
+            <div class="container">
+
+                <!-- Tabs -->
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="allEpisodes">All Episodes</button>
+                    <button class="tab-btn" data-tab="myFavorites">My Favorites</button>
+                </div>
+
+                <!-- All Episodes Tab Panel -->
+                <div class="tab-panel active" id="allEpisodes">
+
+                    <!-- Toolbar -->
+                    <div class="episodes-toolbar">
+                        <div class="search-box">
+                            <input type="text" class="search-input" id="episodeSearch" placeholder="Search episodes by title, topic, or guest..." aria-label="Search episodes">
+                            <span class="search-icon">🔍</span>
+                        </div>
+                        <div class="filter-group">
+                            <select class="filter-select" id="eraFilter" aria-label="Filter by era">
+                                <option value="">All Eras</option>
+                                <option value="1970s">1970s — The Founding Years</option>
+                                <option value="1980s">1980s — The Golden Era</option>
+                                <option value="1990s">1990s — The Expansion Years</option>
+                                <option value="2000s">2000s &amp; Beyond</option>
+                            </select>
+                            <select class="filter-select" id="teamFilter" aria-label="Filter by team">
+                                <option value="">All Teams</option>
+                                <option value="crispa">Crispa</option>
+                                <option value="toyota">Toyota</option>
+                                <option value="ginebra">Ginebra</option>
+                                <option value="great-taste">Great Taste</option>
+                                <option value="san-miguel">San Miguel</option>
+                                <option value="purefoods">Purefoods</option>
+                                <option value="alaska">Alaska</option>
+                                <option value="other">Other</option>
+                            </select>
+                            <select class="filter-select" id="hostFilter" aria-label="Filter by host">
+                                <option value="">All Hosts</option>
+                                <option value="charlie-cuna">Charlie Cuna</option>
+                                <option value="sid-ventura">Sid Ventura</option>
+                                <option value="noel-zarate">Noel Zarate</option>
+                                <option value="jay-mercado">Jay Mercado</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Episodes Grid -->
+                    <div class="episodes-grid" id="episodesGrid">
+
+                        <!-- Skeleton Loading Cards -->
+                        <div class="card episode-card skeleton">
+                            <div class="skeleton-thumbnail"></div>
+                            <div class="skeleton-content">
+                                <div class="skeleton-line skeleton-line-title"></div>
+                                <div class="skeleton-line skeleton-line-subtitle"></div>
+                                <div class="skeleton-line skeleton-line-short"></div>
+                            </div>
+                        </div>
+                        <div class="card episode-card skeleton">
+                            <div class="skeleton-thumbnail"></div>
+                            <div class="skeleton-content">
+                                <div class="skeleton-line skeleton-line-title"></div>
+                                <div class="skeleton-line skeleton-line-subtitle"></div>
+                                <div class="skeleton-line skeleton-line-short"></div>
+                            </div>
+                        </div>
+                        <div class="card episode-card skeleton">
+                            <div class="skeleton-thumbnail"></div>
+                            <div class="skeleton-content">
+                                <div class="skeleton-line skeleton-line-title"></div>
+                                <div class="skeleton-line skeleton-line-subtitle"></div>
+                                <div class="skeleton-line skeleton-line-short"></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Load More -->
+                    <div class="load-more-container">
+                        <button class="btn btn-outline load-more-btn" id="loadMoreBtn">Load More Episodes</button>
+                    </div>
+
+                </div>
+
+                <!-- My Favorites Tab Panel -->
+                <div class="tab-panel" id="myFavorites">
+                    <div class="favorites-placeholder" id="favoritesPlaceholder">
+                        <div class="favorites-icon">❤️</div>
+                        <h3>Your Favorite Episodes</h3>
+                        <p>Log in to save and access your favorite episodes across devices.</p>
+                        <button class="btn btn-primary" id="favoritesLoginBtn">Log In to View Favorites</button>
+                    </div>
+                    <div class="episodes-grid" id="favoritesGrid" style="display: none;">
+                        <!-- Populated by JS for logged-in users -->
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Episode Player Modal -->
+    <div class="modal episode-player-modal" id="episodePlayerModal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content episode-player-content">
+            <button class="modal-close" id="playerModalClose" aria-label="Close player">&times;</button>
+            <div class="player-header">
+                <div class="player-thumbnail" id="playerThumbnail"></div>
+                <div class="player-info">
+                    <span class="player-episode-number" id="playerEpisodeNumber"></span>
+                    <h3 class="player-title" id="playerTitle"></h3>
+                    <p class="player-meta" id="playerMeta"></p>
+                </div>
+            </div>
+            <div class="player-controls">
+                <div class="player-progress">
+                    <div class="progress-bar" id="progressBar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-time">
+                        <span id="currentTime">0:00</span>
+                        <span id="totalTime">0:00</span>
+                    </div>
+                </div>
+                <div class="player-buttons">
+                    <button class="player-btn" id="rewindBtn" aria-label="Rewind 15 seconds">⏪</button>
+                    <button class="player-btn player-btn-play" id="playBtn" aria-label="Play">▶️</button>
+                    <button class="player-btn" id="forwardBtn" aria-label="Forward 15 seconds">⏩</button>
+                    <button class="player-btn" id="favoriteBtn" aria-label="Add to favorites">🤍</button>
+                </div>
+            </div>
+            <div class="player-description" id="playerDescription"></div>
+            <audio id="audioPlayer" preload="metadata"></audio>
+        </div>
+    </div>
+
+    <!-- Auth Modal -->
+    <div class="modal auth-modal" id="authModal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content auth-modal-content">
+            <button class="modal-close" id="authModalClose" aria-label="Close">&times;</button>
+            <div class="auth-tabs">
+                <button class="auth-tab-btn active" data-auth-tab="login">Log In</button>
+                <button class="auth-tab-btn" data-auth-tab="signup">Sign Up</button>
+            </div>
+            <div class="auth-tab-panel active" id="loginPanel">
+                <form class="auth-form" id="loginForm">
+                    <div class="form-group">
+                        <label class="form-label" for="loginEmail">Email</label>
+                        <input type="email" class="form-input" id="loginEmail" placeholder="you@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="loginPassword">Password</label>
+                        <input type="password" class="form-input" id="loginPassword" placeholder="Your password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Log In</button>
+                </form>
+                <p class="auth-footer-text">Don't have an account? <a href="#" class="auth-switch-link" data-auth-tab="signup">Sign up</a></p>
+            </div>
+            <div class="auth-tab-panel" id="signupPanel">
+                <form class="auth-form" id="signupForm">
+                    <div class="form-group">
+                        <label class="form-label" for="signupName">Name</label>
+                        <input type="text" class="form-input" id="signupName" placeholder="Your name" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="signupEmail">Email</label>
+                        <input type="email" class="form-input" id="signupEmail" placeholder="you@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="signupPassword">Password</label>
+                        <input type="password" class="form-input" id="signupPassword" placeholder="Create a password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
+                </form>
+                <p class="auth-footer-text">Already have an account? <a href="#" class="auth-switch-link" data-auth-tab="login">Log in</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <span class="toast-message" id="toastMessage"></span>
+    </div>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">↑</button>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="/" class="logo">
+                        <span class="logo-icon">🏀</span>
+                        <span class="logo-text">AEOB</span>
+                    </a>
+                    <p class="footer-tagline">The definitive PBA history podcast — reliving the stories, players, and moments that shaped Philippine basketball.</p>
+                </div>
+                <div class="footer-links">
+                    <h4 class="footer-heading">Podcast</h4>
+                    <ul class="footer-list">
+                        <li><a href="/episodes.html" class="footer-link">Episodes</a></li>
+                        <li><a href="/about.html" class="footer-link">About</a></li>
+                        <li><a href="/hosts.html" class="footer-link">Hosts</a></li>
+                        <li><a href="/contact.html" class="footer-link">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4 class="footer-heading">Listen On</h4>
+                    <ul class="footer-list">
+                        <li><a href="#" class="footer-link">Spotify</a></li>
+                        <li><a href="#" class="footer-link">Apple Podcasts</a></li>
+                        <li><a href="#" class="footer-link">YouTube</a></li>
+                        <li><a href="#" class="footer-link">RSS Feed</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4 class="footer-heading">Connect</h4>
+                    <ul class="footer-list">
+                        <li><a href="#" class="footer-link">Twitter</a></li>
+                        <li><a href="#" class="footer-link">Facebook</a></li>
+                        <li><a href="#" class="footer-link">Instagram</a></li>
+                        <li><a href="#" class="footer-link">Email Us</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p class="footer-copyright">&copy; 2026 An Eternity of Basketball. All rights reserved.</p>
+                <p class="footer-network">Part of the <a href="https://globallyballin.com" class="footer-network-link">Globally Ballin Network</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="/js/main.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/episodes.js"></script>
+
+</body>
+</html>

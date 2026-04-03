@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AEOB Predictions Leaderboard - See how the crew's PBA history picks stack up. Vote on active predictions and make your own picks.">
+    <meta name="keywords" content="AEOB, An Eternity of Basketball, PBA predictions, PBA history, basketball predictions, leaderboard, PBA picks">
+    <meta name="author" content="An Eternity of Basketball">
+    <meta property="og:title" content="Predictions Leaderboard | An Eternity of Basketball">
+    <meta property="og:description" content="Track the crew's PBA history predictions, vote on active picks, and climb the fan leaderboard.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://aeob.globallyballin.com/predictions.html">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Predictions Leaderboard | An Eternity of Basketball">
+    <meta name="twitter:description" content="Track the crew's PBA history predictions, vote on active picks, and climb the fan leaderboard.">
+    <title>Predictions Leaderboard | An Eternity of Basketball</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+    <!-- Preloader -->
+    <div id="preloader" class="preloader">
+        <div class="preloader-inner">
+            <div class="preloader-logo">AEOB</div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header" id="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="/" class="nav-logo">
+                    <span class="logo-text">AEOB</span>
+                </a>
+                <ul class="nav-menu" id="navMenu">
+                    <li class="nav-item"><a href="/" class="nav-link">Home</a></li>
+                    <li class="nav-item"><a href="/episodes.html" class="nav-link">Episodes</a></li>
+                    <li class="nav-item"><a href="/about.html" class="nav-link">About</a></li>
+                    <li class="nav-item"><a href="/predictions.html" class="nav-link active">Predictions</a></li>
+                    <li class="nav-item"><a href="/contact.html" class="nav-link">Contact</a></li>
+                </ul>
+                <div class="nav-actions">
+                    <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode">
+                        <span class="dark-toggle-icon">🌙</span>
+                    </button>
+                    <button class="btn btn-sm btn-outline login-btn" id="loginBtn">Log In</button>
+                    <button class="hamburger" id="hamburger" aria-label="Toggle navigation menu">
+                        <span class="hamburger-line"></span>
+                        <span class="hamburger-line"></span>
+                        <span class="hamburger-line"></span>
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+
+        <!-- Page Hero -->
+        <section class="page-hero">
+            <div class="container">
+                <h1 class="page-hero-title">Predictions Leaderboard</h1>
+                <p class="page-hero-subtitle">Who knows PBA history best? Track how Charlie, Sid, Noel, and Jay's picks hold up across every episode and era.</p>
+            </div>
+        </section>
+
+        <!-- Tabs -->
+        <section class="section">
+            <div class="container">
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="leaderboard">Leaderboard</button>
+                    <button class="tab-btn" data-tab="active-predictions">Active Predictions</button>
+                    <button class="tab-btn" data-tab="my-picks">My Picks</button>
+                </div>
+
+                <!-- Leaderboard Tab Panel -->
+                <div class="tab-panel active" id="leaderboard">
+                    <div class="leaderboard-section">
+                        <h2 class="section-title">Host Standings</h2>
+                        <p class="section-subtitle">Season-long prediction accuracy for the AEOB crew</p>
+                        <div class="table-responsive">
+                            <table class="leaderboard-table">
+                                <thead>
+                                    <tr>
+                                        <th>Rank</th>
+                                        <th>Host</th>
+                                        <th>Correct Picks</th>
+                                        <th>Total Picks</th>
+                                        <th>Accuracy %</th>
+                                        <th>Accuracy Bar</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="leaderboard-rank gold">1</span></td>
+                                        <td>
+                                            <div class="host-info">
+                                                <span class="host-name">Charlie Cuna</span>
+                                            </div>
+                                        </td>
+                                        <td>18</td>
+                                        <td>24</td>
+                                        <td><strong>75%</strong></td>
+                                        <td>
+                                            <div class="accuracy-bar">
+                                                <div class="accuracy-bar-fill" style="width: 75%;"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="leaderboard-rank silver">2</span></td>
+                                        <td>
+                                            <div class="host-info">
+                                                <span class="host-name">Sid Ventura</span>
+                                            </div>
+                                        </td>
+                                        <td>16</td>
+                                        <td>24</td>
+                                        <td><strong>67%</strong></td>
+                                        <td>
+                                            <div class="accuracy-bar">
+                                                <div class="accuracy-bar-fill" style="width: 67%;"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="leaderboard-rank bronze">3</span></td>
+                                        <td>
+                                            <div class="host-info">
+                                                <span class="host-name">Noel Zarate</span>
+                                            </div>
+                                        </td>
+                                        <td>14</td>
+                                        <td>24</td>
+                                        <td><strong>58%</strong></td>
+                                        <td>
+                                            <div class="accuracy-bar">
+                                                <div class="accuracy-bar-fill" style="width: 58%;"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="leaderboard-rank">4</span></td>
+                                        <td>
+                                            <div class="host-info">
+                                                <span class="host-name">Jay Mercado</span>
+                                            </div>
+                                        </td>
+                                        <td>12</td>
+                                        <td>24</td>
+                                        <td><strong>50%</strong></td>
+                                        <td>
+                                            <div class="accuracy-bar">
+                                                <div class="accuracy-bar-fill" style="width: 50%;"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Predictions Tab Panel -->
+                <div class="tab-panel" id="active-predictions">
+                    <div class="predictions-section">
+                        <h2 class="section-title">Active Predictions</h2>
+                        <p class="section-subtitle">Vote on the crew's latest picks and see if you agree</p>
+
+                        <div class="predictions-grid">
+
+                            <!-- Prediction Card 1 -->
+                            <div class="prediction-card card">
+                                <div class="prediction-card-header">
+                                    <span class="prediction-status open">Open</span>
+                                    <span class="prediction-date">Episode 42</span>
+                                </div>
+                                <h3 class="prediction-question">PLACEHOLDER: Which franchise will be remembered as the most dominant dynasty of the 1980s PBA era?</h3>
+                                <div class="host-picks">
+                                    <span class="host-pick" data-host="charlie">Charlie: Crispa</span>
+                                    <span class="host-pick" data-host="sid">Sid: Toyota</span>
+                                    <span class="host-pick" data-host="noel">Noel: San Miguel</span>
+                                    <span class="host-pick" data-host="jay">Jay: Crispa</span>
+                                </div>
+                                <div class="vote-btns">
+                                    <button class="vote-btn vote-agree" data-vote="agree">
+                                        <span class="vote-icon">👍</span> Agree
+                                        <span class="vote-count">24</span>
+                                    </button>
+                                    <button class="vote-btn vote-disagree" data-vote="disagree">
+                                        <span class="vote-icon">👎</span> Disagree
+                                        <span class="vote-count">8</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Prediction Card 2 -->
+                            <div class="prediction-card card">
+                                <div class="prediction-card-header">
+                                    <span class="prediction-status open">Open</span>
+                                    <span class="prediction-date">Episode 41</span>
+                                </div>
+                                <h3 class="prediction-question">PLACEHOLDER: Who was the most impactful import in PBA history -- and could any modern import surpass them?</h3>
+                                <div class="host-picks">
+                                    <span class="host-pick" data-host="charlie">Charlie: Bobby Parks</span>
+                                    <span class="host-pick" data-host="sid">Sid: Norman Black</span>
+                                    <span class="host-pick" data-host="noel">Noel: Bobby Parks</span>
+                                    <span class="host-pick" data-host="jay">Jay: Justin Brownlee</span>
+                                </div>
+                                <div class="vote-btns">
+                                    <button class="vote-btn vote-agree" data-vote="agree">
+                                        <span class="vote-icon">👍</span> Agree
+                                        <span class="vote-count">31</span>
+                                    </button>
+                                    <button class="vote-btn vote-disagree" data-vote="disagree">
+                                        <span class="vote-icon">👎</span> Disagree
+                                        <span class="vote-count">12</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Prediction Card 3 -->
+                            <div class="prediction-card card">
+                                <div class="prediction-card-header">
+                                    <span class="prediction-status open">Open</span>
+                                    <span class="prediction-date">Episode 40</span>
+                                </div>
+                                <h3 class="prediction-question">PLACEHOLDER: Will any current PBA team break the all-time wins record within the next five conferences?</h3>
+                                <div class="host-picks">
+                                    <span class="host-pick" data-host="charlie">Charlie: Yes</span>
+                                    <span class="host-pick" data-host="sid">Sid: No</span>
+                                    <span class="host-pick" data-host="noel">Noel: No</span>
+                                    <span class="host-pick" data-host="jay">Jay: Yes</span>
+                                </div>
+                                <div class="vote-btns">
+                                    <button class="vote-btn vote-agree" data-vote="agree">
+                                        <span class="vote-icon">👍</span> Agree
+                                        <span class="vote-count">17</span>
+                                    </button>
+                                    <button class="vote-btn vote-disagree" data-vote="disagree">
+                                        <span class="vote-icon">👎</span> Disagree
+                                        <span class="vote-count">22</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- My Picks Tab Panel -->
+                <div class="tab-panel" id="my-picks">
+                    <div class="my-picks-section">
+                        <h2 class="section-title">Make Your Pick</h2>
+                        <p class="section-subtitle">Think you know PBA history better than the crew? Submit your own prediction.</p>
+
+                        <!-- Logged Out State -->
+                        <div class="my-picks-auth" id="myPicksAuth">
+                            <div class="card my-picks-login-prompt">
+                                <div class="my-picks-login-icon">🔒</div>
+                                <h3>Log in to make your picks</h3>
+                                <p>Create an account or log in to submit predictions, track your accuracy, and compete with other fans.</p>
+                                <button class="btn btn-primary" id="myPicksLoginBtn">Log In to Get Started</button>
+                            </div>
+                        </div>
+
+                        <!-- Logged In State (hidden by default) -->
+                        <div class="my-picks-form-wrapper" id="myPicksForm" style="display: none;">
+                            <div class="card">
+                                <form class="prediction-form" id="predictionForm">
+                                    <div class="form-group">
+                                        <label for="predictionQuestion" class="form-label">Your Prediction</label>
+                                        <textarea id="predictionQuestion" class="form-input form-textarea" rows="3" placeholder="e.g. Which team will win the most championships in the next decade?"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="predictionAnswer" class="form-label">Your Pick</label>
+                                        <input type="text" id="predictionAnswer" class="form-input" placeholder="e.g. San Miguel Beermen">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="predictionCategory" class="form-label">Category</label>
+                                        <select id="predictionCategory" class="form-input form-select">
+                                            <option value="">Select a category</option>
+                                            <option value="dynasty">Dynasty & Legacy</option>
+                                            <option value="players">Players & MVPs</option>
+                                            <option value="imports">Imports</option>
+                                            <option value="records">Records & Stats</option>
+                                            <option value="general">General PBA History</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-block">Submit Prediction</button>
+                                </form>
+                            </div>
+
+                            <!-- User's Past Picks -->
+                            <div class="my-past-picks">
+                                <h3 class="subsection-title">Your Past Picks</h3>
+                                <p class="text-muted">Your submitted predictions will appear here.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-about">
+                    <a href="/" class="footer-logo">
+                        <span class="logo-text">AEOB</span>
+                    </a>
+                    <p class="footer-description">An Eternity of Basketball is a podcast dedicated to exploring the rich and storied history of the PBA.</p>
+                </div>
+                <div class="footer-links">
+                    <h4 class="footer-heading">Quick Links</h4>
+                    <ul class="footer-menu">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/episodes.html">Episodes</a></li>
+                        <li><a href="/about.html">About</a></li>
+                        <li><a href="/predictions.html">Predictions</a></li>
+                        <li><a href="/contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4 class="footer-heading">Listen On</h4>
+                    <ul class="footer-menu">
+                        <li><a href="#" target="_blank" rel="noopener noreferrer">Spotify</a></li>
+                        <li><a href="#" target="_blank" rel="noopener noreferrer">Apple Podcasts</a></li>
+                        <li><a href="#" target="_blank" rel="noopener noreferrer">YouTube</a></li>
+                    </ul>
+                </div>
+                <div class="footer-network">
+                    <h4 class="footer-heading">Part of the</h4>
+                    <a href="https://globallyballin.com" class="footer-network-link" target="_blank" rel="noopener noreferrer">Globally Ballin Network</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p class="footer-copyright">&copy; 2026 An Eternity of Basketball. All rights reserved.</p>
+                <p class="footer-network-credit">A <a href="https://globallyballin.com" target="_blank" rel="noopener noreferrer">Globally Ballin Network</a> Production</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Auth Modal -->
+    <div class="modal" id="authModal">
+        <div class="modal-overlay" id="authModalOverlay"></div>
+        <div class="modal-content">
+            <button class="modal-close" id="authModalClose" aria-label="Close modal">&times;</button>
+
+            <!-- Login Form -->
+            <div class="auth-form" id="loginForm">
+                <h2 class="modal-title">Welcome Back</h2>
+                <p class="modal-subtitle">Log in to track your predictions and compete with other fans.</p>
+                <form id="loginFormEl">
+                    <div class="form-group">
+                        <label for="loginEmail" class="form-label">Email</label>
+                        <input type="email" id="loginEmail" class="form-input" placeholder="you@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword" class="form-label">Password</label>
+                        <input type="password" id="loginPassword" class="form-input" placeholder="Your password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Log In</button>
+                </form>
+                <p class="auth-switch">Don't have an account? <a href="#" id="showSignup">Sign Up</a></p>
+            </div>
+
+            <!-- Signup Form -->
+            <div class="auth-form" id="signupForm" style="display: none;">
+                <h2 class="modal-title">Create Account</h2>
+                <p class="modal-subtitle">Join the AEOB community and start making your picks.</p>
+                <form id="signupFormEl">
+                    <div class="form-group">
+                        <label for="signupName" class="form-label">Display Name</label>
+                        <input type="text" id="signupName" class="form-input" placeholder="Your name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupEmail" class="form-label">Email</label>
+                        <input type="email" id="signupEmail" class="form-input" placeholder="you@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupPassword" class="form-label">Password</label>
+                        <input type="password" id="signupPassword" class="form-input" placeholder="Create a password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
+                </form>
+                <p class="auth-switch">Already have an account? <a href="#" id="showLogin">Log In</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <span class="toast-message" id="toastMessage"></span>
+    </div>
+
+    <!-- Back to Top -->
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">
+        <span class="back-to-top-icon">&uarr;</span>
+    </button>
+
+    <!-- Scripts -->
+    <script src="/js/main.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/predictions.js"></script>
+</body>
+</html>

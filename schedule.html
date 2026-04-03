@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Check the show schedule for An Eternity of Basketball, a PBA history podcast. Find upcoming episodes, countdowns, and air times in your timezone.">
+    <meta name="keywords" content="AEOB, An Eternity of Basketball, PBA podcast schedule, PBA history, Philippine Basketball Association, episode schedule">
+    <meta name="author" content="Globally Ballin Network">
+    <meta property="og:title" content="Show Schedule | An Eternity of Basketball">
+    <meta property="og:description" content="Never miss an episode of An Eternity of Basketball. Check upcoming episodes, countdown timers, and air times in your local timezone.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://aeob.globallyballin.com/schedule">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Show Schedule | An Eternity of Basketball">
+    <meta name="twitter:description" content="Never miss an episode of An Eternity of Basketball. Check upcoming episodes, countdown timers, and air times in your local timezone.">
+    <title>Show Schedule | An Eternity of Basketball</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+    <!-- Preloader -->
+    <div id="preloader" class="preloader">
+        <div class="preloader-inner">
+            <div class="preloader-spinner"></div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header" id="header">
+        <div class="container header-container">
+            <a href="/" class="logo">
+                <span class="logo-text">AEOB</span>
+            </a>
+            <nav class="nav" id="nav">
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="/" class="nav-link">Home</a></li>
+                    <li class="nav-item"><a href="/episodes.html" class="nav-link">Episodes</a></li>
+                    <li class="nav-item"><a href="/schedule.html" class="nav-link active">Schedule</a></li>
+                    <li class="nav-item"><a href="/about.html" class="nav-link">About</a></li>
+                    <li class="nav-item"><a href="/contact.html" class="nav-link">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="header-actions">
+                <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode">
+                    <svg class="icon icon-sun" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                    <svg class="icon icon-moon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                </button>
+                <button class="btn btn-sm btn-outline login-btn" id="loginBtn">Log In</button>
+                <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+
+        <!-- Page Hero -->
+        <section class="page-hero">
+            <div class="container">
+                <h1 class="page-hero-title">Show Schedule</h1>
+                <p class="page-hero-subtitle">Never miss an episode of An Eternity of Basketball. Check upcoming air dates, set reminders, and find out when the show airs in your timezone.</p>
+            </div>
+        </section>
+
+        <!-- Countdown Hero -->
+        <section class="countdown-hero section">
+            <div class="container">
+                <h2 class="section-title">Next Episode</h2>
+                <p class="next-episode-date" id="nextEpisodeDateFull">Loading next episode date...</p>
+                <div class="countdown-blocks">
+                    <div class="countdown-block">
+                        <span class="countdown-value" id="cd-days">--</span>
+                        <span class="countdown-label">Days</span>
+                    </div>
+                    <div class="countdown-block">
+                        <span class="countdown-value" id="cd-hours">--</span>
+                        <span class="countdown-label">Hours</span>
+                    </div>
+                    <div class="countdown-block">
+                        <span class="countdown-value" id="cd-mins">--</span>
+                        <span class="countdown-label">Mins</span>
+                    </div>
+                    <div class="countdown-block">
+                        <span class="countdown-value" id="cd-secs">--</span>
+                        <span class="countdown-label">Secs</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Timezone Converter -->
+        <section class="timezone-converter section">
+            <div class="container">
+                <h2 class="section-title">When does it air near you?</h2>
+                <p class="section-subtitle">All times shown for the next upcoming episode.</p>
+                <div class="timezone-grid">
+                    <div class="tz-item">
+                        <span class="tz-city">Manila</span>
+                        <span class="tz-time">10:00 AM</span>
+                        <span class="tz-day">Saturday</span>
+                    </div>
+                    <div class="tz-item">
+                        <span class="tz-city">Los Angeles</span>
+                        <span class="tz-time">7:00 PM</span>
+                        <span class="tz-day">Friday</span>
+                    </div>
+                    <div class="tz-item">
+                        <span class="tz-city">New York</span>
+                        <span class="tz-time">10:00 PM</span>
+                        <span class="tz-day">Friday</span>
+                    </div>
+                    <div class="tz-item">
+                        <span class="tz-city">London</span>
+                        <span class="tz-time">3:00 AM</span>
+                        <span class="tz-day">Saturday</span>
+                    </div>
+                    <div class="tz-item">
+                        <span class="tz-city">Dubai</span>
+                        <span class="tz-time">6:00 AM</span>
+                        <span class="tz-day">Saturday</span>
+                    </div>
+                    <div class="tz-item">
+                        <span class="tz-city">Sydney</span>
+                        <span class="tz-time">1:00 PM</span>
+                        <span class="tz-day">Saturday</span>
+                    </div>
+                    <div class="tz-item">
+                        <span class="tz-city">Tokyo</span>
+                        <span class="tz-time">11:00 AM</span>
+                        <span class="tz-day">Saturday</span>
+                    </div>
+                    <div class="tz-item">
+                        <span class="tz-city">Toronto</span>
+                        <span class="tz-time">10:00 PM</span>
+                        <span class="tz-day">Friday</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Notification Banner (Logged-in users only) -->
+        <section class="notification-banner section" id="notificationBanner" style="display: none;">
+            <div class="container">
+                <div class="notification-banner-inner">
+                    <div class="notification-banner-content">
+                        <svg class="notification-bell-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                        <div>
+                            <h3 class="notification-banner-title">Never Miss an Episode</h3>
+                            <p class="notification-banner-text">Get notified when a new episode of An Eternity of Basketball goes live. We'll send you a reminder before each show.</p>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" id="enableNotificationsBtn">Enable Notifications</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Upcoming Episodes -->
+        <section class="upcoming-episodes section">
+            <div class="container">
+                <h2 class="section-title">Upcoming Episodes</h2>
+                <p class="section-subtitle">Here's what's coming up on An Eternity of Basketball.</p>
+                <div class="episodes-schedule-list">
+                    <div class="card schedule-card">
+                        <div class="schedule-card-date">
+                            <span class="schedule-month">Apr</span>
+                            <span class="schedule-day">5</span>
+                        </div>
+                        <div class="schedule-card-info">
+                            <h3 class="schedule-card-title">Episode TBA</h3>
+                            <p class="schedule-card-topic">Topic to be announced</p>
+                            <span class="schedule-card-time">Saturday, April 5, 2026 &mdash; 10:00 AM PHT</span>
+                        </div>
+                        <span class="badge badge-upcoming">Upcoming</span>
+                    </div>
+                    <div class="card schedule-card">
+                        <div class="schedule-card-date">
+                            <span class="schedule-month">Apr</span>
+                            <span class="schedule-day">12</span>
+                        </div>
+                        <div class="schedule-card-info">
+                            <h3 class="schedule-card-title">Episode TBA</h3>
+                            <p class="schedule-card-topic">Topic to be announced</p>
+                            <span class="schedule-card-time">Saturday, April 12, 2026 &mdash; 10:00 AM PHT</span>
+                        </div>
+                        <span class="badge badge-upcoming">Upcoming</span>
+                    </div>
+                    <div class="card schedule-card">
+                        <div class="schedule-card-date">
+                            <span class="schedule-month">Apr</span>
+                            <span class="schedule-day">19</span>
+                        </div>
+                        <div class="schedule-card-info">
+                            <h3 class="schedule-card-title">Episode TBA</h3>
+                            <p class="schedule-card-topic">Topic to be announced</p>
+                            <span class="schedule-card-time">Saturday, April 19, 2026 &mdash; 10:00 AM PHT</span>
+                        </div>
+                        <span class="badge badge-upcoming">Upcoming</span>
+                    </div>
+                    <div class="card schedule-card">
+                        <div class="schedule-card-date">
+                            <span class="schedule-month">Apr</span>
+                            <span class="schedule-day">26</span>
+                        </div>
+                        <div class="schedule-card-info">
+                            <h3 class="schedule-card-title">Episode TBA</h3>
+                            <p class="schedule-card-topic">Topic to be announced</p>
+                            <span class="schedule-card-time">Saturday, April 26, 2026 &mdash; 10:00 AM PHT</span>
+                        </div>
+                        <span class="badge badge-upcoming">Upcoming</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Past Schedule -->
+        <section class="past-schedule section">
+            <div class="container">
+                <h2 class="section-title">Recent Episodes</h2>
+                <p class="section-subtitle">Missed a show? Catch up on recent episodes below.</p>
+                <div class="episodes-schedule-list">
+                    <div class="card schedule-card schedule-card--past">
+                        <div class="schedule-card-date">
+                            <span class="schedule-month">Mar</span>
+                            <span class="schedule-day">29</span>
+                        </div>
+                        <div class="schedule-card-info">
+                            <h3 class="schedule-card-title">Episode TBA</h3>
+                            <p class="schedule-card-topic">Topic to be announced</p>
+                            <span class="schedule-card-time">Saturday, March 29, 2026 &mdash; 10:00 AM PHT</span>
+                        </div>
+                        <a href="/episodes.html" class="btn btn-sm btn-outline">Watch Now</a>
+                    </div>
+                    <div class="card schedule-card schedule-card--past">
+                        <div class="schedule-card-date">
+                            <span class="schedule-month">Mar</span>
+                            <span class="schedule-day">22</span>
+                        </div>
+                        <div class="schedule-card-info">
+                            <h3 class="schedule-card-title">Episode TBA</h3>
+                            <p class="schedule-card-topic">Topic to be announced</p>
+                            <span class="schedule-card-time">Saturday, March 22, 2026 &mdash; 10:00 AM PHT</span>
+                        </div>
+                        <a href="/episodes.html" class="btn btn-sm btn-outline">Watch Now</a>
+                    </div>
+                    <div class="card schedule-card schedule-card--past">
+                        <div class="schedule-card-date">
+                            <span class="schedule-month">Mar</span>
+                            <span class="schedule-day">15</span>
+                        </div>
+                        <div class="schedule-card-info">
+                            <h3 class="schedule-card-title">Episode TBA</h3>
+                            <p class="schedule-card-topic">Topic to be announced</p>
+                            <span class="schedule-card-time">Saturday, March 15, 2026 &mdash; 10:00 AM PHT</span>
+                        </div>
+                        <a href="/episodes.html" class="btn btn-sm btn-outline">Watch Now</a>
+                    </div>
+                    <div class="card schedule-card schedule-card--past">
+                        <div class="schedule-card-date">
+                            <span class="schedule-month">Mar</span>
+                            <span class="schedule-day">8</span>
+                        </div>
+                        <div class="schedule-card-info">
+                            <h3 class="schedule-card-title">Episode TBA</h3>
+                            <p class="schedule-card-topic">Topic to be announced</p>
+                            <span class="schedule-card-time">Saturday, March 8, 2026 &mdash; 10:00 AM PHT</span>
+                        </div>
+                        <a href="/episodes.html" class="btn btn-sm btn-outline">Watch Now</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-about">
+                    <a href="/" class="footer-logo">
+                        <span class="logo-text">AEOB</span>
+                    </a>
+                    <p class="footer-about-text">An Eternity of Basketball is a podcast dedicated to exploring the rich history of the Philippine Basketball Association (PBA).</p>
+                </div>
+                <div class="footer-links">
+                    <h4 class="footer-heading">Quick Links</h4>
+                    <ul class="footer-list">
+                        <li><a href="/" class="footer-link">Home</a></li>
+                        <li><a href="/episodes.html" class="footer-link">Episodes</a></li>
+                        <li><a href="/schedule.html" class="footer-link">Schedule</a></li>
+                        <li><a href="/about.html" class="footer-link">About</a></li>
+                        <li><a href="/contact.html" class="footer-link">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4 class="footer-heading">Follow Us</h4>
+                    <ul class="footer-list">
+                        <li><a href="#" class="footer-link">YouTube</a></li>
+                        <li><a href="#" class="footer-link">Facebook</a></li>
+                        <li><a href="#" class="footer-link">Twitter / X</a></li>
+                        <li><a href="#" class="footer-link">Instagram</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4 class="footer-heading">Legal</h4>
+                    <ul class="footer-list">
+                        <li><a href="/privacy.html" class="footer-link">Privacy Policy</a></li>
+                        <li><a href="/terms.html" class="footer-link">Terms of Use</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p class="footer-copy">&copy; 2026 An Eternity of Basketball. All rights reserved.</p>
+                <p class="footer-network">Part of the <a href="https://globallyballin.com" class="footer-network-link">Globally Ballin Network</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Auth Modal -->
+    <div class="modal" id="authModal">
+        <div class="modal-overlay" id="authModalOverlay"></div>
+        <div class="modal-content">
+            <button class="modal-close" id="authModalClose" aria-label="Close modal">&times;</button>
+            <div class="modal-header">
+                <h2 class="modal-title" id="authModalTitle">Log In</h2>
+            </div>
+            <div class="modal-body">
+                <!-- Login Form -->
+                <form class="auth-form" id="loginForm">
+                    <div class="form-group">
+                        <label for="loginEmail" class="form-label">Email</label>
+                        <input type="email" id="loginEmail" class="form-input" placeholder="you@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword" class="form-label">Password</label>
+                        <input type="password" id="loginPassword" class="form-input" placeholder="Your password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full">Log In</button>
+                    <p class="auth-switch">Don't have an account? <a href="#" id="showSignup" class="auth-switch-link">Sign Up</a></p>
+                </form>
+                <!-- Signup Form -->
+                <form class="auth-form" id="signupForm" style="display: none;">
+                    <div class="form-group">
+                        <label for="signupName" class="form-label">Name</label>
+                        <input type="text" id="signupName" class="form-input" placeholder="Your name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupEmail" class="form-label">Email</label>
+                        <input type="email" id="signupEmail" class="form-input" placeholder="you@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupPassword" class="form-label">Password</label>
+                        <input type="password" id="signupPassword" class="form-input" placeholder="Create a password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full">Sign Up</button>
+                    <p class="auth-switch">Already have an account? <a href="#" id="showLogin" class="auth-switch-link">Log In</a></p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <span class="toast-message" id="toastMessage"></span>
+    </div>
+
+    <!-- Back to Top -->
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+    </button>
+
+    <!-- Scripts -->
+    <script src="/js/main.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/schedule.js"></script>
+</body>
+</html>

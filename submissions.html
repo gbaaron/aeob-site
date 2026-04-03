@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Submit your questions, stats challenges, and what-if scenarios for An Eternity of Basketball. Join the AEOB Fan Zone and have your submission featured on the show.">
+    <meta name="keywords" content="AEOB, An Eternity of Basketball, PBA, fan submissions, basketball questions, stats challenge, what if scenarios, Philippine basketball, fan zone">
+    <meta name="author" content="An Eternity of Basketball">
+    <meta property="og:title" content="Fan Zone | An Eternity of Basketball">
+    <meta property="og:description" content="Submit your questions, stats challenges, and what-if scenarios for the AEOB podcast. Get featured on the show!">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://aeob.globallyballin.com/submissions.html">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Fan Zone | An Eternity of Basketball">
+    <meta name="twitter:description" content="Submit your questions, stats challenges, and what-if scenarios for the AEOB podcast.">
+    <title>Fan Zone | An Eternity of Basketball</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+    <!-- Preloader -->
+    <div class="preloader" id="preloader">
+        <div class="preloader-inner">
+            <div class="preloader-icon"></div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header" id="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="/" class="nav-logo">
+                    <span class="logo-text">AEOB</span>
+                </a>
+                <ul class="nav-menu" id="navMenu">
+                    <li class="nav-item">
+                        <a href="/" class="nav-link">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/episodes.html" class="nav-link">Episodes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/teams.html" class="nav-link">Teams</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/players.html" class="nav-link">Players</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/stats.html" class="nav-link">Stats</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/timeline.html" class="nav-link">Timeline</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/submissions.html" class="nav-link active">Fan Zone</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/about.html" class="nav-link">About</a>
+                    </li>
+                </ul>
+                <div class="nav-actions">
+                    <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode">
+                        <span class="dark-toggle-icon"></span>
+                    </button>
+                    <button class="btn btn-sm btn-outline login-btn" id="loginBtn">Log In</button>
+                    <button class="hamburger" id="hamburger" aria-label="Toggle navigation menu">
+                        <span class="hamburger-line"></span>
+                        <span class="hamburger-line"></span>
+                        <span class="hamburger-line"></span>
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+
+        <!-- Page Hero -->
+        <section class="page-hero">
+            <div class="container">
+                <h1 class="page-hero-title">Fan Zone</h1>
+                <p class="page-hero-subtitle">Submit your questions, stats challenges, and what-if scenarios for a chance to be featured on the show. Your voice shapes the conversation.</p>
+            </div>
+        </section>
+
+        <!-- Tabs Navigation -->
+        <section class="section">
+            <div class="container">
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="submit">Submit</button>
+                    <button class="tab-btn" data-tab="top-submissions">Top Submissions</button>
+                    <button class="tab-btn" data-tab="featured">Featured on Show</button>
+                </div>
+
+                <!-- Submit Tab Panel -->
+                <div class="tab-panel active" id="tab-submit">
+                    <div class="card">
+                        <h2 class="section-title">Submit to the Show</h2>
+                        <p class="section-subtitle">Have a burning question about PBA history? A wild what-if scenario? A stats challenge for the hosts? Send it in!</p>
+                        <form class="submission-form" id="submissionForm">
+                            <div class="form-group">
+                                <label for="submissionType" class="form-label">Submission Type</label>
+                                <select id="submissionType" class="form-select" required>
+                                    <option value="" disabled selected>Select a type...</option>
+                                    <option value="question">Question</option>
+                                    <option value="stats-challenge">Stats Challenge</option>
+                                    <option value="what-if">What If Scenario</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="submissionTitle" class="form-label">Title</label>
+                                <input type="text" id="submissionTitle" class="form-input" placeholder="Give your submission a catchy title..." required maxlength="100">
+                            </div>
+                            <div class="form-group">
+                                <label for="submissionDescription" class="form-label">Description</label>
+                                <textarea id="submissionDescription" class="form-textarea" placeholder="Describe your question, scenario, or challenge in detail..." required maxlength="500" rows="6"></textarea>
+                                <div class="char-count"><span id="charCount">0</span> / 500</div>
+                            </div>
+                            <div class="form-group form-actions">
+                                <button type="submit" class="btn btn-primary submit-btn" id="submitBtn" disabled>
+                                    <span class="submit-btn-text">Log in to Submit</span>
+                                </button>
+                                <p class="form-note">You must be logged in to submit. <a href="#" id="loginToSubmit" class="link">Log in here</a>.</p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Top Submissions Tab Panel -->
+                <div class="tab-panel" id="tab-top-submissions">
+                    <h2 class="section-title">Top Submissions</h2>
+                    <p class="section-subtitle">The most popular fan submissions, ranked by community votes.</p>
+
+                    <div class="submissions-list">
+
+                        <!-- Submission Item 1 -->
+                        <div class="submission-item card">
+                            <div class="submission-votes">
+                                <button class="upvote-btn" aria-label="Upvote this submission">
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M8 3L14 10H2L8 3Z" fill="currentColor"/>
+                                    </svg>
+                                </button>
+                                <span class="vote-count">42</span>
+                            </div>
+                            <div class="submission-content">
+                                <div class="submission-meta">
+                                    <span class="type-badge type-badge--what-if">What If Scenario</span>
+                                </div>
+                                <h3 class="submission-title">PLACEHOLDER: What if the Crispa Redmanizers played in today's PBA?</h3>
+                                <p class="submission-description">PLACEHOLDER: Imagine transporting the legendary Crispa Redmanizers roster from their dynasty years into the modern PBA. How would their physical style of play match up against today's more perimeter-oriented game? Would they still dominate?</p>
+                                <div class="submission-author">
+                                    <span class="author-name">PLACEHOLDER_USER_1</span>
+                                    <span class="submission-date">March 28, 2026</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Submission Item 2 -->
+                        <div class="submission-item card">
+                            <div class="submission-votes">
+                                <button class="upvote-btn" aria-label="Upvote this submission">
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M8 3L14 10H2L8 3Z" fill="currentColor"/>
+                                    </svg>
+                                </button>
+                                <span class="vote-count">35</span>
+                            </div>
+                            <div class="submission-content">
+                                <div class="submission-meta">
+                                    <span class="type-badge type-badge--stats-challenge">Stats Challenge</span>
+                                </div>
+                                <h3 class="submission-title">PLACEHOLDER: Most consecutive conference finals appearances by a single franchise</h3>
+                                <p class="submission-description">PLACEHOLDER: Can you figure out which PBA franchise holds the record for the most consecutive conference finals appearances? Bonus points if you can name the full roster for each of those appearances.</p>
+                                <div class="submission-author">
+                                    <span class="author-name">PLACEHOLDER_USER_2</span>
+                                    <span class="submission-date">March 25, 2026</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Submission Item 3 -->
+                        <div class="submission-item card">
+                            <div class="submission-votes">
+                                <button class="upvote-btn" aria-label="Upvote this submission">
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M8 3L14 10H2L8 3Z" fill="currentColor"/>
+                                    </svg>
+                                </button>
+                                <span class="vote-count">28</span>
+                            </div>
+                            <div class="submission-content">
+                                <div class="submission-meta">
+                                    <span class="type-badge type-badge--question">Question</span>
+                                </div>
+                                <h3 class="submission-title">PLACEHOLDER: Who is the most underrated PBA import of all time?</h3>
+                                <p class="submission-description">PLACEHOLDER: We always talk about the greatest imports like Bobby Parks and Justin Brownlee, but who are the imports that flew under the radar and deserve more recognition? Would love to hear the hosts debate this one.</p>
+                                <div class="submission-author">
+                                    <span class="author-name">PLACEHOLDER_USER_3</span>
+                                    <span class="submission-date">March 20, 2026</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Featured on Show Tab Panel -->
+                <div class="tab-panel" id="tab-featured">
+                    <h2 class="section-title">Featured on the Show</h2>
+                    <p class="section-subtitle">These fan submissions were discussed on an episode of AEOB. Congrats to the contributors!</p>
+
+                    <div class="submissions-list">
+
+                        <!-- Featured Submission 1 -->
+                        <div class="submission-item submission-item--featured card">
+                            <div class="submission-votes">
+                                <button class="upvote-btn" aria-label="Upvote this submission">
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M8 3L14 10H2L8 3Z" fill="currentColor"/>
+                                    </svg>
+                                </button>
+                                <span class="vote-count">87</span>
+                            </div>
+                            <div class="submission-content">
+                                <div class="submission-meta">
+                                    <span class="featured-badge">Featured on Show</span>
+                                    <span class="type-badge type-badge--what-if">What If Scenario</span>
+                                </div>
+                                <h3 class="submission-title">PLACEHOLDER: What if the PBA never introduced the import rule?</h3>
+                                <p class="submission-description">PLACEHOLDER: The import rule changed PBA basketball forever. But what if it had never been introduced? How would the league have evolved differently? Would Filipino players have developed faster without relying on imports?</p>
+                                <div class="submission-author">
+                                    <span class="author-name">PLACEHOLDER_USER_4</span>
+                                    <span class="submission-date">March 10, 2026</span>
+                                    <span class="featured-episode">Ep. 45 - The Import Debate</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Featured Submission 2 -->
+                        <div class="submission-item submission-item--featured card">
+                            <div class="submission-votes">
+                                <button class="upvote-btn" aria-label="Upvote this submission">
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M8 3L14 10H2L8 3Z" fill="currentColor"/>
+                                    </svg>
+                                </button>
+                                <span class="vote-count">64</span>
+                            </div>
+                            <div class="submission-content">
+                                <div class="submission-meta">
+                                    <span class="featured-badge">Featured on Show</span>
+                                    <span class="type-badge type-badge--question">Question</span>
+                                </div>
+                                <h3 class="submission-title">PLACEHOLDER: Which PBA era had the toughest competition overall?</h3>
+                                <p class="submission-description">PLACEHOLDER: Looking across all eras of the PBA, which period had the deepest talent pool and most competitive balance? Was it the golden age of the 80s, the rivalry-driven 90s, or the modern era with better training and scouting?</p>
+                                <div class="submission-author">
+                                    <span class="author-name">PLACEHOLDER_USER_5</span>
+                                    <span class="submission-date">February 28, 2026</span>
+                                    <span class="featured-episode">Ep. 42 - Eras of Greatness</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Featured Submission 3 -->
+                        <div class="submission-item submission-item--featured card">
+                            <div class="submission-votes">
+                                <button class="upvote-btn" aria-label="Upvote this submission">
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M8 3L14 10H2L8 3Z" fill="currentColor"/>
+                                    </svg>
+                                </button>
+                                <span class="vote-count">51</span>
+                            </div>
+                            <div class="submission-content">
+                                <div class="submission-meta">
+                                    <span class="featured-badge">Featured on Show</span>
+                                    <span class="type-badge type-badge--stats-challenge">Stats Challenge</span>
+                                </div>
+                                <h3 class="submission-title">PLACEHOLDER: Name every PBA MVP who also won a Finals MVP in the same season</h3>
+                                <p class="submission-description">PLACEHOLDER: This is a deep cut stats challenge. Can you name every player in PBA history who won both the season MVP and the Finals MVP in the same conference year? Harder than it sounds!</p>
+                                <div class="submission-author">
+                                    <span class="author-name">PLACEHOLDER_USER_6</span>
+                                    <span class="submission-date">February 15, 2026</span>
+                                    <span class="featured-episode">Ep. 39 - The Double Crown</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="/" class="footer-logo">
+                        <span class="logo-text">AEOB</span>
+                    </a>
+                    <p class="footer-tagline">An Eternity of Basketball - Exploring PBA history one story at a time.</p>
+                    <p class="footer-network">Part of the <a href="https://globallyballin.com" class="link">Globally Ballin Network</a></p>
+                </div>
+                <div class="footer-links">
+                    <h4 class="footer-heading">Explore</h4>
+                    <ul class="footer-list">
+                        <li><a href="/episodes.html" class="footer-link">Episodes</a></li>
+                        <li><a href="/teams.html" class="footer-link">Teams</a></li>
+                        <li><a href="/players.html" class="footer-link">Players</a></li>
+                        <li><a href="/stats.html" class="footer-link">Stats</a></li>
+                        <li><a href="/timeline.html" class="footer-link">Timeline</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4 class="footer-heading">Community</h4>
+                    <ul class="footer-list">
+                        <li><a href="/submissions.html" class="footer-link">Fan Zone</a></li>
+                        <li><a href="/about.html" class="footer-link">About</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4 class="footer-heading">Network</h4>
+                    <ul class="footer-list">
+                        <li><a href="https://globallyballin.com" class="footer-link" target="_blank" rel="noopener noreferrer">Globally Ballin</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p class="footer-copy">&copy; 2026 An Eternity of Basketball. All rights reserved.</p>
+                <p class="footer-copy">A <a href="https://globallyballin.com" class="link" target="_blank" rel="noopener noreferrer">Globally Ballin Network</a> Production</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Auth Modal -->
+    <div class="modal" id="authModal">
+        <div class="modal-overlay" id="authModalOverlay"></div>
+        <div class="modal-content">
+            <button class="modal-close" id="authModalClose" aria-label="Close modal">&times;</button>
+            <div class="modal-header">
+                <h2 class="modal-title" id="authModalTitle">Log In</h2>
+            </div>
+            <div class="modal-body">
+                <!-- Login Form -->
+                <form class="auth-form" id="loginForm">
+                    <div class="form-group">
+                        <label for="loginEmail" class="form-label">Email</label>
+                        <input type="email" id="loginEmail" class="form-input" placeholder="Enter your email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword" class="form-label">Password</label>
+                        <input type="password" id="loginPassword" class="form-input" placeholder="Enter your password" required>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary btn-block">Log In</button>
+                    </div>
+                    <p class="auth-switch">Don't have an account? <a href="#" id="showSignup" class="link">Sign Up</a></p>
+                </form>
+                <!-- Signup Form -->
+                <form class="auth-form hidden" id="signupForm">
+                    <div class="form-group">
+                        <label for="signupName" class="form-label">Display Name</label>
+                        <input type="text" id="signupName" class="form-input" placeholder="Choose a display name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupEmail" class="form-label">Email</label>
+                        <input type="email" id="signupEmail" class="form-input" placeholder="Enter your email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupPassword" class="form-label">Password</label>
+                        <input type="password" id="signupPassword" class="form-input" placeholder="Create a password" required>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
+                    </div>
+                    <p class="auth-switch">Already have an account? <a href="#" id="showLogin" class="link">Log In</a></p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <span class="toast-message" id="toastMessage"></span>
+        <button class="toast-close" id="toastClose" aria-label="Close notification">&times;</button>
+    </div>
+
+    <!-- Back to Top -->
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10 4L3 11H17L10 4Z" fill="currentColor"/>
+        </svg>
+    </button>
+
+    <!-- Scripts -->
+    <script src="/js/main.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/submissions.js"></script>
+
+</body>
+</html>

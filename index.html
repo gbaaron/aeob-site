@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>An Eternity of Basketball — PBA History Podcast</title>
+  <meta name="description" content="An Eternity of Basketball is a podcast dedicated to PBA history, covering the golden eras of Philippine basketball from the 1970s through the 1990s. 300+ episodes and counting.">
+  <meta name="keywords" content="PBA, Philippine Basketball Association, basketball podcast, Crispa, Toyota, PBA history, AEOB">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="An Eternity of Basketball — PBA History Podcast">
+  <meta property="og:description" content="Relive the golden eras of PBA basketball. 300+ episodes covering the legends, rivalries, and stories that defined Philippine basketball.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="/assets/og-image.jpg">
+  <meta property="og:url" content="https://aneternityofbasketball.com">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="An Eternity of Basketball — PBA History Podcast">
+  <meta name="twitter:description" content="Relive the golden eras of PBA basketball. 300+ episodes and counting.">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="/css/styles.css">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="/assets/favicon.png">
+</head>
+<body>
+
+  <!-- Preloader -->
+  <div class="preloader" id="preloader">
+    <div class="preloader-ball"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="header" id="header">
+    <div class="header-inner">
+      <a href="/" class="header-logo">
+        <img src="/assets/logo-badge.png" alt="AEOB Logo">
+        <span>AEOB</span>
+      </a>
+
+      <nav class="nav" id="nav">
+        <a href="/" class="active">Home</a>
+        <a href="/episodes.html">Episodes</a>
+        <a href="/predictions.html">Predictions</a>
+        <a href="/submissions.html">Fan Zone</a>
+        <a href="/rewards.html">Rewards</a>
+        <a href="/schedule.html">Schedule</a>
+        <a href="/about.html">About</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode">&#9790;</button>
+        <button class="btn-login" id="loginBtn">Sign In</button>
+        <div class="user-avatar" id="userAvatar"></div>
+        <button class="hamburger" id="hamburger" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero" id="hero">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-text">
+          <span class="badge">Part of the Globally Ballin Network</span>
+          <h1>An Eternity of Basketball</h1>
+          <p class="tagline">Reliving the golden eras of PBA basketball &mdash; one episode at a time.</p>
+
+          <div class="stats-row">
+            <div class="hero-stat">
+              <div class="number" data-count="300">0</div>
+              <div class="label">Episodes</div>
+            </div>
+            <div class="hero-stat">
+              <div class="number" data-count="4">0</div>
+              <div class="label">Hosts</div>
+            </div>
+            <div class="hero-stat">
+              <div class="number">SAT</div>
+              <div class="label">Weekly</div>
+            </div>
+          </div>
+
+          <div class="hero-cta">
+            <a href="/episodes.html" class="btn btn-primary">&#9654; Browse Episodes</a>
+            <a href="/about.html" class="btn btn-outline" style="color:#fff;border-color:rgba(255,255,255,0.4);">Our Story</a>
+          </div>
+        </div>
+
+        <div class="hero-image">
+          <img src="/assets/logo-hosts.png" alt="An Eternity of Basketball hosts illustration">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Next Episode Countdown (mini) -->
+  <section class="section" style="padding-top:48px;padding-bottom:0;">
+    <div class="container">
+      <div class="countdown-hero reveal" style="padding:32px;">
+        <h2 style="font-size:1.4rem;">Next Episode</h2>
+        <p class="next-date" id="nextEpisodeDate"></p>
+        <div class="countdown-blocks" id="miniCountdown">
+          <div class="countdown-block">
+            <div class="num" id="mc-days">--</div>
+            <div class="unit">Days</div>
+          </div>
+          <div class="countdown-block">
+            <div class="num" id="mc-hours">--</div>
+            <div class="unit">Hours</div>
+          </div>
+          <div class="countdown-block">
+            <div class="num" id="mc-mins">--</div>
+            <div class="unit">Mins</div>
+          </div>
+          <div class="countdown-block">
+            <div class="num" id="mc-secs">--</div>
+            <div class="unit">Secs</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Overview -->
+  <section class="section" id="features">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="badge">What&rsquo;s Inside</span>
+        <h2>Your PBA Time Machine</h2>
+        <p>More than just a podcast site. Dive into PBA history, join the community, and earn rewards.</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="card feature-card reveal">
+          <div class="icon">&#127936;</div>
+          <h3>300+ Episodes</h3>
+          <p>Search, filter, and save episodes by era, team, or player. Never lose track in the archive again.</p>
+        </div>
+
+        <div class="card feature-card reveal">
+          <div class="icon">&#127942;</div>
+          <h3>Predictions Leaderboard</h3>
+          <p>The crew makes their picks. You make yours. See who knows PBA history best.</p>
+        </div>
+
+        <div class="card feature-card reveal">
+          <div class="icon">&#128172;</div>
+          <h3>Fan Submissions</h3>
+          <p>Submit questions and &ldquo;what if&rdquo; scenarios. Top-voted submissions get featured on the show.</p>
+        </div>
+
+        <div class="card feature-card reveal">
+          <div class="icon">&#11088;</div>
+          <h3>Superfan Rewards</h3>
+          <p>Earn points for listening, predicting, and engaging. Climb the ranks from Rookie to Legend.</p>
+        </div>
+
+        <div class="card feature-card reveal">
+          <div class="icon">&#128197;</div>
+          <h3>Live Schedule</h3>
+          <p>Countdown timer, timezone converter, and push notifications so you never miss a Saturday episode.</p>
+        </div>
+
+        <div class="card feature-card reveal">
+          <div class="icon">&#128100;</div>
+          <h3>Personalized For You</h3>
+          <p>Set your favorite era and team. The site surfaces the episodes you&rsquo;ll love most.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Latest Episodes Preview -->
+  <section class="section" id="latest-episodes" style="background:var(--bg-secondary);">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="badge">Fresh Content</span>
+        <h2>Latest Episodes</h2>
+        <p>Catch up on the newest discussions from An Eternity of Basketball.</p>
+      </div>
+
+      <div class="episodes-grid" id="latestEpisodesGrid">
+        <!-- Populated by JS -->
+        <div class="card">
+          <div class="skeleton skeleton-thumb"></div>
+          <div class="card-body">
+            <div class="skeleton skeleton-text"></div>
+            <div class="skeleton skeleton-text short"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="skeleton skeleton-thumb"></div>
+          <div class="card-body">
+            <div class="skeleton skeleton-text"></div>
+            <div class="skeleton skeleton-text short"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="skeleton skeleton-thumb"></div>
+          <div class="card-body">
+            <div class="skeleton skeleton-text"></div>
+            <div class="skeleton skeleton-text short"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="load-more-wrap" style="margin-top:32px;">
+        <a href="/episodes.html" class="btn btn-secondary">View All Episodes &rarr;</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Predictions Preview -->
+  <section class="section" id="predictions-preview">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="badge">Who Knows Best?</span>
+        <h2>Crew Predictions</h2>
+        <p>The hosts make their picks. Cast your vote and see who leads the leaderboard.</p>
+      </div>
+
+      <div class="card prediction-card reveal" style="max-width:700px;margin:0 auto;">
+        <div class="question" id="featuredPrediction">Loading latest prediction...</div>
+        <div class="host-picks" id="featuredPicks"></div>
+        <div class="vote-btns" id="featuredVotes"></div>
+      </div>
+
+      <div class="load-more-wrap" style="margin-top:24px;">
+        <a href="/predictions.html" class="btn btn-outline">See Full Leaderboard &rarr;</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Meet the Crew -->
+  <section class="section" style="background:var(--bg-secondary);">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="badge">The Crew</span>
+        <h2>Meet the Hosts</h2>
+        <p>Four PBA historians keeping the golden eras alive every Saturday.</p>
+      </div>
+
+      <div class="hosts-grid">
+        <div class="card host-card reveal">
+          <div class="host-avatar">CC</div>
+          <h3>Charlie Cuna</h3>
+          <div class="role">Co-Founder &amp; Host</div>
+          <p><!-- PLACEHOLDER: Charlie Cuna bio — 2-3 sentences about his PBA knowledge and role on the show --></p>
+        </div>
+
+        <div class="card host-card reveal">
+          <div class="host-avatar">SV</div>
+          <h3>Sid Ventura</h3>
+          <div class="role">Co-Founder &amp; Host</div>
+          <p><!-- PLACEHOLDER: Sid Ventura bio — 2-3 sentences about his PBA knowledge and role on the show --></p>
+        </div>
+
+        <div class="card host-card reveal">
+          <div class="host-avatar">NZ</div>
+          <h3>Noel Zarate</h3>
+          <div class="role">Co-Founder &amp; Host</div>
+          <p><!-- PLACEHOLDER: Noel Zarate bio — 2-3 sentences about his PBA knowledge and role on the show --></p>
+        </div>
+
+        <div class="card host-card reveal">
+          <div class="host-avatar">JM</div>
+          <h3>Jay Mercado</h3>
+          <div class="role">Host</div>
+          <p><!-- PLACEHOLDER: Jay Mercado bio — 2-3 sentences about his PBA knowledge and role on the show --></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA / Join -->
+  <section class="section">
+    <div class="container">
+      <div class="countdown-hero reveal" style="padding:48px;">
+        <h2 style="font-size:2rem;">Join the AEOB Community</h2>
+        <p class="next-date">Create your free account to save episodes, join predictions, submit questions, and earn rewards.</p>
+        <div style="position:relative;margin-top:24px;">
+          <button class="btn btn-primary" style="font-size:1.1rem;padding:14px 36px;" onclick="document.getElementById('loginBtn').click()">Create Free Account</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="/" class="header-logo" style="margin-bottom:8px;">
+            <img src="/assets/logo-badge.png" alt="AEOB" style="height:40px;">
+            <span style="color:#fff;">An Eternity of Basketball</span>
+          </a>
+          <p>Reliving the golden eras of PBA basketball since day one. 300+ episodes and counting.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="YouTube">&#9654;</a>
+            <a href="#" aria-label="Facebook">f</a>
+            <a href="#" aria-label="Spotify">&#9835;</a>
+            <a href="#" aria-label="Apple Podcasts">&#127911;</a>
+          </div>
+        </div>
+
+        <div>
+          <h4>Browse</h4>
+          <ul>
+            <li><a href="/episodes.html">Episodes</a></li>
+            <li><a href="/predictions.html">Predictions</a></li>
+            <li><a href="/submissions.html">Fan Zone</a></li>
+            <li><a href="/rewards.html">Rewards</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4>More</h4>
+          <ul>
+            <li><a href="/schedule.html">Schedule</a></li>
+            <li><a href="/about.html">About</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4>Listen On</h4>
+          <ul>
+            <li><a href="#">YouTube</a></li>
+            <li><a href="#">Spotify</a></li>
+            <li><a href="#">Apple Podcasts</a></li>
+            <li><a href="#">Facebook</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>&copy; 2024 An Eternity of Basketball. All rights reserved.</span>
+        <span class="network">Part of the Globally Ballin Network</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Auth Modal -->
+  <div class="auth-modal" id="authModal">
+    <div class="auth-box">
+      <button class="close-auth" id="closeAuth">&times;</button>
+      <h2>Welcome to AEOB</h2>
+
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-tab="login">Sign In</button>
+        <button class="auth-tab" data-tab="signup">Create Account</button>
+      </div>
+
+      <!-- Login Form -->
+      <form class="auth-form active" id="loginForm">
+        <div class="form-group">
+          <label for="loginEmail">Email</label>
+          <input type="email" id="loginEmail" placeholder="you@example.com" required>
+        </div>
+        <div class="form-group">
+          <label for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" placeholder="Your password" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;">Sign In</button>
+      </form>
+
+      <!-- Signup Form -->
+      <form class="auth-form" id="signupForm">
+        <div class="form-group">
+          <label for="signupName">Display Name</label>
+          <input type="text" id="signupName" placeholder="Your name" required>
+        </div>
+        <div class="form-group">
+          <label for="signupEmail">Email</label>
+          <input type="email" id="signupEmail" placeholder="you@example.com" required>
+        </div>
+        <div class="form-group">
+          <label for="signupPassword">Password</label>
+          <input type="password" id="signupPassword" placeholder="Create a password (8+ characters)" required minlength="8">
+        </div>
+
+        <div class="preference-group">
+          <div class="form-group">
+            <label for="favEra">Favorite PBA Era</label>
+            <select id="favEra">
+              <option value="">Select an era...</option>
+              <option value="1970s">1970s — The Founding Years</option>
+              <option value="1980s">1980s — The Golden Age</option>
+              <option value="1990s">1990s — The Modern Dawn</option>
+              <option value="2000s">2000s &amp; Beyond</option>
+              <option value="all">I Love All Eras</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="favTeam">Favorite Classic PBA Team</label>
+            <select id="favTeam">
+              <option value="">Select a team...</option>
+              <option value="crispa">Crispa Redmanizers</option>
+              <option value="toyota">Toyota Tamaraws</option>
+              <option value="ginebra">Ginebra San Miguel</option>
+              <option value="great-taste">Great Taste Discoverers</option>
+              <option value="san-miguel">San Miguel Beermen</option>
+              <option value="purefoods">Purefoods Hotdogs</option>
+              <option value="alaska">Alaska Milkmen</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width:100%;margin-top:16px;">Create Account</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Episode Player Modal -->
+  <div class="episode-modal" id="episodeModal">
+    <button class="close-modal" id="closeEpisodeModal">&times;</button>
+    <div class="episode-modal-content">
+      <div class="video-wrap" id="videoWrap"></div>
+      <div class="modal-info" id="modalInfo"></div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Back to Top -->
+  <button class="back-to-top" id="backToTop" aria-label="Back to top">&#8593;</button>
+
+  <!-- Scripts -->
+  <script src="/js/main.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/episodes.js"></script>
+  <script src="/js/schedule.js"></script>
+</body>
+</html>

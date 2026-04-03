@@ -1,0 +1,21 @@
+{
+  "name": "aeob-site",
+  "version": "1.0.0",
+  "description": "An Eternity of Basketball — PBA History Podcast Website",
+  "private": true,
+  "scripts": {
+    "dev": "npx netlify dev",
+    "build": "echo 'Static site — no build step required'"
+  },
+  "dependencies": {
+    "airtable": "^0.12.2",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "node-fetch": "^2.7.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "author": "Globally Ballin",
+  "license": "UNLICENSED"
+}
