@@ -58,8 +58,9 @@
         </section>
 
         <!-- Countdown Hero -->
-        <section class="countdown-hero section">
-            <div class="container">
+        <section class="section" style="padding-bottom:0;">
+          <div class="container">
+            <div class="countdown-hero">
                 <h2 class="section-title">Next Episode</h2>
                 <p class="next-episode-date" id="nextEpisodeDateFull">Loading next episode date...</p>
                 <div class="countdown-blocks">
@@ -81,11 +82,13 @@
                     </div>
                 </div>
             </div>
+          </div>
         </section>
 
         <!-- Timezone Converter -->
-        <section class="timezone-converter section">
-            <div class="container">
+        <section class="section">
+          <div class="container">
+            <div class="timezone-converter">
                 <h2 class="section-title">When does it air near you?</h2>
                 <p class="section-subtitle">All times shown for the next upcoming episode.</p>
                 <div class="timezone-grid">
@@ -131,12 +134,14 @@
                     </div>
                 </div>
             </div>
+          </div>
         </section>
 
         <!-- Notification Banner (Logged-in users only) -->
-        <section class="notification-banner section" id="notificationBanner" style="display: none;">
-            <div class="container">
-                <div class="notification-banner-inner">
+        <section class="section" id="notificationBanner" style="display: none;">
+          <div class="container">
+            <div class="notification-banner">
+              <div class="notification-banner-inner">
                     <div class="notification-banner-content">
                         <svg class="notification-bell-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
                         <div>
@@ -145,15 +150,18 @@
                         </div>
                     </div>
                     <button class="btn btn-primary" id="enableNotificationsBtn">Enable Notifications</button>
-                </div>
+              </div>
             </div>
+          </div>
         </section>
 
         <!-- Upcoming Episodes -->
-        <section class="upcoming-episodes section">
+        <section class="section">
             <div class="container">
-                <h2 class="section-title">Upcoming Episodes</h2>
-                <p class="section-subtitle">Here's what's coming up on An Eternity of Basketball.</p>
+                <div class="section-header">
+                    <h2>Upcoming Episodes</h2>
+                    <p>Here's what's coming up on An Eternity of Basketball.</p>
+                </div>
                 <div class="episodes-schedule-list">
                     <div class="card schedule-card">
                         <div class="schedule-card-date">
@@ -208,10 +216,12 @@
         </section>
 
         <!-- Past Schedule -->
-        <section class="past-schedule section">
+        <section class="section" style="background:var(--bg-secondary);">
             <div class="container">
-                <h2 class="section-title">Recent Episodes</h2>
-                <p class="section-subtitle">Missed a show? Catch up on recent episodes below.</p>
+                <div class="section-header">
+                    <h2>Recent Episodes</h2>
+                    <p>Missed a show? Catch up on recent episodes below.</p>
+                </div>
                 <div class="episodes-schedule-list">
                     <div class="card schedule-card schedule-card--past">
                         <div class="schedule-card-date">
