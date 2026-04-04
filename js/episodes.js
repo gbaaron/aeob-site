@@ -72,7 +72,8 @@ const Episodes = (() => {
   // ---------- Render Episode Card ----------
   function renderEpisodeCard(ep) {
     const isFav = favorites.has(ep.id);
-    const thumbSrc = ep.thumbnail || `https://placehold.co/640x360/1a1f5e/ffffff?text=Ep+${ep.id.replace('ep-', '')}`;
+    const ytThumb = window.getYoutubeThumbnail ? window.getYoutubeThumbnail(ep.youtubeUrl || ep.videoId || '') : '';
+    const thumbSrc = ytThumb || `https://placehold.co/640x360/1a1f5e/ffffff?text=Ep+${ep.id.replace('ep-', '')}`;
     const durationStr = window.formatDuration ? window.formatDuration(ep.duration) : '';
     const dateStr = window.formatDate ? window.formatDate(ep.publishedAt) : '';
 
@@ -220,12 +221,13 @@ const Episodes = (() => {
     const ep = allEpisodes.find(e => e.id === episodeId);
     if (!ep || !modal) return;
 
-    // YouTube embed or placeholder
-    if (ep.videoId) {
-      videoWrap.innerHTML = `<iframe src="https://www.youtube.com/embed/${ep.videoId}?autoplay=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+    // YouTube embed — extract ID from URL or use videoId directly
+    const ytId = window.extractYoutubeId ? window.extractYoutubeId(ep.youtubeUrl || ep.videoId || '') : (ep.videoId || '');
+    if (ytId) {
+      videoWrap.innerHTML = `<iframe src="https://www.youtube.com/embed/${ytId}?autoplay=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
     } else {
       videoWrap.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100%;background:#1a1f5e;color:#fff;font-size:1.2rem;padding:20px;text-align:center;">
-        <p>Video player will load from YouTube once the API is connected.<br><br>Episode: ${ep.title}</p>
+        <p>Video player will load once a YouTube URL is added for this episode.<br><br>${ep.title}</p>
       </div>`;
     }
 

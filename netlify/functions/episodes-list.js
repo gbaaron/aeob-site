@@ -72,13 +72,13 @@ exports.handler = async (event) => {
 
     const episodes = data.items.map((item, idx) => {
       const snippet = item.snippet;
+      const vid = item.contentDetails.videoId;
       return {
-        id: item.contentDetails.videoId,
-        videoId: item.contentDetails.videoId,
+        id: vid,
+        youtubeUrl: `https://www.youtube.com/watch?v=${vid}`,
         title: snippet.title,
-        thumbnail: snippet.thumbnails?.high?.url || snippet.thumbnails?.default?.url || '',
         publishedAt: snippet.publishedAt,
-        duration: durations[item.contentDetails.videoId] || 7200,
+        duration: durations[vid] || 7200,
         description: snippet.description?.substring(0, 300) || '',
         era: detectEra(snippet.title + ' ' + snippet.description),
         hosts: [],
@@ -151,9 +151,8 @@ function getPlaceholderEpisodes() {
     const era = i > 280 ? '1990s' : '1980s';
     episodes.push({
       id: `placeholder-${i}`,
-      videoId: '',
+      youtubeUrl: '',
       title: `PLACEHOLDER: Episode ${i} — PBA History Discussion`,
-      thumbnail: '',
       publishedAt: new Date(2024, 0, 1 + (300 - i) * 7).toISOString(),
       duration: 6600 + Math.floor(Math.random() * 1800),
       description: `PLACEHOLDER: This episode covers classic PBA topics.`,

@@ -286,6 +286,28 @@ window.formatDate = function(dateStr) {
   return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 };
 
+// ---------- Utility: Extract YouTube ID from URL ----------
+window.extractYoutubeId = function(url) {
+  if (!url) return '';
+  // Handle various YouTube URL formats
+  const patterns = [
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/v\/)([a-zA-Z0-9_-]{11})/,
+    /^([a-zA-Z0-9_-]{11})$/ // bare ID
+  ];
+  for (const p of patterns) {
+    const match = url.match(p);
+    if (match) return match[1];
+  }
+  return '';
+};
+
+// ---------- Utility: YouTube Thumbnail from URL ----------
+window.getYoutubeThumbnail = function(url) {
+  const id = window.extractYoutubeId(url);
+  if (id) return `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
+  return '';
+};
+
 // ---------- Utility: Format Duration ----------
 window.formatDuration = function(seconds) {
   if (!seconds) return '';
