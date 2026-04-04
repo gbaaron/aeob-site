@@ -921,6 +921,189 @@ img { max-width: 100%; height: auto; display: block; }
   color: var(--white);
 }
 
+/* ---------- Star Rating ---------- */
+.star-rating {
+  display: flex;
+  gap: 2px;
+  margin: 8px 0;
+}
+
+.star-rating .star {
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--gray-200);
+  transition: color 0.15s;
+  user-select: none;
+}
+
+.star-rating .star.filled {
+  color: var(--orange-accent);
+}
+
+.avg-rating {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0;
+}
+
+.avg-rating .avg-num {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--orange-accent);
+}
+
+.avg-rating .avg-count {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+.review-form textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  font-family: inherit;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  resize: vertical;
+  min-height: 60px;
+  margin-bottom: 8px;
+}
+
+.review-list {
+  margin-top: 16px;
+  border-top: 1px solid var(--border-color);
+  padding-top: 12px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.review-item {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.review-item .review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.review-item .review-user {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.review-item .review-stars {
+  color: var(--orange-accent);
+  font-size: 0.85rem;
+}
+
+.review-item .review-text {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+.rec-reason {
+  font-size: 0.75rem;
+  color: var(--orange-accent);
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+/* ---------- Top Picks ---------- */
+.top-picks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.pick-card {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  padding: 20px;
+  border-left: 4px solid var(--orange-accent);
+}
+
+.pick-rank {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--orange-accent);
+  min-width: 44px;
+  text-align: center;
+  line-height: 1;
+}
+
+.pick-thumb {
+  width: 120px;
+  min-width: 120px;
+  aspect-ratio: 16/9;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--gray-100);
+  cursor: pointer;
+}
+
+.pick-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pick-info {
+  flex: 1;
+}
+
+.pick-info h4 {
+  margin-bottom: 4px;
+  font-size: 1rem;
+}
+
+.pick-info .pick-picker {
+  color: var(--orange-accent);
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.pick-info .pick-why {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+@media (max-width: 600px) {
+  .pick-card { flex-wrap: wrap; }
+  .pick-thumb { width: 100%; min-width: 100%; }
+}
+
+/* Picker tabs override for centering */
+#top-picks .tabs {
+  border-bottom: none;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+#top-picks .tab-btn {
+  border: 2px solid var(--border-color);
+  border-radius: 20px;
+  padding: 8px 18px;
+  font-size: 0.85rem;
+}
+
+#top-picks .tab-btn.active {
+  border-color: var(--orange-accent);
+  background: var(--orange-accent);
+  color: var(--white);
+}
+
 /* ---------- Fan Submissions ---------- */
 .submission-form {
   background: var(--bg-card);

@@ -180,8 +180,39 @@
     </div>
   </section>
 
+  <!-- Top 5 Picks -->
+  <section class="section" id="top-picks" style="background:var(--bg-secondary);">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="badge">Staff Picks</span>
+        <h2>Our Top 5 Episodes</h2>
+        <p>Each host and crew member picks the five episodes you absolutely can't miss.</p>
+      </div>
+
+      <!-- Picker tabs -->
+      <div class="tabs" style="justify-content:center;">
+        <button class="tab-btn active" data-picker="all">All Picks</button>
+        <button class="tab-btn" data-picker="Charlie Cuna">Charlie</button>
+        <button class="tab-btn" data-picker="Sid Ventura">Sid</button>
+        <button class="tab-btn" data-picker="Noel Zarate">Noel</button>
+        <button class="tab-btn" data-picker="Jay Mercado">Jay</button>
+        <button class="tab-btn" data-picker="Aaron">Aaron</button>
+        <button class="tab-btn" data-picker="Carla">Carla</button>
+      </div>
+
+      <div id="topPicksGrid" class="reveal">
+        <!-- Populated by JS -->
+        <div class="empty-state">
+          <div class="empty-icon">&#11088;</div>
+          <h3>Top picks coming soon</h3>
+          <p>The crew is compiling their all-time favorite episodes.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Latest Episodes Preview -->
-  <section class="section" id="latest-episodes" style="background:var(--bg-secondary);">
+  <section class="section" id="latest-episodes">
     <div class="container">
       <div class="section-header reveal">
         <span class="badge">Fresh Content</span>
@@ -217,6 +248,18 @@
       <div class="load-more-wrap" style="margin-top:32px;">
         <a href="/episodes.html" class="btn btn-secondary">View All Episodes &rarr;</a>
       </div>
+    </div>
+  </section>
+
+  <!-- Recommended For You (logged-in users) -->
+  <section class="section auth-required" id="recommended-section" style="display:none;">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="badge">For You</span>
+        <h2>Recommended Episodes</h2>
+        <p>Based on your favorite era, team, and ratings — episodes we think you'll love.</p>
+      </div>
+      <div class="episodes-grid" id="recommendedGrid"></div>
     </div>
   </section>
 

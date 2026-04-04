@@ -202,6 +202,18 @@ const Episodes = (() => {
       </div>`;
     }
 
+    const isLoggedIn = window.Auth?.isLoggedIn();
+    const ratingSection = isLoggedIn ? `
+      <div class="review-form" style="margin-top:12px;">
+        <label style="font-weight:600;font-size:0.9rem;">Rate this episode:</label>
+        <div class="star-rating" id="modalStarRating" data-ep="${ep.id}" data-epnum="${ep.episodeNumber || 0}">
+          ${[1,2,3,4,5,6,7,8,9,10].map(n => `<span class="star" data-val="${n}">&#9733;</span>`).join('')}
+        </div>
+        <textarea id="modalReviewText" placeholder="Write a short review (optional)..." maxlength="500"></textarea>
+        <button class="btn btn-sm btn-primary" id="submitReviewBtn">Submit Rating</button>
+      </div>
+    ` : `<p style="font-size:0.85rem;color:var(--text-secondary);margin-top:12px;">Sign in to rate and review this episode.</p>`;
+
     modalInfo.innerHTML = `
       <h3>${ep.title}</h3>
       <div class="episode-meta" style="margin:8px 0;">
@@ -209,12 +221,49 @@ const Episodes = (() => {
         ${ep.duration ? `<span>${window.formatDuration(ep.duration)}</span>` : ''}
         ${ep.era ? `<span>${ep.era}</span>` : ''}
       </div>
+      <div class="avg-rating" id="modalAvgRating"></div>
       <p style="color:var(--text-secondary);font-size:0.9rem;margin-top:8px;">${ep.description || ''}</p>
+      ${ratingSection}
+      <div class="review-list" id="modalReviewList"></div>
     `;
 
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
     awardPoints('watch', 10);
+
+    // Load reviews for this episode
+    loadEpisodeReviews(ep.id);
+
+    // Bind star rating clicks
+    let selectedRating = 0;
+    document.querySelectorAll('#modalStarRating .star').forEach(star => {
+      star.addEventListener('click', () => {
+        selectedRating = parseInt(star.dataset.val);
+        document.querySelectorAll('#modalStarRating .star').forEach((s, i) => {
+          s.classList.toggle('filled', i < selectedRating);
+        });
+      });
+    });
+
+    // Bind submit review
+    const submitBtn = document.getElementById('submitReviewBtn');
+    if (submitBtn) {
+      submitBtn.addEventListener('click', async () => {
+        if (!selectedRating) { window.showToast('Select a rating first', 'error'); return; }
+        const reviewText = document.getElementById('modalReviewText')?.value || '';
+        try {
+          await window.apiFetch('reviews', {
+            method: 'POST',
+            body: JSON.stringify({ episodeId: ep.id, episodeNumber: ep.episodeNumber || 0, rating: selectedRating, review: reviewText })
+          });
+          window.showToast(`Rated ${selectedRating}/10! ${reviewText ? '+review' : ''}`, 'success');
+          awardPoints('watch', 5);
+          loadEpisodeReviews(ep.id);
+        } catch (e) {
+          window.showToast('Failed to submit rating', 'error');
+        }
+      });
+    }
   }
 
   function closePlayer() {
@@ -222,6 +271,74 @@ const Episodes = (() => {
     modal.classList.remove('active');
     document.body.style.overflow = '';
     if (videoWrap) videoWrap.innerHTML = '';
+  }
+
+  // ---------- Load Episode Reviews ----------
+  async function loadEpisodeReviews(episodeId) {
+    try {
+      const data = await window.apiFetch(`reviews?episodeId=${episodeId}`);
+      const avgEl = document.getElementById('modalAvgRating');
+      const listEl = document.getElementById('modalReviewList');
+
+      if (avgEl && data.totalRatings > 0) {
+        avgEl.innerHTML = `
+          <span class="avg-num">${data.avgRating}/10</span>
+          <span class="avg-count">${data.totalRatings} rating${data.totalRatings > 1 ? 's' : ''}</span>
+        `;
+      }
+
+      if (listEl && data.reviews.length > 0) {
+        listEl.innerHTML = data.reviews
+          .filter(r => r.review)
+          .slice(0, 5)
+          .map(r => `
+            <div class="review-item">
+              <div class="review-header">
+                <span class="review-user">${r.userName || 'Fan'}</span>
+                <span class="review-stars">${'&#9733;'.repeat(Math.min(r.rating, 10))} ${r.rating}/10</span>
+              </div>
+              ${r.review ? `<p class="review-text">${r.review}</p>` : ''}
+            </div>
+          `).join('');
+      }
+    } catch (e) {
+      // Reviews are optional
+    }
+  }
+
+  // ---------- Load Recommendations ----------
+  async function loadRecommendations() {
+    const recGrid = document.getElementById('recommendedGrid');
+    if (!recGrid) return;
+
+    try {
+      const data = await window.apiFetch('recommendations');
+      if (!data.recommendations || data.recommendations.length === 0) return;
+
+      // Show the section
+      const section = document.getElementById('recommended-section');
+      if (section) section.style.display = '';
+
+      recGrid.innerHTML = data.recommendations.slice(0, 6).map(ep => {
+        const ytThumb = window.getYoutubeThumbnail ? window.getYoutubeThumbnail(ep.youtubeUrl || '') : '';
+        const epNum = ep.episodeNumber || '';
+        const thumbSrc = ytThumb || `https://placehold.co/640x360/1a1f5e/ffffff?text=Ep+${epNum}`;
+        return `
+          <div class="card episode-card" data-id="${ep.id}">
+            <div class="thumb-wrap">
+              <img src="${thumbSrc}" alt="${ep.title}" loading="lazy">
+              <div class="play-overlay" onclick="Episodes.openPlayer('${ep.id}')">&#9654;</div>
+            </div>
+            <div class="card-body">
+              <h3>${ep.title}</h3>
+              ${ep.reason ? `<div class="rec-reason">${ep.reason}</div>` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    } catch (e) {
+      // Recommendations are optional
+    }
   }
 
   // ---------- Points Integration ----------
@@ -250,6 +367,7 @@ const Episodes = (() => {
 
     if (isHomePage) {
       renderGrid(allEpisodes.slice(0, 3));
+      loadRecommendations();
     } else if (isEpisodesPage) {
       renderPage();
       renderFavorites();
