@@ -1,6 +1,6 @@
 /* ============================================
    AEOB — Episodes Module
-   Handles: fetching episodes from YouTube API
+   Handles: fetching episodes from Airtable
    via serverless function, search/filter,
    favorites, episode player modal, and
    personalized recommendations
@@ -14,7 +14,6 @@ const Episodes = (() => {
   let currentPage = 1;
   const PAGE_SIZE = 12;
   let isLoading = false;
-  let nextPageToken = null;
 
   // DOM
   const grid = document.getElementById('episodesGrid') || document.getElementById('latestEpisodesGrid');
@@ -29,53 +28,28 @@ const Episodes = (() => {
   const modalInfo = document.getElementById('modalInfo');
   const closeModal = document.getElementById('closeEpisodeModal');
 
-  // ---------- Fetch Episodes ----------
-  async function fetchEpisodes(pageToken = null) {
+  // ---------- Fetch Episodes from Airtable ----------
+  async function fetchEpisodes() {
     isLoading = true;
     try {
-      const params = new URLSearchParams();
-      if (pageToken) params.set('pageToken', pageToken);
-      const data = await window.apiFetch(`episodes-list?${params.toString()}`);
+      const data = await window.apiFetch('episodes-list?pageSize=500');
       return data;
     } catch (err) {
       console.error('Failed to fetch episodes:', err);
-      // Return demo data for initial build
-      return { episodes: getDemoEpisodes(), nextPageToken: null };
+      return { episodes: [], totalResults: 0 };
     } finally {
       isLoading = false;
     }
   }
 
-  // ---------- Demo Episodes (fallback) ----------
-  function getDemoEpisodes() {
-    const episodes = [];
-    for (let i = 300; i > 0; i--) {
-      const era = i > 200 ? '1990s' : i > 100 ? '1980s' : '1970s';
-      const hosts = ['Charlie Cuna', 'Sid Ventura', 'Noel Zarate', 'Jay Mercado'];
-      const shuffled = hosts.sort(() => Math.random() - 0.5).slice(0, 3);
-      episodes.push({
-        id: `ep-${i}`,
-        videoId: '',
-        title: `PLACEHOLDER: Episode ${i} Title — PBA History Discussion`,
-        thumbnail: '',
-        publishedAt: new Date(2024, 0, 1 + (300 - i) * 7).toISOString(),
-        duration: 6600 + Math.floor(Math.random() * 1800),
-        era: era,
-        hosts: shuffled,
-        teams: [],
-        description: `PLACEHOLDER: Episode ${i} description. This episode covers classic PBA topics from the ${era} era.`
-      });
-    }
-    return episodes.slice(0, 30);
-  }
-
   // ---------- Render Episode Card ----------
   function renderEpisodeCard(ep) {
     const isFav = favorites.has(ep.id);
-    const ytThumb = window.getYoutubeThumbnail ? window.getYoutubeThumbnail(ep.youtubeUrl || ep.videoId || '') : '';
-    const thumbSrc = ytThumb || `https://placehold.co/640x360/1a1f5e/ffffff?text=Ep+${ep.id.replace('ep-', '')}`;
+    const ytThumb = window.getYoutubeThumbnail ? window.getYoutubeThumbnail(ep.youtubeUrl || '') : '';
+    const epNum = ep.episodeNumber || ep.title.match(/\d+/)?.[0] || '';
+    const thumbSrc = ytThumb || `https://placehold.co/640x360/1a1f5e/ffffff?text=Ep+${epNum}`;
     const durationStr = window.formatDuration ? window.formatDuration(ep.duration) : '';
-    const dateStr = window.formatDate ? window.formatDate(ep.publishedAt) : '';
+    const dateStr = ep.publishedAt && window.formatDate ? window.formatDate(ep.publishedAt) : '';
 
     return `
       <div class="card episode-card" data-id="${ep.id}">
@@ -90,10 +64,10 @@ const Episodes = (() => {
         <div class="card-body">
           <h3>${ep.title}</h3>
           <div class="episode-meta">
-            <span>${dateStr}</span>
+            ${dateStr ? `<span>${dateStr}</span>` : ''}
             ${ep.era ? `<span>${ep.era}</span>` : ''}
           </div>
-          ${ep.hosts ? `
+          ${ep.hosts && ep.hosts.length ? `
           <div class="episode-tags">
             ${ep.hosts.map(h => `<span class="episode-tag">${h}</span>`).join('')}
           </div>` : ''}
@@ -190,12 +164,10 @@ const Episodes = (() => {
     } else {
       favorites.add(episodeId);
       window.showToast('Added to favorites!', 'success');
-      // Award points
       awardPoints('favorite', 5);
     }
 
     saveFavorites();
-    // Re-render to update heart icons
     if (filteredEpisodes.length > 0) renderPage();
     renderFavorites();
   }
@@ -221,8 +193,7 @@ const Episodes = (() => {
     const ep = allEpisodes.find(e => e.id === episodeId);
     if (!ep || !modal) return;
 
-    // YouTube embed — extract ID from URL or use videoId directly
-    const ytId = window.extractYoutubeId ? window.extractYoutubeId(ep.youtubeUrl || ep.videoId || '') : (ep.videoId || '');
+    const ytId = window.extractYoutubeId ? window.extractYoutubeId(ep.youtubeUrl || '') : '';
     if (ytId) {
       videoWrap.innerHTML = `<iframe src="https://www.youtube.com/embed/${ytId}?autoplay=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
     } else {
@@ -234,8 +205,8 @@ const Episodes = (() => {
     modalInfo.innerHTML = `
       <h3>${ep.title}</h3>
       <div class="episode-meta" style="margin:8px 0;">
-        <span>${window.formatDate(ep.publishedAt)}</span>
-        <span>${window.formatDuration(ep.duration)}</span>
+        ${ep.publishedAt ? `<span>${window.formatDate(ep.publishedAt)}</span>` : ''}
+        ${ep.duration ? `<span>${window.formatDuration(ep.duration)}</span>` : ''}
         ${ep.era ? `<span>${ep.era}</span>` : ''}
       </div>
       <p style="color:var(--text-secondary);font-size:0.9rem;margin-top:8px;">${ep.description || ''}</p>
@@ -243,8 +214,6 @@ const Episodes = (() => {
 
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
-
-    // Award points for watching
     awardPoints('watch', 10);
   }
 
@@ -272,17 +241,14 @@ const Episodes = (() => {
   async function init() {
     loadFavorites();
 
-    // Check if we're on the episodes page (full) or home (preview)
     const isEpisodesPage = !!document.getElementById('episodesGrid');
     const isHomePage = !!document.getElementById('latestEpisodesGrid');
 
     const data = await fetchEpisodes();
     allEpisodes = data.episodes || [];
-    nextPageToken = data.nextPageToken || null;
     filteredEpisodes = [...allEpisodes];
 
     if (isHomePage) {
-      // Show only latest 3 on homepage
       renderGrid(allEpisodes.slice(0, 3));
     } else if (isEpisodesPage) {
       renderPage();
@@ -317,20 +283,17 @@ const Episodes = (() => {
       });
     }
 
-    // Escape key closes modal
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') closePlayer();
     });
   }
 
-  // Run on DOM ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else {
     init();
   }
 
-  // ---------- Public API ----------
   return {
     openPlayer,
     closePlayer,

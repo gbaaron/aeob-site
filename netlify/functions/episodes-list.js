@@ -1,10 +1,11 @@
 /* AEOB — Episodes List Serverless Function
-   Fetches episodes from YouTube Data API v3 playlist */
+   Primary source: Airtable Episodes table
+   Supports pagination, search, and filtering */
 
-const fetch = require('node-fetch');
+const Airtable = require('airtable');
 
-const YT_API_KEY = process.env.YOUTUBE_API_KEY;
-const PLAYLIST_ID = process.env.YOUTUBE_PLAYLIST_ID; // AEOB YouTube playlist
+const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(process.env.AIRTABLE_BASE_ID);
+const EPISODES_TABLE = 'Episodes';
 
 exports.handler = async (event) => {
   const headers = {
@@ -20,146 +21,75 @@ exports.handler = async (event) => {
 
   try {
     const params = event.queryStringParameters || {};
-    const pageToken = params.pageToken || '';
-    const maxResults = params.maxResults || 12;
+    const page = parseInt(params.page) || 1;
+    const pageSize = parseInt(params.pageSize) || 12;
+    const search = (params.search || '').toLowerCase();
+    const era = params.era || '';
+    const team = params.team || '';
+    const host = params.host || '';
 
-    if (!YT_API_KEY || !PLAYLIST_ID) {
-      // Return placeholder data if API not configured
-      return {
-        statusCode: 200,
-        headers,
-        body: JSON.stringify({
-          episodes: getPlaceholderEpisodes(),
-          nextPageToken: null,
-          totalResults: 300
-        })
-      };
+    // Fetch all episodes from Airtable sorted by episode number descending
+    const records = await base(EPISODES_TABLE).select({
+      sort: [{ field: 'EpisodeNumber', direction: 'desc' }]
+    }).all();
+
+    // Map Airtable records to episode objects
+    let episodes = records.map(r => ({
+      id: r.id,
+      episodeNumber: r.fields.EpisodeNumber || 0,
+      title: r.fields.Title || '',
+      youtubeUrl: r.fields.YouTubeURL || '',
+      era: r.fields.Era || '',
+      teams: r.fields.Teams || [],
+      hosts: r.fields.Hosts || [],
+      topics: r.fields.Topics || '',
+      publishedAt: r.fields.AirDate || '',
+      duration: r.fields.Duration || 0,
+      description: r.fields.Description || ''
+    }));
+
+    // Apply filters
+    if (search) {
+      episodes = episodes.filter(ep =>
+        ep.title.toLowerCase().includes(search) ||
+        ep.description.toLowerCase().includes(search) ||
+        ep.topics.toLowerCase().includes(search)
+      );
+    }
+    if (era) {
+      episodes = episodes.filter(ep => ep.era === era);
+    }
+    if (team) {
+      episodes = episodes.filter(ep => ep.teams.includes(team));
+    }
+    if (host) {
+      episodes = episodes.filter(ep => ep.hosts.includes(host));
     }
 
-    // Fetch playlist items
-    let url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&playlistId=${PLAYLIST_ID}&maxResults=${maxResults}&key=${YT_API_KEY}`;
-    if (pageToken) url += `&pageToken=${pageToken}`;
-
-    const response = await fetch(url);
-    const data = await response.json();
-
-    if (!response.ok) {
-      console.error('YouTube API error:', data);
-      return {
-        statusCode: 200,
-        headers,
-        body: JSON.stringify({
-          episodes: getPlaceholderEpisodes(),
-          nextPageToken: null,
-          totalResults: 300
-        })
-      };
-    }
-
-    // Get video durations
-    const videoIds = data.items.map(item => item.contentDetails.videoId).join(',');
-    let durations = {};
-
-    if (videoIds) {
-      const durUrl = `https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id=${videoIds}&key=${YT_API_KEY}`;
-      const durResponse = await fetch(durUrl);
-      const durData = await durResponse.json();
-
-      durData.items?.forEach(item => {
-        durations[item.id] = parseDuration(item.contentDetails.duration);
-      });
-    }
-
-    const episodes = data.items.map((item, idx) => {
-      const snippet = item.snippet;
-      const vid = item.contentDetails.videoId;
-      return {
-        id: vid,
-        youtubeUrl: `https://www.youtube.com/watch?v=${vid}`,
-        title: snippet.title,
-        publishedAt: snippet.publishedAt,
-        duration: durations[vid] || 7200,
-        description: snippet.description?.substring(0, 300) || '',
-        era: detectEra(snippet.title + ' ' + snippet.description),
-        hosts: [],
-        teams: detectTeams(snippet.title + ' ' + snippet.description)
-      };
-    });
+    // Paginate
+    const totalResults = episodes.length;
+    const start = (page - 1) * pageSize;
+    const paged = episodes.slice(start, start + pageSize);
+    const hasMore = start + pageSize < totalResults;
 
     return {
       statusCode: 200,
       headers,
       body: JSON.stringify({
-        episodes,
-        nextPageToken: data.nextPageToken || null,
-        totalResults: data.pageInfo?.totalResults || episodes.length
+        episodes: paged,
+        totalResults,
+        page,
+        pageSize,
+        hasMore
       })
     };
 
   } catch (err) {
     console.error('Episodes fetch error:', err);
     return {
-      statusCode: 200,
+      statusCode: 500,
       headers,
-      body: JSON.stringify({
-        episodes: getPlaceholderEpisodes(),
-        nextPageToken: null,
-        totalResults: 300
-      })
+      body: JSON.stringify({ error: 'Failed to fetch episodes', episodes: [], totalResults: 0 })
     };
   }
 };
-
-// Parse YouTube ISO 8601 duration to seconds
-function parseDuration(iso) {
-  const match = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
-  if (!match) return 0;
-  const h = parseInt(match[1] || 0);
-  const m = parseInt(match[2] || 0);
-  const s = parseInt(match[3] || 0);
-  return h * 3600 + m * 60 + s;
-}
-
-// Detect PBA era from text
-function detectEra(text) {
-  const lower = text.toLowerCase();
-  if (lower.includes('1970') || lower.includes('70s') || lower.includes('founding')) return '1970s';
-  if (lower.includes('1980') || lower.includes('80s') || lower.includes('golden age')) return '1980s';
-  if (lower.includes('1990') || lower.includes('90s')) return '1990s';
-  if (lower.includes('2000') || lower.includes('modern')) return '2000s';
-  return '';
-}
-
-// Detect PBA teams from text
-function detectTeams(text) {
-  const lower = text.toLowerCase();
-  const teams = [];
-  if (lower.includes('crispa')) teams.push('crispa');
-  if (lower.includes('toyota')) teams.push('toyota');
-  if (lower.includes('ginebra')) teams.push('ginebra');
-  if (lower.includes('great taste')) teams.push('great-taste');
-  if (lower.includes('san miguel') || lower.includes('beermen')) teams.push('san-miguel');
-  if (lower.includes('purefoods')) teams.push('purefoods');
-  if (lower.includes('alaska')) teams.push('alaska');
-  return teams;
-}
-
-// Placeholder episodes when API not configured
-function getPlaceholderEpisodes() {
-  const episodes = [];
-  for (let i = 300; i > 270; i--) {
-    const era = i > 280 ? '1990s' : '1980s';
-    episodes.push({
-      id: `placeholder-${i}`,
-      youtubeUrl: '',
-      title: `PLACEHOLDER: Episode ${i} — PBA History Discussion`,
-      publishedAt: new Date(2024, 0, 1 + (300 - i) * 7).toISOString(),
-      duration: 6600 + Math.floor(Math.random() * 1800),
-      description: `PLACEHOLDER: This episode covers classic PBA topics.`,
-      era: era,
-      hosts: ['Charlie Cuna', 'Sid Ventura', 'Noel Zarate'],
-      teams: []
-    });
-  }
-  return episodes;
-}
