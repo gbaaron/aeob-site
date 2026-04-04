@@ -370,3 +370,53 @@ window.formatDuration = function(seconds) {
   html += '</div>';
   grid.innerHTML = html;
 })();
+
+// ---------- Featured Lists (Homepage) ----------
+(async function initFeaturedLists() {
+  const grid = document.getElementById('featuredListsGrid');
+  if (!grid) return;
+
+  let lists = {};
+  try {
+    const data = await window.apiFetch('featured-lists');
+    lists = data.lists || {};
+  } catch (e) {
+    grid.innerHTML = '';
+    return;
+  }
+
+  const icons = {
+    'Top 10 of the Year': '&#127942;',
+    'Trending Last 30 Days': '&#128293;',
+    'All-Time Greatest': '&#127775;'
+  };
+  const order = ['All-Time Greatest', 'Top 10 of the Year', 'Trending Last 30 Days'];
+
+  let html = '';
+  order.forEach(listType => {
+    const items = lists[listType] || [];
+    if (items.length === 0) return;
+
+    html += `<div class="picker-column card">
+      <div class="picker-header">
+        <span style="font-size:1.8rem;">${icons[listType] || ''}</span>
+        <h3>${listType}</h3>
+      </div>
+      <ol class="picker-list">`;
+
+    items.forEach(item => {
+      const ytThumb = window.getYoutubeThumbnail ? window.getYoutubeThumbnail(item.youtubeUrl) : '';
+      const epNum = item.episodeNumber || '';
+      const label = item.title.replace(/^EPISODE\s*\d+[:\s-]*/i, '');
+
+      html += `<li class="picker-item">
+        ${ytThumb ? `<img src="${ytThumb}" alt="" class="picker-item-thumb" loading="lazy">` : ''}
+        <span class="picker-item-title">Ep ${epNum}: ${label}</span>
+      </li>`;
+    });
+
+    html += `</ol></div>`;
+  });
+
+  if (html) grid.innerHTML = html;
+})();
