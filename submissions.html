@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,58 +22,28 @@
 <body>
 
     <!-- Preloader -->
-    <div class="preloader" id="preloader">
-        <div class="preloader-inner">
-            <div class="preloader-icon"></div>
-        </div>
-    </div>
+    <div class="preloader" id="preloader"><div class="preloader-ball"></div></div>
 
     <!-- Header -->
     <header class="header" id="header">
-        <div class="container">
-            <nav class="nav">
-                <a href="/" class="nav-logo">
-                    <span class="logo-text">AEOB</span>
-                </a>
-                <ul class="nav-menu" id="navMenu">
-                    <li class="nav-item">
-                        <a href="/" class="nav-link">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="/episodes.html" class="nav-link">Episodes</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="/teams.html" class="nav-link">Teams</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="/players.html" class="nav-link">Players</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="/stats.html" class="nav-link">Stats</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="/timeline.html" class="nav-link">Timeline</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="/submissions.html" class="nav-link active">Fan Zone</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="/about.html" class="nav-link">About</a>
-                    </li>
-                </ul>
-                <div class="nav-actions">
-                    <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode">
-                        <span class="dark-toggle-icon"></span>
-                    </button>
-                    <button class="btn btn-sm btn-outline login-btn" id="loginBtn">Log In</button>
-                    <button class="hamburger" id="hamburger" aria-label="Toggle navigation menu">
-                        <span class="hamburger-line"></span>
-                        <span class="hamburger-line"></span>
-                        <span class="hamburger-line"></span>
-                    </button>
-                </div>
-            </nav>
+      <div class="header-inner">
+        <a href="/" class="header-logo"><img src="/assets/logo-badge.png" alt="AEOB Logo"><span>AEOB</span></a>
+        <nav class="nav" id="nav">
+          <a href="/">Home</a>
+          <a href="/episodes.html">Episodes</a>
+          <a href="/predictions.html">Predictions</a>
+          <a href="/submissions.html" class="active">Fan Zone</a>
+          <a href="/rewards.html">Rewards</a>
+          <a href="/schedule.html">Schedule</a>
+          <a href="/about.html">About</a>
+        </nav>
+        <div class="header-actions">
+          <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode">&#9790;</button>
+          <button class="btn-login" id="loginBtn">Sign In</button>
+          <div class="user-avatar" id="userAvatar"></div>
+          <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
         </div>
+      </div>
     </header>
 
     <!-- Main Content -->
@@ -301,105 +271,51 @@
 
     <!-- Footer -->
     <footer class="footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-brand">
-                    <a href="/" class="footer-logo">
-                        <span class="logo-text">AEOB</span>
-                    </a>
-                    <p class="footer-tagline">An Eternity of Basketball - Exploring PBA history one story at a time.</p>
-                    <p class="footer-network">Part of the <a href="https://globallyballin.com" class="link">Globally Ballin Network</a></p>
-                </div>
-                <div class="footer-links">
-                    <h4 class="footer-heading">Explore</h4>
-                    <ul class="footer-list">
-                        <li><a href="/episodes.html" class="footer-link">Episodes</a></li>
-                        <li><a href="/teams.html" class="footer-link">Teams</a></li>
-                        <li><a href="/players.html" class="footer-link">Players</a></li>
-                        <li><a href="/stats.html" class="footer-link">Stats</a></li>
-                        <li><a href="/timeline.html" class="footer-link">Timeline</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links">
-                    <h4 class="footer-heading">Community</h4>
-                    <ul class="footer-list">
-                        <li><a href="/submissions.html" class="footer-link">Fan Zone</a></li>
-                        <li><a href="/about.html" class="footer-link">About</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links">
-                    <h4 class="footer-heading">Network</h4>
-                    <ul class="footer-list">
-                        <li><a href="https://globallyballin.com" class="footer-link" target="_blank" rel="noopener noreferrer">Globally Ballin</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p class="footer-copy">&copy; 2026 An Eternity of Basketball. All rights reserved.</p>
-                <p class="footer-copy">A <a href="https://globallyballin.com" class="link" target="_blank" rel="noopener noreferrer">Globally Ballin Network</a> Production</p>
-            </div>
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <a href="/" class="header-logo" style="margin-bottom:8px;"><img src="/assets/logo-badge.png" alt="AEOB" style="height:40px;"><span style="color:#fff;">An Eternity of Basketball</span></a>
+            <p>Reliving the golden eras of PBA basketball since day one. 300+ episodes and counting.</p>
+          </div>
+          <div><h4>Browse</h4><ul><li><a href="/episodes.html">Episodes</a></li><li><a href="/predictions.html">Predictions</a></li><li><a href="/submissions.html">Fan Zone</a></li><li><a href="/rewards.html">Rewards</a></li></ul></div>
+          <div><h4>More</h4><ul><li><a href="/schedule.html">Schedule</a></li><li><a href="/about.html">About</a></li><li><a href="#">Contact</a></li></ul></div>
+          <div><h4>Listen On</h4><ul><li><a href="#">YouTube</a></li><li><a href="#">Spotify</a></li><li><a href="#">Apple Podcasts</a></li><li><a href="#">Facebook</a></li></ul></div>
         </div>
+        <div class="footer-bottom">
+          <span>&copy; 2024 An Eternity of Basketball. All rights reserved.</span>
+          <span class="network">Part of the Globally Ballin Network</span>
+        </div>
+      </div>
     </footer>
 
     <!-- Auth Modal -->
-    <div class="modal" id="authModal">
-        <div class="modal-overlay" id="authModalOverlay"></div>
-        <div class="modal-content">
-            <button class="modal-close" id="authModalClose" aria-label="Close modal">&times;</button>
-            <div class="modal-header">
-                <h2 class="modal-title" id="authModalTitle">Log In</h2>
-            </div>
-            <div class="modal-body">
-                <!-- Login Form -->
-                <form class="auth-form" id="loginForm">
-                    <div class="form-group">
-                        <label for="loginEmail" class="form-label">Email</label>
-                        <input type="email" id="loginEmail" class="form-input" placeholder="Enter your email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="loginPassword" class="form-label">Password</label>
-                        <input type="password" id="loginPassword" class="form-input" placeholder="Enter your password" required>
-                    </div>
-                    <div class="form-group">
-                        <button type="submit" class="btn btn-primary btn-block">Log In</button>
-                    </div>
-                    <p class="auth-switch">Don't have an account? <a href="#" id="showSignup" class="link">Sign Up</a></p>
-                </form>
-                <!-- Signup Form -->
-                <form class="auth-form hidden" id="signupForm">
-                    <div class="form-group">
-                        <label for="signupName" class="form-label">Display Name</label>
-                        <input type="text" id="signupName" class="form-input" placeholder="Choose a display name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="signupEmail" class="form-label">Email</label>
-                        <input type="email" id="signupEmail" class="form-input" placeholder="Enter your email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="signupPassword" class="form-label">Password</label>
-                        <input type="password" id="signupPassword" class="form-input" placeholder="Create a password" required>
-                    </div>
-                    <div class="form-group">
-                        <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
-                    </div>
-                    <p class="auth-switch">Already have an account? <a href="#" id="showLogin" class="link">Log In</a></p>
-                </form>
-            </div>
+    <div class="auth-modal" id="authModal">
+      <div class="auth-box">
+        <button class="close-auth" id="closeAuth">&times;</button>
+        <h2>Welcome to AEOB</h2>
+        <div class="auth-tabs">
+          <button class="auth-tab active" data-tab="login">Sign In</button>
+          <button class="auth-tab" data-tab="signup">Create Account</button>
         </div>
+        <form class="auth-form active" id="loginForm">
+          <div class="form-group"><label for="loginEmail">Email</label><input type="email" id="loginEmail" placeholder="you@example.com" required></div>
+          <div class="form-group"><label for="loginPassword">Password</label><input type="password" id="loginPassword" placeholder="Your password" required></div>
+          <button type="submit" class="btn btn-primary" style="width:100%;">Sign In</button>
+        </form>
+        <form class="auth-form" id="signupForm">
+          <div class="form-group"><label for="signupName">Display Name</label><input type="text" id="signupName" placeholder="Your name" required></div>
+          <div class="form-group"><label for="signupEmail">Email</label><input type="email" id="signupEmail" placeholder="you@example.com" required></div>
+          <div class="form-group"><label for="signupPassword">Password</label><input type="password" id="signupPassword" placeholder="Create a password (8+ characters)" required minlength="8"></div>
+          <button type="submit" class="btn btn-primary" style="width:100%;margin-top:16px;">Create Account</button>
+        </form>
+      </div>
     </div>
 
-    <!-- Toast Notification -->
-    <div class="toast" id="toast">
-        <span class="toast-message" id="toastMessage"></span>
-        <button class="toast-close" id="toastClose" aria-label="Close notification">&times;</button>
-    </div>
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
 
     <!-- Back to Top -->
-    <button class="back-to-top" id="backToTop" aria-label="Back to top">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M10 4L3 11H17L10 4Z" fill="currentColor"/>
-        </svg>
-    </button>
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">&#8593;</button>
 
     <!-- Scripts -->
     <script src="/js/main.js"></script>

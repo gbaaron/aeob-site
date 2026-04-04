@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,39 +22,28 @@
 <body>
 
     <!-- Preloader -->
-    <div id="preloader" class="preloader">
-        <div class="preloader-inner">
-            <div class="preloader-logo">AEOB</div>
-        </div>
-    </div>
+    <div class="preloader" id="preloader"><div class="preloader-ball"></div></div>
 
     <!-- Header -->
     <header class="header" id="header">
-        <div class="container">
-            <nav class="nav">
-                <a href="/" class="nav-logo">
-                    <span class="logo-text">AEOB</span>
-                </a>
-                <ul class="nav-menu" id="navMenu">
-                    <li class="nav-item"><a href="/" class="nav-link">Home</a></li>
-                    <li class="nav-item"><a href="/episodes.html" class="nav-link">Episodes</a></li>
-                    <li class="nav-item"><a href="/about.html" class="nav-link">About</a></li>
-                    <li class="nav-item"><a href="/predictions.html" class="nav-link active">Predictions</a></li>
-                    <li class="nav-item"><a href="/contact.html" class="nav-link">Contact</a></li>
-                </ul>
-                <div class="nav-actions">
-                    <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode">
-                        <span class="dark-toggle-icon">🌙</span>
-                    </button>
-                    <button class="btn btn-sm btn-outline login-btn" id="loginBtn">Log In</button>
-                    <button class="hamburger" id="hamburger" aria-label="Toggle navigation menu">
-                        <span class="hamburger-line"></span>
-                        <span class="hamburger-line"></span>
-                        <span class="hamburger-line"></span>
-                    </button>
-                </div>
-            </nav>
+      <div class="header-inner">
+        <a href="/" class="header-logo"><img src="/assets/logo-badge.png" alt="AEOB Logo"><span>AEOB</span></a>
+        <nav class="nav" id="nav">
+          <a href="/">Home</a>
+          <a href="/episodes.html">Episodes</a>
+          <a href="/predictions.html" class="active">Predictions</a>
+          <a href="/submissions.html">Fan Zone</a>
+          <a href="/rewards.html">Rewards</a>
+          <a href="/schedule.html">Schedule</a>
+          <a href="/about.html">About</a>
+        </nav>
+        <div class="header-actions">
+          <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode">&#9790;</button>
+          <button class="btn-login" id="loginBtn">Sign In</button>
+          <div class="user-avatar" id="userAvatar"></div>
+          <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
         </div>
+      </div>
     </header>
 
     <!-- Main Content -->
@@ -107,7 +96,7 @@
                                         <td><strong>75%</strong></td>
                                         <td>
                                             <div class="accuracy-bar">
-                                                <div class="accuracy-bar-fill" style="width: 75%;"></div>
+                                                <div class="fill" style="width: 75%;"></div>
                                             </div>
                                         </td>
                                     </tr>
@@ -123,7 +112,7 @@
                                         <td><strong>67%</strong></td>
                                         <td>
                                             <div class="accuracy-bar">
-                                                <div class="accuracy-bar-fill" style="width: 67%;"></div>
+                                                <div class="fill" style="width: 67%;"></div>
                                             </div>
                                         </td>
                                     </tr>
@@ -139,7 +128,7 @@
                                         <td><strong>58%</strong></td>
                                         <td>
                                             <div class="accuracy-bar">
-                                                <div class="accuracy-bar-fill" style="width: 58%;"></div>
+                                                <div class="fill" style="width: 58%;"></div>
                                             </div>
                                         </td>
                                     </tr>
@@ -155,7 +144,7 @@
                                         <td><strong>50%</strong></td>
                                         <td>
                                             <div class="accuracy-bar">
-                                                <div class="accuracy-bar-fill" style="width: 50%;"></div>
+                                                <div class="fill" style="width: 50%;"></div>
                                             </div>
                                         </td>
                                     </tr>
@@ -188,11 +177,11 @@
                                 </div>
                                 <div class="vote-btns">
                                     <button class="vote-btn vote-agree" data-vote="agree">
-                                        <span class="vote-icon">👍</span> Agree
+                                        <span class="vote-icon">&#128077;</span> Agree
                                         <span class="vote-count">24</span>
                                     </button>
                                     <button class="vote-btn vote-disagree" data-vote="disagree">
-                                        <span class="vote-icon">👎</span> Disagree
+                                        <span class="vote-icon">&#128078;</span> Disagree
                                         <span class="vote-count">8</span>
                                     </button>
                                 </div>
@@ -213,11 +202,11 @@
                                 </div>
                                 <div class="vote-btns">
                                     <button class="vote-btn vote-agree" data-vote="agree">
-                                        <span class="vote-icon">👍</span> Agree
+                                        <span class="vote-icon">&#128077;</span> Agree
                                         <span class="vote-count">31</span>
                                     </button>
                                     <button class="vote-btn vote-disagree" data-vote="disagree">
-                                        <span class="vote-icon">👎</span> Disagree
+                                        <span class="vote-icon">&#128078;</span> Disagree
                                         <span class="vote-count">12</span>
                                     </button>
                                 </div>
@@ -238,11 +227,11 @@
                                 </div>
                                 <div class="vote-btns">
                                     <button class="vote-btn vote-agree" data-vote="agree">
-                                        <span class="vote-icon">👍</span> Agree
+                                        <span class="vote-icon">&#128077;</span> Agree
                                         <span class="vote-count">17</span>
                                     </button>
                                     <button class="vote-btn vote-disagree" data-vote="disagree">
-                                        <span class="vote-icon">👎</span> Disagree
+                                        <span class="vote-icon">&#128078;</span> Disagree
                                         <span class="vote-count">22</span>
                                     </button>
                                 </div>
@@ -261,7 +250,7 @@
                         <!-- Logged Out State -->
                         <div class="my-picks-auth" id="myPicksAuth">
                             <div class="card my-picks-login-prompt">
-                                <div class="my-picks-login-icon">🔒</div>
+                                <div class="my-picks-login-icon">&#128274;</div>
                                 <h3>Log in to make your picks</h3>
                                 <p>Create an account or log in to submit predictions, track your accuracy, and compete with other fans.</p>
                                 <button class="btn btn-primary" id="myPicksLoginBtn">Log In to Get Started</button>
@@ -311,101 +300,51 @@
 
     <!-- Footer -->
     <footer class="footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-about">
-                    <a href="/" class="footer-logo">
-                        <span class="logo-text">AEOB</span>
-                    </a>
-                    <p class="footer-description">An Eternity of Basketball is a podcast dedicated to exploring the rich and storied history of the PBA.</p>
-                </div>
-                <div class="footer-links">
-                    <h4 class="footer-heading">Quick Links</h4>
-                    <ul class="footer-menu">
-                        <li><a href="/">Home</a></li>
-                        <li><a href="/episodes.html">Episodes</a></li>
-                        <li><a href="/about.html">About</a></li>
-                        <li><a href="/predictions.html">Predictions</a></li>
-                        <li><a href="/contact.html">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links">
-                    <h4 class="footer-heading">Listen On</h4>
-                    <ul class="footer-menu">
-                        <li><a href="#" target="_blank" rel="noopener noreferrer">Spotify</a></li>
-                        <li><a href="#" target="_blank" rel="noopener noreferrer">Apple Podcasts</a></li>
-                        <li><a href="#" target="_blank" rel="noopener noreferrer">YouTube</a></li>
-                    </ul>
-                </div>
-                <div class="footer-network">
-                    <h4 class="footer-heading">Part of the</h4>
-                    <a href="https://globallyballin.com" class="footer-network-link" target="_blank" rel="noopener noreferrer">Globally Ballin Network</a>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p class="footer-copyright">&copy; 2026 An Eternity of Basketball. All rights reserved.</p>
-                <p class="footer-network-credit">A <a href="https://globallyballin.com" target="_blank" rel="noopener noreferrer">Globally Ballin Network</a> Production</p>
-            </div>
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <a href="/" class="header-logo" style="margin-bottom:8px;"><img src="/assets/logo-badge.png" alt="AEOB" style="height:40px;"><span style="color:#fff;">An Eternity of Basketball</span></a>
+            <p>Reliving the golden eras of PBA basketball since day one. 300+ episodes and counting.</p>
+          </div>
+          <div><h4>Browse</h4><ul><li><a href="/episodes.html">Episodes</a></li><li><a href="/predictions.html">Predictions</a></li><li><a href="/submissions.html">Fan Zone</a></li><li><a href="/rewards.html">Rewards</a></li></ul></div>
+          <div><h4>More</h4><ul><li><a href="/schedule.html">Schedule</a></li><li><a href="/about.html">About</a></li><li><a href="#">Contact</a></li></ul></div>
+          <div><h4>Listen On</h4><ul><li><a href="#">YouTube</a></li><li><a href="#">Spotify</a></li><li><a href="#">Apple Podcasts</a></li><li><a href="#">Facebook</a></li></ul></div>
         </div>
+        <div class="footer-bottom">
+          <span>&copy; 2024 An Eternity of Basketball. All rights reserved.</span>
+          <span class="network">Part of the Globally Ballin Network</span>
+        </div>
+      </div>
     </footer>
 
     <!-- Auth Modal -->
-    <div class="modal" id="authModal">
-        <div class="modal-overlay" id="authModalOverlay"></div>
-        <div class="modal-content">
-            <button class="modal-close" id="authModalClose" aria-label="Close modal">&times;</button>
-
-            <!-- Login Form -->
-            <div class="auth-form" id="loginForm">
-                <h2 class="modal-title">Welcome Back</h2>
-                <p class="modal-subtitle">Log in to track your predictions and compete with other fans.</p>
-                <form id="loginFormEl">
-                    <div class="form-group">
-                        <label for="loginEmail" class="form-label">Email</label>
-                        <input type="email" id="loginEmail" class="form-input" placeholder="you@example.com" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="loginPassword" class="form-label">Password</label>
-                        <input type="password" id="loginPassword" class="form-input" placeholder="Your password" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-block">Log In</button>
-                </form>
-                <p class="auth-switch">Don't have an account? <a href="#" id="showSignup">Sign Up</a></p>
-            </div>
-
-            <!-- Signup Form -->
-            <div class="auth-form" id="signupForm" style="display: none;">
-                <h2 class="modal-title">Create Account</h2>
-                <p class="modal-subtitle">Join the AEOB community and start making your picks.</p>
-                <form id="signupFormEl">
-                    <div class="form-group">
-                        <label for="signupName" class="form-label">Display Name</label>
-                        <input type="text" id="signupName" class="form-input" placeholder="Your name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="signupEmail" class="form-label">Email</label>
-                        <input type="email" id="signupEmail" class="form-input" placeholder="you@example.com" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="signupPassword" class="form-label">Password</label>
-                        <input type="password" id="signupPassword" class="form-input" placeholder="Create a password" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
-                </form>
-                <p class="auth-switch">Already have an account? <a href="#" id="showLogin">Log In</a></p>
-            </div>
+    <div class="auth-modal" id="authModal">
+      <div class="auth-box">
+        <button class="close-auth" id="closeAuth">&times;</button>
+        <h2>Welcome to AEOB</h2>
+        <div class="auth-tabs">
+          <button class="auth-tab active" data-tab="login">Sign In</button>
+          <button class="auth-tab" data-tab="signup">Create Account</button>
         </div>
+        <form class="auth-form active" id="loginForm">
+          <div class="form-group"><label for="loginEmail">Email</label><input type="email" id="loginEmail" placeholder="you@example.com" required></div>
+          <div class="form-group"><label for="loginPassword">Password</label><input type="password" id="loginPassword" placeholder="Your password" required></div>
+          <button type="submit" class="btn btn-primary" style="width:100%;">Sign In</button>
+        </form>
+        <form class="auth-form" id="signupForm">
+          <div class="form-group"><label for="signupName">Display Name</label><input type="text" id="signupName" placeholder="Your name" required></div>
+          <div class="form-group"><label for="signupEmail">Email</label><input type="email" id="signupEmail" placeholder="you@example.com" required></div>
+          <div class="form-group"><label for="signupPassword">Password</label><input type="password" id="signupPassword" placeholder="Create a password (8+ characters)" required minlength="8"></div>
+          <button type="submit" class="btn btn-primary" style="width:100%;margin-top:16px;">Create Account</button>
+        </form>
+      </div>
     </div>
 
-    <!-- Toast Notification -->
-    <div class="toast" id="toast">
-        <span class="toast-message" id="toastMessage"></span>
-    </div>
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
 
     <!-- Back to Top -->
-    <button class="back-to-top" id="backToTop" aria-label="Back to top">
-        <span class="back-to-top-icon">&uarr;</span>
-    </button>
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">&#8593;</button>
 
     <!-- Scripts -->
     <script src="/js/main.js"></script>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,40 +22,28 @@
 <body>
 
     <!-- Preloader -->
-    <div id="preloader" class="preloader">
-        <div class="preloader-inner">
-            <div class="preloader-spinner"></div>
-        </div>
-    </div>
+    <div class="preloader" id="preloader"><div class="preloader-ball"></div></div>
 
     <!-- Header -->
     <header class="header" id="header">
-        <div class="container header-container">
-            <a href="/" class="logo">
-                <span class="logo-text">AEOB</span>
-            </a>
-            <nav class="nav" id="nav">
-                <ul class="nav-list">
-                    <li class="nav-item"><a href="/" class="nav-link">Home</a></li>
-                    <li class="nav-item"><a href="/episodes.html" class="nav-link">Episodes</a></li>
-                    <li class="nav-item"><a href="/schedule.html" class="nav-link active">Schedule</a></li>
-                    <li class="nav-item"><a href="/about.html" class="nav-link">About</a></li>
-                    <li class="nav-item"><a href="/contact.html" class="nav-link">Contact</a></li>
-                </ul>
-            </nav>
-            <div class="header-actions">
-                <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode">
-                    <svg class="icon icon-sun" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-                    <svg class="icon icon-moon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-                </button>
-                <button class="btn btn-sm btn-outline login-btn" id="loginBtn">Log In</button>
-                <button class="hamburger" id="hamburger" aria-label="Toggle menu">
-                    <span class="hamburger-line"></span>
-                    <span class="hamburger-line"></span>
-                    <span class="hamburger-line"></span>
-                </button>
-            </div>
+      <div class="header-inner">
+        <a href="/" class="header-logo"><img src="/assets/logo-badge.png" alt="AEOB Logo"><span>AEOB</span></a>
+        <nav class="nav" id="nav">
+          <a href="/">Home</a>
+          <a href="/episodes.html">Episodes</a>
+          <a href="/predictions.html">Predictions</a>
+          <a href="/submissions.html">Fan Zone</a>
+          <a href="/rewards.html">Rewards</a>
+          <a href="/schedule.html" class="active">Schedule</a>
+          <a href="/about.html">About</a>
+        </nav>
+        <div class="header-actions">
+          <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode">&#9790;</button>
+          <button class="btn-login" id="loginBtn">Sign In</button>
+          <div class="user-avatar" id="userAvatar"></div>
+          <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
         </div>
+      </div>
     </header>
 
     <!-- Main Content -->
@@ -281,100 +269,51 @@
 
     <!-- Footer -->
     <footer class="footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-about">
-                    <a href="/" class="footer-logo">
-                        <span class="logo-text">AEOB</span>
-                    </a>
-                    <p class="footer-about-text">An Eternity of Basketball is a podcast dedicated to exploring the rich history of the Philippine Basketball Association (PBA).</p>
-                </div>
-                <div class="footer-links">
-                    <h4 class="footer-heading">Quick Links</h4>
-                    <ul class="footer-list">
-                        <li><a href="/" class="footer-link">Home</a></li>
-                        <li><a href="/episodes.html" class="footer-link">Episodes</a></li>
-                        <li><a href="/schedule.html" class="footer-link">Schedule</a></li>
-                        <li><a href="/about.html" class="footer-link">About</a></li>
-                        <li><a href="/contact.html" class="footer-link">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links">
-                    <h4 class="footer-heading">Follow Us</h4>
-                    <ul class="footer-list">
-                        <li><a href="#" class="footer-link">YouTube</a></li>
-                        <li><a href="#" class="footer-link">Facebook</a></li>
-                        <li><a href="#" class="footer-link">Twitter / X</a></li>
-                        <li><a href="#" class="footer-link">Instagram</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links">
-                    <h4 class="footer-heading">Legal</h4>
-                    <ul class="footer-list">
-                        <li><a href="/privacy.html" class="footer-link">Privacy Policy</a></li>
-                        <li><a href="/terms.html" class="footer-link">Terms of Use</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p class="footer-copy">&copy; 2026 An Eternity of Basketball. All rights reserved.</p>
-                <p class="footer-network">Part of the <a href="https://globallyballin.com" class="footer-network-link">Globally Ballin Network</a></p>
-            </div>
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <a href="/" class="header-logo" style="margin-bottom:8px;"><img src="/assets/logo-badge.png" alt="AEOB" style="height:40px;"><span style="color:#fff;">An Eternity of Basketball</span></a>
+            <p>Reliving the golden eras of PBA basketball since day one. 300+ episodes and counting.</p>
+          </div>
+          <div><h4>Browse</h4><ul><li><a href="/episodes.html">Episodes</a></li><li><a href="/predictions.html">Predictions</a></li><li><a href="/submissions.html">Fan Zone</a></li><li><a href="/rewards.html">Rewards</a></li></ul></div>
+          <div><h4>More</h4><ul><li><a href="/schedule.html">Schedule</a></li><li><a href="/about.html">About</a></li><li><a href="#">Contact</a></li></ul></div>
+          <div><h4>Listen On</h4><ul><li><a href="#">YouTube</a></li><li><a href="#">Spotify</a></li><li><a href="#">Apple Podcasts</a></li><li><a href="#">Facebook</a></li></ul></div>
         </div>
+        <div class="footer-bottom">
+          <span>&copy; 2024 An Eternity of Basketball. All rights reserved.</span>
+          <span class="network">Part of the Globally Ballin Network</span>
+        </div>
+      </div>
     </footer>
 
     <!-- Auth Modal -->
-    <div class="modal" id="authModal">
-        <div class="modal-overlay" id="authModalOverlay"></div>
-        <div class="modal-content">
-            <button class="modal-close" id="authModalClose" aria-label="Close modal">&times;</button>
-            <div class="modal-header">
-                <h2 class="modal-title" id="authModalTitle">Log In</h2>
-            </div>
-            <div class="modal-body">
-                <!-- Login Form -->
-                <form class="auth-form" id="loginForm">
-                    <div class="form-group">
-                        <label for="loginEmail" class="form-label">Email</label>
-                        <input type="email" id="loginEmail" class="form-input" placeholder="you@example.com" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="loginPassword" class="form-label">Password</label>
-                        <input type="password" id="loginPassword" class="form-input" placeholder="Your password" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-full">Log In</button>
-                    <p class="auth-switch">Don't have an account? <a href="#" id="showSignup" class="auth-switch-link">Sign Up</a></p>
-                </form>
-                <!-- Signup Form -->
-                <form class="auth-form" id="signupForm" style="display: none;">
-                    <div class="form-group">
-                        <label for="signupName" class="form-label">Name</label>
-                        <input type="text" id="signupName" class="form-input" placeholder="Your name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="signupEmail" class="form-label">Email</label>
-                        <input type="email" id="signupEmail" class="form-input" placeholder="you@example.com" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="signupPassword" class="form-label">Password</label>
-                        <input type="password" id="signupPassword" class="form-input" placeholder="Create a password" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-full">Sign Up</button>
-                    <p class="auth-switch">Already have an account? <a href="#" id="showLogin" class="auth-switch-link">Log In</a></p>
-                </form>
-            </div>
+    <div class="auth-modal" id="authModal">
+      <div class="auth-box">
+        <button class="close-auth" id="closeAuth">&times;</button>
+        <h2>Welcome to AEOB</h2>
+        <div class="auth-tabs">
+          <button class="auth-tab active" data-tab="login">Sign In</button>
+          <button class="auth-tab" data-tab="signup">Create Account</button>
         </div>
+        <form class="auth-form active" id="loginForm">
+          <div class="form-group"><label for="loginEmail">Email</label><input type="email" id="loginEmail" placeholder="you@example.com" required></div>
+          <div class="form-group"><label for="loginPassword">Password</label><input type="password" id="loginPassword" placeholder="Your password" required></div>
+          <button type="submit" class="btn btn-primary" style="width:100%;">Sign In</button>
+        </form>
+        <form class="auth-form" id="signupForm">
+          <div class="form-group"><label for="signupName">Display Name</label><input type="text" id="signupName" placeholder="Your name" required></div>
+          <div class="form-group"><label for="signupEmail">Email</label><input type="email" id="signupEmail" placeholder="you@example.com" required></div>
+          <div class="form-group"><label for="signupPassword">Password</label><input type="password" id="signupPassword" placeholder="Create a password (8+ characters)" required minlength="8"></div>
+          <button type="submit" class="btn btn-primary" style="width:100%;margin-top:16px;">Create Account</button>
+        </form>
+      </div>
     </div>
 
-    <!-- Toast Notification -->
-    <div class="toast" id="toast">
-        <span class="toast-message" id="toastMessage"></span>
-    </div>
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
 
     <!-- Back to Top -->
-    <button class="back-to-top" id="backToTop" aria-label="Back to top">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
-    </button>
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">&#8593;</button>
 
     <!-- Scripts -->
     <script src="/js/main.js"></script>

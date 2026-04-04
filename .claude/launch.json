@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "aeob-dev",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["http-server", "/Users/Aaron/Desktop/Global Media/Globally Ballin/AEOB/aeob-site", "-c-1", "--cors"],
+      "port": 8888,
+      "autoPort": true
+    }
+  ]
+}

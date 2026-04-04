@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,40 +19,30 @@
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
+
     <!-- Preloader -->
-    <div id="preloader" class="preloader">
-        <div class="preloader-inner">
-            <div class="preloader-icon"></div>
-        </div>
-    </div>
+    <div class="preloader" id="preloader"><div class="preloader-ball"></div></div>
 
     <!-- Header -->
     <header class="header" id="header">
-        <div class="container">
-            <nav class="nav">
-                <a href="/" class="nav-logo">
-                    <span class="logo-text">AEOB</span>
-                </a>
-                <ul class="nav-menu" id="navMenu">
-                    <li class="nav-item"><a href="/" class="nav-link">Home</a></li>
-                    <li class="nav-item"><a href="/episodes.html" class="nav-link">Episodes</a></li>
-                    <li class="nav-item"><a href="/predictions.html" class="nav-link">Predictions</a></li>
-                    <li class="nav-item"><a href="/rewards.html" class="nav-link active">Rewards</a></li>
-                    <li class="nav-item"><a href="/about.html" class="nav-link">About</a></li>
-                </ul>
-                <div class="nav-actions">
-                    <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode">
-                        <span class="dark-toggle-icon">🌙</span>
-                    </button>
-                    <button class="btn btn-outline login-btn" id="loginBtn">Log In</button>
-                    <button class="hamburger" id="hamburger" aria-label="Toggle navigation menu">
-                        <span class="hamburger-line"></span>
-                        <span class="hamburger-line"></span>
-                        <span class="hamburger-line"></span>
-                    </button>
-                </div>
-            </nav>
+      <div class="header-inner">
+        <a href="/" class="header-logo"><img src="/assets/logo-badge.png" alt="AEOB Logo"><span>AEOB</span></a>
+        <nav class="nav" id="nav">
+          <a href="/">Home</a>
+          <a href="/episodes.html">Episodes</a>
+          <a href="/predictions.html">Predictions</a>
+          <a href="/submissions.html">Fan Zone</a>
+          <a href="/rewards.html" class="active">Rewards</a>
+          <a href="/schedule.html">Schedule</a>
+          <a href="/about.html">About</a>
+        </nav>
+        <div class="header-actions">
+          <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode">&#9790;</button>
+          <button class="btn-login" id="loginBtn">Sign In</button>
+          <div class="user-avatar" id="userAvatar"></div>
+          <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
         </div>
+      </div>
     </header>
 
     <!-- Page Hero -->
@@ -67,7 +57,7 @@
     <section class="section login-required-section" id="loginRequiredSection">
         <div class="container">
             <div class="login-required-message">
-                <div class="login-required-icon">🔒</div>
+                <div class="login-required-icon">&#128274;</div>
                 <h2>Log In to Access Rewards</h2>
                 <p>Sign in to your AEOB account to start earning points, track your progress, and redeem exclusive rewards.</p>
                 <button class="btn btn-primary" id="loginRequiredBtn">Log In to Get Started</button>
@@ -84,40 +74,40 @@
                 <aside class="rewards-sidebar">
                     <div class="points-circle">
                         <div class="points-circle-inner">
-                            <span class="points-value" id="totalPoints">0</span>
-                            <span class="points-label">Points</span>
+                            <span class="pts" id="totalPoints">0</span>
+                            <span class="pts-label">Points</span>
                         </div>
                     </div>
                     <div class="tier-badge tier-rookie" id="tierBadge">
-                        <span class="tier-badge-icon">🏀</span>
+                        <span class="tier-badge-icon">&#127936;</span>
                         <span class="tier-badge-name" id="tierName">Rookie</span>
                     </div>
                     <div class="tier-progress">
                         <div class="tier-progress-bar">
-                            <div class="tier-progress-fill" id="tierProgressFill" style="width: 0%;"></div>
+                            <div class="tier-progress-fill fill" id="tierProgressFill" style="width: 0%;"></div>
                         </div>
-                        <p class="tier-progress-text" id="tierProgressText">250 points to next tier</p>
+                        <p class="tier-progress-text" id="tierInfo">250 points to next tier</p>
                     </div>
                     <div class="tier-list">
                         <h4 class="tier-list-title">Tier Levels</h4>
                         <ul class="tier-list-items">
                             <li class="tier-list-item active">
-                                <span class="tier-list-icon">🏀</span>
+                                <span class="tier-list-icon">&#127936;</span>
                                 <span class="tier-list-name">Rookie</span>
                                 <span class="tier-list-range">0 - 249</span>
                             </li>
                             <li class="tier-list-item">
-                                <span class="tier-list-icon">⭐</span>
+                                <span class="tier-list-icon">&#11088;</span>
                                 <span class="tier-list-name">Veteran</span>
                                 <span class="tier-list-range">250 - 749</span>
                             </li>
                             <li class="tier-list-item">
-                                <span class="tier-list-icon">🌟</span>
+                                <span class="tier-list-icon">&#127775;</span>
                                 <span class="tier-list-name">All-Star</span>
                                 <span class="tier-list-range">750 - 1499</span>
                             </li>
                             <li class="tier-list-item">
-                                <span class="tier-list-icon">👑</span>
+                                <span class="tier-list-icon">&#128081;</span>
                                 <span class="tier-list-name">Legend</span>
                                 <span class="tier-list-range">1500+</span>
                             </li>
@@ -133,37 +123,37 @@
                         <h2 class="section-title">How to Earn Points</h2>
                         <div class="features-grid">
                             <div class="feature-card card">
-                                <div class="feature-card-icon">▶️</div>
+                                <div class="feature-card-icon">&#9654;&#65039;</div>
                                 <h3 class="feature-card-title">Watch Episode</h3>
                                 <p class="feature-card-desc">Earn points each time you watch or listen to a full episode.</p>
                                 <span class="feature-card-points">+10 pts</span>
                             </div>
                             <div class="feature-card card">
-                                <div class="feature-card-icon">🎯</div>
+                                <div class="feature-card-icon">&#127919;</div>
                                 <h3 class="feature-card-title">Make Prediction</h3>
                                 <p class="feature-card-desc">Submit your predictions for upcoming episode topics and outcomes.</p>
                                 <span class="feature-card-points">+15 pts</span>
                             </div>
                             <div class="feature-card card">
-                                <div class="feature-card-icon">❓</div>
+                                <div class="feature-card-icon">&#10067;</div>
                                 <h3 class="feature-card-title">Submit Question</h3>
                                 <p class="feature-card-desc">Send in a question for the hosts to potentially discuss on air.</p>
                                 <span class="feature-card-points">+20 pts</span>
                             </div>
                             <div class="feature-card card">
-                                <div class="feature-card-icon">🎙️</div>
+                                <div class="feature-card-icon">&#127897;&#65039;</div>
                                 <h3 class="feature-card-title">Question Featured on Show</h3>
                                 <p class="feature-card-desc">Get a big bonus when your question is read and discussed on an episode.</p>
                                 <span class="feature-card-points">+100 pts</span>
                             </div>
                             <div class="feature-card card">
-                                <div class="feature-card-icon">🔥</div>
+                                <div class="feature-card-icon">&#128293;</div>
                                 <h3 class="feature-card-title">7-Day Listening Streak</h3>
                                 <p class="feature-card-desc">Listen to at least one episode every day for seven consecutive days.</p>
                                 <span class="feature-card-points">+50 pts</span>
                             </div>
                             <div class="feature-card card">
-                                <div class="feature-card-icon">🤝</div>
+                                <div class="feature-card-icon">&#129309;</div>
                                 <h3 class="feature-card-title">Refer a Friend</h3>
                                 <p class="feature-card-desc">Share your referral link and earn points when a friend signs up.</p>
                                 <span class="feature-card-points">+25 pts</span>
@@ -176,7 +166,7 @@
                         <h2 class="section-title">Recent Activity</h2>
                         <div class="activity-list" id="activityList">
                             <div class="activity-item">
-                                <div class="activity-item-icon">▶️</div>
+                                <div class="activity-item-icon">&#9654;&#65039;</div>
                                 <div class="activity-item-details">
                                     <span class="activity-item-title">Watched Episode 42: The Rise of the Beermen</span>
                                     <span class="activity-item-date">2 hours ago</span>
@@ -184,7 +174,7 @@
                                 <span class="activity-item-points">+10 pts</span>
                             </div>
                             <div class="activity-item">
-                                <div class="activity-item-icon">🎯</div>
+                                <div class="activity-item-icon">&#127919;</div>
                                 <div class="activity-item-details">
                                     <span class="activity-item-title">Made prediction for Episode 43</span>
                                     <span class="activity-item-date">1 day ago</span>
@@ -192,7 +182,7 @@
                                 <span class="activity-item-points">+15 pts</span>
                             </div>
                             <div class="activity-item">
-                                <div class="activity-item-icon">🔥</div>
+                                <div class="activity-item-icon">&#128293;</div>
                                 <div class="activity-item-details">
                                     <span class="activity-item-title">Completed 7-day listening streak</span>
                                     <span class="activity-item-date">3 days ago</span>
@@ -200,7 +190,7 @@
                                 <span class="activity-item-points">+50 pts</span>
                             </div>
                             <div class="activity-item">
-                                <div class="activity-item-icon">❓</div>
+                                <div class="activity-item-icon">&#10067;</div>
                                 <div class="activity-item-details">
                                     <span class="activity-item-title">Submitted question about the 1988 PBA Finals</span>
                                     <span class="activity-item-date">5 days ago</span>
@@ -208,7 +198,7 @@
                                 <span class="activity-item-points">+20 pts</span>
                             </div>
                             <div class="activity-item">
-                                <div class="activity-item-icon">🤝</div>
+                                <div class="activity-item-icon">&#129309;</div>
                                 <div class="activity-item-details">
                                     <span class="activity-item-title">Referred a friend who signed up</span>
                                     <span class="activity-item-date">1 week ago</span>
@@ -223,7 +213,7 @@
                         <h2 class="section-title">Rewards Catalog</h2>
                         <div class="rewards-catalog">
                             <div class="reward-item card">
-                                <div class="reward-item-icon">📢</div>
+                                <div class="reward-item-icon">&#128226;</div>
                                 <h3 class="reward-item-title">Show Shoutout</h3>
                                 <p class="reward-item-desc">Get a personalized shoutout from the hosts during an episode. Your name and message read live on the show.</p>
                                 <div class="reward-item-footer">
@@ -232,7 +222,7 @@
                                 </div>
                             </div>
                             <div class="reward-item card">
-                                <div class="reward-item-icon">🎧</div>
+                                <div class="reward-item-icon">&#127911;</div>
                                 <h3 class="reward-item-title">Exclusive Bonus Content</h3>
                                 <p class="reward-item-desc">Unlock access to bonus episodes, behind-the-scenes clips, and extended interviews not available to the public.</p>
                                 <div class="reward-item-footer">
@@ -241,7 +231,7 @@
                                 </div>
                             </div>
                             <div class="reward-item card">
-                                <div class="reward-item-icon">👕</div>
+                                <div class="reward-item-icon">&#128085;</div>
                                 <h3 class="reward-item-title">AEOB Merch Discount</h3>
                                 <p class="reward-item-desc">Receive a special discount code for the official An Eternity of Basketball merchandise store.</p>
                                 <div class="reward-item-footer">
@@ -250,7 +240,7 @@
                                 </div>
                             </div>
                             <div class="reward-item card">
-                                <div class="reward-item-icon">🏷️</div>
+                                <div class="reward-item-icon">&#127991;&#65039;</div>
                                 <h3 class="reward-item-title">Custom AEOB Nickname</h3>
                                 <p class="reward-item-desc">Choose a unique nickname that will be displayed alongside your profile across the AEOB community.</p>
                                 <div class="reward-item-footer">
@@ -268,106 +258,95 @@
 
     <!-- Footer -->
     <footer class="footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-about">
-                    <a href="/" class="footer-logo">
-                        <span class="logo-text">AEOB</span>
-                    </a>
-                    <p class="footer-about-text">An Eternity of Basketball is a podcast exploring the rich and storied history of the Philippine Basketball Association.</p>
-                </div>
-                <div class="footer-links">
-                    <h4 class="footer-title">Quick Links</h4>
-                    <ul class="footer-list">
-                        <li><a href="/" class="footer-link">Home</a></li>
-                        <li><a href="/episodes.html" class="footer-link">Episodes</a></li>
-                        <li><a href="/predictions.html" class="footer-link">Predictions</a></li>
-                        <li><a href="/rewards.html" class="footer-link">Rewards</a></li>
-                        <li><a href="/about.html" class="footer-link">About</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links">
-                    <h4 class="footer-title">Connect</h4>
-                    <ul class="footer-list">
-                        <li><a href="#" class="footer-link">YouTube</a></li>
-                        <li><a href="#" class="footer-link">Spotify</a></li>
-                        <li><a href="#" class="footer-link">Apple Podcasts</a></li>
-                        <li><a href="#" class="footer-link">Twitter / X</a></li>
-                        <li><a href="#" class="footer-link">Instagram</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links">
-                    <h4 class="footer-title">Legal</h4>
-                    <ul class="footer-list">
-                        <li><a href="#" class="footer-link">Privacy Policy</a></li>
-                        <li><a href="#" class="footer-link">Terms of Service</a></li>
-                        <li><a href="#" class="footer-link">Contact Us</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p class="footer-copyright">&copy; 2026 An Eternity of Basketball. All rights reserved.</p>
-                <p class="footer-network">Part of the <a href="#" class="footer-network-link">Globally Ballin Network</a></p>
-            </div>
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <a href="/" class="header-logo" style="margin-bottom:8px;">
+              <img src="/assets/logo-badge.png" alt="AEOB" style="height:40px;">
+              <span style="color:#fff;">An Eternity of Basketball</span>
+            </a>
+            <p>Reliving the golden eras of PBA basketball since day one. 300+ episodes and counting.</p>
+          </div>
+          <div>
+            <h4>Browse</h4>
+            <ul>
+              <li><a href="/episodes.html">Episodes</a></li>
+              <li><a href="/predictions.html">Predictions</a></li>
+              <li><a href="/submissions.html">Fan Zone</a></li>
+              <li><a href="/rewards.html">Rewards</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>More</h4>
+            <ul>
+              <li><a href="/schedule.html">Schedule</a></li>
+              <li><a href="/about.html">About</a></li>
+              <li><a href="#">Contact</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Listen On</h4>
+            <ul>
+              <li><a href="#">YouTube</a></li>
+              <li><a href="#">Spotify</a></li>
+              <li><a href="#">Apple Podcasts</a></li>
+              <li><a href="#">Facebook</a></li>
+            </ul>
+          </div>
         </div>
+        <div class="footer-bottom">
+          <span>&copy; 2024 An Eternity of Basketball. All rights reserved.</span>
+          <span class="network">Part of the Globally Ballin Network</span>
+        </div>
+      </div>
     </footer>
 
     <!-- Auth Modal -->
-    <div class="modal" id="authModal">
-        <div class="modal-overlay" id="authModalOverlay"></div>
-        <div class="modal-content">
-            <button class="modal-close" id="authModalClose" aria-label="Close modal">&times;</button>
-            <div class="modal-header">
-                <h2 class="modal-title" id="authModalTitle">Log In</h2>
-            </div>
-            <div class="modal-body">
-                <!-- Login Form -->
-                <form class="auth-form" id="loginForm">
-                    <div class="form-group">
-                        <label for="loginEmail" class="form-label">Email</label>
-                        <input type="email" id="loginEmail" class="form-input" placeholder="Enter your email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="loginPassword" class="form-label">Password</label>
-                        <input type="password" id="loginPassword" class="form-input" placeholder="Enter your password" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-full">Log In</button>
-                    <p class="auth-switch">Don't have an account? <a href="#" id="showSignup" class="auth-switch-link">Sign Up</a></p>
-                </form>
-                <!-- Signup Form -->
-                <form class="auth-form" id="signupForm" style="display: none;">
-                    <div class="form-group">
-                        <label for="signupName" class="form-label">Display Name</label>
-                        <input type="text" id="signupName" class="form-input" placeholder="Choose a display name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="signupEmail" class="form-label">Email</label>
-                        <input type="email" id="signupEmail" class="form-input" placeholder="Enter your email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="signupPassword" class="form-label">Password</label>
-                        <input type="password" id="signupPassword" class="form-input" placeholder="Create a password" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-full">Sign Up</button>
-                    <p class="auth-switch">Already have an account? <a href="#" id="showLogin" class="auth-switch-link">Log In</a></p>
-                </form>
-            </div>
+    <div class="auth-modal" id="authModal">
+      <div class="auth-box">
+        <button class="close-auth" id="closeAuth">&times;</button>
+        <h2>Welcome to AEOB</h2>
+        <div class="auth-tabs">
+          <button class="auth-tab active" data-tab="login">Sign In</button>
+          <button class="auth-tab" data-tab="signup">Create Account</button>
         </div>
+        <form class="auth-form active" id="loginForm">
+          <div class="form-group">
+            <label for="loginEmail">Email</label>
+            <input type="email" id="loginEmail" placeholder="you@example.com" required>
+          </div>
+          <div class="form-group">
+            <label for="loginPassword">Password</label>
+            <input type="password" id="loginPassword" placeholder="Your password" required>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%;">Sign In</button>
+        </form>
+        <form class="auth-form" id="signupForm">
+          <div class="form-group">
+            <label for="signupName">Display Name</label>
+            <input type="text" id="signupName" placeholder="Your name" required>
+          </div>
+          <div class="form-group">
+            <label for="signupEmail">Email</label>
+            <input type="email" id="signupEmail" placeholder="you@example.com" required>
+          </div>
+          <div class="form-group">
+            <label for="signupPassword">Password</label>
+            <input type="password" id="signupPassword" placeholder="Create a password (8+ characters)" required minlength="8">
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%;margin-top:16px;">Create Account</button>
+        </form>
+      </div>
     </div>
 
-    <!-- Toast Notification -->
-    <div class="toast" id="toast">
-        <span class="toast-message" id="toastMessage"></span>
-    </div>
-
-    <!-- Back to Top -->
-    <button class="back-to-top" id="backToTop" aria-label="Back to top">
-        <span class="back-to-top-icon">&uarr;</span>
-    </button>
+    <!-- Toast & Back to Top -->
+    <div class="toast" id="toast"></div>
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">&#8593;</button>
 
     <!-- Scripts -->
     <script src="/js/main.js"></script>
     <script src="/js/auth.js"></script>
     <script src="/js/rewards.js"></script>
+
 </body>
 </html>
