@@ -282,16 +282,18 @@ window.apiFetch = async function(endpoint, options = {}) {
 
 // ---------- Utility: Format Date ----------
 window.formatDate = function(dateStr) {
+  if (!dateStr) return '';
   const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return '';
   return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 };
 
 // ---------- Utility: Extract YouTube ID from URL ----------
 window.extractYoutubeId = function(url) {
   if (!url) return '';
-  // Handle various YouTube URL formats
+  // Handle various YouTube URL formats including /live/
   const patterns = [
-    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/v\/)([a-zA-Z0-9_-]{11})/,
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/v\/|youtube\.com\/live\/)([a-zA-Z0-9_-]{11})/,
     /^([a-zA-Z0-9_-]{11})$/ // bare ID
   ];
   for (const p of patterns) {
