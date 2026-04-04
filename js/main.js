@@ -322,7 +322,7 @@ window.formatDuration = function(seconds) {
 // ---------- Top 5 Picks (Homepage) ----------
 (async function initTopPicks() {
   const grid = document.getElementById('topPicksGrid');
-  if (!grid) return; // Not on homepage
+  if (!grid) return;
 
   let allPicks = {};
 
@@ -330,57 +330,43 @@ window.formatDuration = function(seconds) {
     const data = await window.apiFetch('top-picks');
     allPicks = data.picks || {};
   } catch (e) {
-    return; // Keep empty state
+    return;
   }
 
-  // Check if any picks exist
   const hasPicks = Object.values(allPicks).some(arr => arr.length > 0);
   if (!hasPicks) return;
 
-  function renderPicks(filterPicker) {
-    let cards = [];
+  // Display order
+  const pickerOrder = ['Charlie Cuna', 'Sid Ventura', 'Noel Zarate', 'Jay Mercado', 'Aaron', 'Carla'];
+  const initials = { 'Charlie Cuna': 'CC', 'Sid Ventura': 'SV', 'Noel Zarate': 'NZ', 'Jay Mercado': 'JM', 'Aaron': 'AA', 'Carla': 'CA' };
 
-    const pickers = filterPicker === 'all'
-      ? Object.keys(allPicks)
-      : [filterPicker];
+  let html = '<div class="picks-all-grid">';
 
-    pickers.forEach(picker => {
-      const picks = allPicks[picker] || [];
-      picks.forEach(pick => {
-        const ytThumb = window.getYoutubeThumbnail ? window.getYoutubeThumbnail(pick.youtubeUrl) : '';
-        const epNum = pick.episodeNumber || '';
-        const thumbSrc = ytThumb || `https://placehold.co/240x135/1a1f5e/ffffff?text=Ep+${epNum}`;
+  pickerOrder.forEach(picker => {
+    const picks = allPicks[picker] || [];
+    if (picks.length === 0) return;
 
-        cards.push(`
-          <div class="card pick-card">
-            <div class="pick-rank">#${pick.rank}</div>
-            <div class="pick-thumb">
-              <img src="${thumbSrc}" alt="${pick.title}" loading="lazy">
-            </div>
-            <div class="pick-info">
-              ${filterPicker === 'all' ? `<div class="pick-picker">${picker}</div>` : ''}
-              <h4>${pick.title}</h4>
-              ${pick.why ? `<p class="pick-why">"${pick.why}"</p>` : ''}
-            </div>
-          </div>
-        `);
-      });
+    html += `<div class="picker-column card">
+      <div class="picker-header">
+        <div class="host-avatar" style="display:flex;width:48px;height:48px;font-size:1rem;">${initials[picker] || '?'}</div>
+        <h3>${picker}</h3>
+      </div>
+      <ol class="picker-list">`;
+
+    picks.forEach(pick => {
+      const ytThumb = window.getYoutubeThumbnail ? window.getYoutubeThumbnail(pick.youtubeUrl) : '';
+      const epNum = pick.episodeNumber || '';
+      const thumbSrc = ytThumb || '';
+
+      html += `<li class="picker-item">
+        ${thumbSrc ? `<img src="${thumbSrc}" alt="" class="picker-item-thumb" loading="lazy">` : ''}
+        <span class="picker-item-title">Ep ${epNum}: ${pick.title.replace(/^EPISODE\s*\d+[:\s-]*/i, '')}</span>
+      </li>`;
     });
 
-    grid.innerHTML = cards.length > 0
-      ? `<div class="top-picks-list">${cards.join('')}</div>`
-      : `<div class="empty-state"><div class="empty-icon">&#11088;</div><h3>No picks yet</h3></div>`;
-  }
-
-  // Render all by default
-  renderPicks('all');
-
-  // Bind picker tabs
-  document.querySelectorAll('#top-picks .tab-btn[data-picker]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('#top-picks .tab-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      renderPicks(btn.dataset.picker);
-    });
+    html += `</ol></div>`;
   });
+
+  html += '</div>';
+  grid.innerHTML = html;
 })();

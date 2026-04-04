@@ -1015,82 +1015,85 @@ img { max-width: 100%; height: auto; display: block; }
 }
 
 /* ---------- Top Picks ---------- */
-.top-picks-list {
+.picks-all-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+@media (max-width: 900px) {
+  .picks-all-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  .picks-all-grid { grid-template-columns: 1fr; }
+}
+
+.picker-column {
+  padding: 24px;
+}
+
+.picker-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--orange-accent);
+}
+
+.picker-header h3 {
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.picker-list {
+  list-style: none;
+  counter-reset: pick;
+  padding: 0;
+  margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 10px;
 }
 
-.pick-card {
+.picker-item {
   display: flex;
-  gap: 16px;
-  align-items: flex-start;
-  padding: 20px;
-  border-left: 4px solid var(--orange-accent);
+  align-items: center;
+  gap: 10px;
+  counter-increment: pick;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-color);
 }
 
-.pick-rank {
-  font-size: 2rem;
+.picker-item::before {
+  content: counter(pick);
+  font-size: 1.2rem;
   font-weight: 800;
   color: var(--orange-accent);
-  min-width: 44px;
+  min-width: 24px;
   text-align: center;
-  line-height: 1;
 }
 
-.pick-thumb {
-  width: 120px;
-  min-width: 120px;
-  aspect-ratio: 16/9;
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  background: var(--gray-100);
-  cursor: pointer;
-}
-
-.pick-thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.pick-info {
-  flex: 1;
-}
-
-.pick-info h4 {
-  margin-bottom: 4px;
-  font-size: 1rem;
-}
-
-.pick-info .pick-picker {
-  color: var(--orange-accent);
-  font-weight: 600;
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 4px;
-}
-
-.pick-info .pick-why {
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-  font-style: italic;
-}
-
-@media (max-width: 600px) {
-  .pick-card { flex-wrap: wrap; }
-  .pick-thumb { width: 100%; min-width: 100%; }
-}
-
-/* Picker tabs override for centering */
-#top-picks .tabs {
+.picker-item:last-child {
   border-bottom: none;
-  gap: 4px;
-  flex-wrap: wrap;
-  margin-bottom: 24px;
 }
 
+.picker-item-thumb {
+  width: 64px;
+  min-width: 64px;
+  height: 36px;
+  object-fit: cover;
+  border-radius: 4px;
+  background: var(--gray-100);
+}
+
+.picker-item-title {
+  font-size: 0.85rem;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+/* Legacy pick-card styles (kept for compatibility) */
 #top-picks .tab-btn {
   border: 2px solid var(--border-color);
   border-radius: 20px;
