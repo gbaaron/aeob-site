@@ -186,7 +186,8 @@ const CREDIT_LADDER = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 
 // 1-indexed Q# that are "locked in": once you pass them, you can't drop below
 const SAFE_LEVELS = [5, 10, 13]; // Q5 = 16, Q10 = 512, Q13 = 4096
 const TOTAL_Q = 15;
-const TIMER_SEC = 15;
+const TIMER_SEC = 10;
+const DAILY_PLAY_KEY = 'aeob-trivia-daily-play';
 const TIMER_CIRC = 2 * Math.PI * 45;
 
 const FAKE_WEEKLY_LEADERS = [
@@ -229,6 +230,61 @@ function getStats() {
   return JSON.parse(localStorage.getItem('aeob-trivia-stats') || '{"best":0,"played":0,"points":0,"recent":[]}');
 }
 function saveStats(s) { localStorage.setItem('aeob-trivia-stats', JSON.stringify(s)); }
+
+/* ------------ Daily play limit ------------ */
+function todayKey() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+function hasPlayedToday() {
+  return localStorage.getItem(DAILY_PLAY_KEY) === todayKey();
+}
+function markPlayedToday() {
+  localStorage.setItem(DAILY_PLAY_KEY, todayKey());
+}
+function msUntilMidnight() {
+  const now = new Date();
+  const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0, 0);
+  return tomorrow - now;
+}
+function formatCountdown(ms) {
+  const s = Math.max(0, Math.floor(ms / 1000));
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const sec = s % 60;
+  return `${h}h ${String(m).padStart(2, '0')}m ${String(sec).padStart(2, '0')}s`;
+}
+let dailyCountdownInterval = null;
+function applyDailyLimitUI() {
+  const startBtn = document.getElementById('startTrivia');
+  const picker = document.querySelector('.trivia-category-picker');
+  let note = document.getElementById('trivDailyNote');
+  if (hasPlayedToday()) {
+    if (startBtn) { startBtn.disabled = true; startBtn.classList.add('is-disabled'); startBtn.textContent = 'Come Back Tomorrow'; }
+    if (picker) picker.style.opacity = '0.5';
+    if (!note) {
+      note = document.createElement('div');
+      note.id = 'trivDailyNote';
+      note.className = 'trivia-daily-note';
+      note.style.cssText = 'margin-top:14px;padding:12px 16px;border-radius:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);font-size:14px;text-align:center;';
+      const intro = document.querySelector('.trivia-intro');
+      if (intro) intro.appendChild(note);
+    }
+    const tick = () => {
+      if (!hasPlayedToday()) { clearInterval(dailyCountdownInterval); applyDailyLimitUI(); return; }
+      if (note) note.innerHTML = `<strong>Next attempt unlocks in</strong><br>${formatCountdown(msUntilMidnight())}`;
+    };
+    tick();
+    clearInterval(dailyCountdownInterval);
+    dailyCountdownInterval = setInterval(tick, 1000);
+  } else {
+    if (startBtn) { startBtn.disabled = false; startBtn.classList.remove('is-disabled'); startBtn.textContent = 'Start the Climb'; }
+    if (picker) picker.style.opacity = '';
+    if (note && note.parentNode) note.parentNode.removeChild(note);
+    clearInterval(dailyCountdownInterval);
+    dailyCountdownInterval = null;
+  }
+}
 
 function updateStatsDisplay() {
   const s = getStats();
@@ -283,6 +339,7 @@ function renderLadder() {
 
 /* ------------ Game Flow ------------ */
 function startGame() {
+  if (hasPlayedToday()) { applyDailyLimitUI(); return; }
   const cat = document.getElementById('trivCategory').value;
   currentDeck = buildDeck(cat);
   qIdx = 0;
@@ -388,6 +445,8 @@ function endGame(reason) {
   clearInterval(timerInterval);
   detachAntiCheat();
   exitGameFullscreen();
+  // Burn the daily attempt on any completed game (including cheat forfeits).
+  markPlayedToday();
 
   let banked = 0;
   let outcome = '—';
@@ -577,7 +636,10 @@ function updateLbCountdown() {
 
 /* ------------ Bindings ------------ */
 document.getElementById('startTrivia')?.addEventListener('click', startGame);
-document.getElementById('playAgainBtn')?.addEventListener('click', () => showScreen('screenIntro'));
+document.getElementById('playAgainBtn')?.addEventListener('click', () => {
+  showScreen('screenIntro');
+  applyDailyLimitUI();
+});
 document.getElementById('walkAwayBtn')?.addEventListener('click', walkAway);
 document.getElementById('shareResultBtn')?.addEventListener('click', () => {
   const scoreEl = document.getElementById('trivFinalScore');
@@ -598,3 +660,4 @@ renderLeaderboard();
 renderPastGames();
 updateLbCountdown();
 setInterval(updateLbCountdown, 60000);
+applyDailyLimitUI();
