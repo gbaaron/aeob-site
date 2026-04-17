@@ -39,6 +39,8 @@ exports.handler = async (event) => {
       episodeNumber: r.fields.EpisodeNumber || 0,
       title: r.fields.Title || '',
       youtubeUrl: r.fields.YouTubeURL || '',
+      audioUrl: r.fields.AudioURL || '',
+      featured: !!r.fields.Featured,
       era: r.fields.Era || '',
       teams: r.fields.Teams || [],
       hosts: r.fields.Hosts || [],

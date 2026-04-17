@@ -41,6 +41,32 @@ const Auth = (() => {
     return !!getToken() && !!getUser();
   }
 
+  function isAdmin() {
+    const u = getUser();
+    if (!u) return false;
+    return u.role === 'Admin' || u.role === 'SuperAdmin';
+  }
+
+  /** Authenticated fetch helper for admin endpoints. */
+  async function authFetch(path, options = {}) {
+    const token = getToken();
+    const headers = Object.assign({
+      'Content-Type': 'application/json'
+    }, options.headers || {});
+    if (token) headers['Authorization'] = 'Bearer ' + token;
+    const url = path.startsWith('/') ? path : ('/.netlify/functions/' + path);
+    const res = await fetch(url, Object.assign({}, options, { headers }));
+    let payload = null;
+    try { payload = await res.json(); } catch { payload = null; }
+    if (!res.ok) {
+      const msg = (payload && payload.error) || ('Request failed (' + res.status + ')');
+      const err = new Error(msg);
+      err.status = res.status;
+      throw err;
+    }
+    return payload;
+  }
+
   // ---------- UI Updates ----------
   function updateUI() {
     const user = getUser();
@@ -64,6 +90,13 @@ const Auth = (() => {
     });
     document.querySelectorAll('.auth-guest').forEach(el => {
       el.style.display = loggedIn ? 'none' : '';
+    });
+
+    // Show admin-only elements only to admin users
+    const admin = isAdmin();
+    document.body.classList.toggle('is-admin', admin);
+    document.querySelectorAll('[data-admin]').forEach(el => {
+      el.style.display = admin ? '' : 'none';
     });
 
     // Dispatch event for other modules
@@ -184,8 +217,10 @@ const Auth = (() => {
   // ---------- Public API ----------
   return {
     isLoggedIn,
+    isAdmin,
     getUser,
     getToken,
+    authFetch,
     openModal,
     closeModal,
     login,

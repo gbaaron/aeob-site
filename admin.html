@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — AEOB</title>
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body class="admin-page">
+
+  <!-- Gatekeeper: shown before auth check resolves -->
+  <div class="admin-gate" id="adminGate">
+    <div class="admin-gate-inner">
+      <div class="preloader-ball"></div>
+      <h2>Checking admin access...</h2>
+      <p id="adminGateMsg">Verifying your session.</p>
+      <div style="margin-top:16px;display:none;" id="adminGateActions">
+        <a href="/" class="btn btn-outline">Go Home</a>
+        <button class="btn btn-primary" id="adminGateLogin">Sign In</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="header" id="header">
+    <div class="header-inner">
+      <a href="/" class="header-logo"><img src="https://res.cloudinary.com/djngpyv15/image/upload/v1776447309/274701765_319754193505498_1268754374260370953_n-removebg-preview_k6uyha.png" alt="AEOB"><span>AEOB <em style="font-style:normal;opacity:.6;">Admin</em></span></a>
+      <nav class="nav">
+        <a href="/">Back to Site</a>
+        <a href="/admin.html" class="active">Dashboard</a>
+      </nav>
+      <div class="header-actions">
+        <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode">&#9790;</button>
+        <div class="user-avatar" id="userAvatar"></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="admin-shell" id="adminShell" style="display:none;">
+    <!-- Admin Sidebar + Content -->
+    <aside class="admin-sidebar">
+      <div class="admin-user-chip">
+        <div class="admin-user-avatar" id="adminUserAvatar">A</div>
+        <div>
+          <div class="admin-user-name" id="adminUserName">Admin</div>
+          <div class="admin-user-role" id="adminUserRole">Admin</div>
+        </div>
+      </div>
+      <nav class="admin-tabs">
+        <button class="admin-tab active" data-tab="overview"><span>&#128202;</span> Overview</button>
+        <button class="admin-tab" data-tab="episodes"><span>&#127909;</span> Episodes</button>
+        <button class="admin-tab" data-tab="shop"><span>&#128722;</span> Shop</button>
+        <button class="admin-tab" data-tab="predictions"><span>&#127942;</span> Predictions</button>
+        <button class="admin-tab" data-tab="submissions"><span>&#128172;</span> Submissions</button>
+        <button class="admin-tab" data-tab="users"><span>&#128101;</span> Users</button>
+      </nav>
+    </aside>
+
+    <section class="admin-content">
+      <!-- OVERVIEW -->
+      <div class="admin-panel active" id="panel-overview">
+        <header class="admin-panel-head">
+          <h1>Overview</h1>
+          <p class="muted-sm">High-level stats from your Airtable base.</p>
+        </header>
+
+        <div class="admin-stat-grid" id="adminStatGrid">
+          <div class="admin-stat-card">
+            <span class="label">Users</span>
+            <span class="value" data-stat="users">—</span>
+          </div>
+          <div class="admin-stat-card">
+            <span class="label">Episodes</span>
+            <span class="value" data-stat="episodes">—</span>
+            <span class="foot">Featured: <b data-stat="featuredEpisodes">—</b></span>
+          </div>
+          <div class="admin-stat-card">
+            <span class="label">Products</span>
+            <span class="value" data-stat="products">—</span>
+            <span class="foot">Active: <b data-stat="activeProducts">—</b></span>
+          </div>
+          <div class="admin-stat-card">
+            <span class="label">Predictions</span>
+            <span class="value" data-stat="predictions">—</span>
+            <span class="foot">Open: <b data-stat="openPredictions">—</b></span>
+          </div>
+          <div class="admin-stat-card">
+            <span class="label">Submissions</span>
+            <span class="value" data-stat="submissions">—</span>
+            <span class="foot">Pending: <b data-stat="pendingSubmissions">—</b></span>
+          </div>
+        </div>
+
+        <div class="admin-section" id="missingTablesNote" style="display:none;">
+          <div class="admin-alert">
+            <strong>Missing Airtable tables</strong>
+            <p class="muted-sm">These tables don't exist in your Airtable base yet. Create them to enable the matching admin tools.</p>
+            <ul id="missingTablesList"></ul>
+          </div>
+        </div>
+
+        <div class="admin-section">
+          <h3>Setup Checklist</h3>
+          <ul class="admin-checklist" id="setupChecklist">
+            <li>Add <code>Role</code> column (single-line text) to the Airtable <code>Users</code> table. Set your own user to <code>Admin</code>.</li>
+            <li>Add <code>AudioURL</code> (URL) and <code>Featured</code> (checkbox) columns to the Airtable <code>Episodes</code> table.</li>
+            <li>Create a <code>MerchProducts</code> table with these fields (see the Shop tab for details).</li>
+            <li>Optional: set <code>ADMIN_EMAILS</code> env var in Netlify to bootstrap admin access.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- EPISODES -->
+      <div class="admin-panel" id="panel-episodes">
+        <header class="admin-panel-head">
+          <h1>Episodes</h1>
+          <p class="muted-sm">Mark episodes as Featured and attach Audio URLs for the podcast player.</p>
+        </header>
+        <div class="admin-toolbar">
+          <input type="search" class="form-input" id="episodeSearch" placeholder="Search episodes..." style="max-width:260px;">
+          <button class="btn btn-outline btn-sm" id="refreshEpisodes">Refresh</button>
+        </div>
+        <div class="admin-table-wrap">
+          <table class="admin-table" id="episodesTable">
+            <thead>
+              <tr>
+                <th style="width:60px;">#</th>
+                <th>Title</th>
+                <th style="width:90px;">Featured</th>
+                <th style="width:320px;">Audio URL</th>
+                <th style="width:100px;"></th>
+              </tr>
+            </thead>
+            <tbody><tr><td colspan="5" class="muted-sm">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- SHOP -->
+      <div class="admin-panel" id="panel-shop">
+        <header class="admin-panel-head">
+          <h1>Shop</h1>
+          <p class="muted-sm">Manage merch products. Stored in the Airtable <code>MerchProducts</code> table.</p>
+        </header>
+
+        <details class="admin-hint">
+          <summary>Required Airtable fields for the <code>MerchProducts</code> table</summary>
+          <p class="muted-sm">Create these columns in Airtable if you haven't already:</p>
+          <ul class="admin-field-list">
+            <li><code>Name</code> — single-line text</li>
+            <li><code>Slug</code> — single-line text</li>
+            <li><code>Description</code> — long text</li>
+            <li><code>Price</code> — number (currency)</li>
+            <li><code>ComparePrice</code> — number (currency, for "was" pricing)</li>
+            <li><code>Category</code> — single select: apparel, caps, accessories, throwback, new</li>
+            <li><code>Badge</code> — single-line text (e.g. "New", "Bestseller")</li>
+            <li><code>Color</code> — single-line text (hex, e.g. #1a1f5e)</li>
+            <li><code>Stock</code> — number</li>
+            <li><code>Status</code> — single select: Active, Draft, Archived</li>
+            <li><code>Sizes</code> — single-line text, comma-separated (e.g. "S,M,L,XL")</li>
+            <li><code>SortOrder</code> — number</li>
+            <li><code>ImageURL</code> — URL</li>
+          </ul>
+        </details>
+
+        <div class="admin-toolbar">
+          <button class="btn btn-primary" id="newProductBtn">+ New Product</button>
+          <button class="btn btn-outline btn-sm" id="refreshProducts">Refresh</button>
+        </div>
+
+        <div class="admin-table-wrap">
+          <table class="admin-table" id="productsTable">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th style="width:100px;">Price</th>
+                <th style="width:120px;">Category</th>
+                <th style="width:80px;">Stock</th>
+                <th style="width:100px;">Status</th>
+                <th style="width:120px;"></th>
+              </tr>
+            </thead>
+            <tbody><tr><td colspan="6" class="muted-sm">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- PREDICTIONS -->
+      <div class="admin-panel" id="panel-predictions">
+        <header class="admin-panel-head">
+          <h1>Predictions</h1>
+          <p class="muted-sm">Create prediction questions, then mark the correct answer when the episode airs.</p>
+        </header>
+
+        <details class="admin-hint">
+          <summary>Required Airtable fields for the <code>Predictions</code> table</summary>
+          <ul class="admin-field-list">
+            <li><code>Question</code> — long text</li>
+            <li><code>Status</code> — single select: Open, Resolved, Closed</li>
+            <li><code>Options</code> — long text (JSON array of strings)</li>
+            <li><code>CorrectAnswer</code> — single-line text</li>
+            <li><code>Episode</code> — single-line text (optional)</li>
+            <li><code>HostPicks</code> — long text (JSON of {host: pick})</li>
+            <li><code>ResolvedAt</code> — date</li>
+          </ul>
+        </details>
+
+        <div class="admin-toolbar">
+          <button class="btn btn-primary" id="newPredictionBtn">+ New Question</button>
+          <button class="btn btn-outline btn-sm" id="refreshPredictions">Refresh</button>
+        </div>
+
+        <div class="admin-cards" id="predictionsList">
+          <p class="muted-sm">Loading...</p>
+        </div>
+      </div>
+
+      <!-- SUBMISSIONS -->
+      <div class="admin-panel" id="panel-submissions">
+        <header class="admin-panel-head">
+          <h1>Fan Submissions</h1>
+          <p class="muted-sm">Approve, reject, or feature fan-submitted questions and takes.</p>
+        </header>
+
+        <div class="admin-toolbar">
+          <select class="form-input form-select" id="submissionFilter" style="max-width:200px;">
+            <option value="Pending">Pending</option>
+            <option value="Approved">Approved</option>
+            <option value="Rejected">Rejected</option>
+            <option value="">All</option>
+          </select>
+          <button class="btn btn-outline btn-sm" id="refreshSubmissions">Refresh</button>
+        </div>
+
+        <div class="admin-cards" id="submissionsList">
+          <p class="muted-sm">Loading...</p>
+        </div>
+      </div>
+
+      <!-- USERS -->
+      <div class="admin-panel" id="panel-users">
+        <header class="admin-panel-head">
+          <h1>Users</h1>
+          <p class="muted-sm">Read-only view of registered users. Role changes are made in Airtable.</p>
+        </header>
+
+        <div class="admin-toolbar">
+          <input type="search" class="form-input" id="userSearch" placeholder="Search name or email..." style="max-width:260px;">
+          <button class="btn btn-outline btn-sm" id="refreshUsers">Refresh</button>
+        </div>
+
+        <div class="admin-table-wrap">
+          <table class="admin-table" id="usersTable">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Tier</th>
+                <th>Points</th>
+                <th>Favorite Era / Team</th>
+              </tr>
+            </thead>
+            <tbody><tr><td colspan="6" class="muted-sm">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Product Editor Modal -->
+  <div class="admin-modal" id="productModal">
+    <div class="admin-modal-box">
+      <button class="admin-modal-close" data-close>&times;</button>
+      <h2 id="productModalTitle">New Product</h2>
+      <form id="productForm" class="admin-form">
+        <input type="hidden" id="productId">
+        <div class="admin-form-grid">
+          <label>Name <input type="text" name="Name" required></label>
+          <label>Slug <input type="text" name="Slug" placeholder="auto-generated"></label>
+          <label>Price (₱) <input type="number" step="0.01" name="Price" required></label>
+          <label>Compare Price (₱) <input type="number" step="0.01" name="ComparePrice"></label>
+          <label>Category
+            <select name="Category">
+              <option value="apparel">Apparel</option>
+              <option value="caps">Caps</option>
+              <option value="accessories">Accessories</option>
+              <option value="throwback">Throwback</option>
+              <option value="new">New Arrivals</option>
+            </select>
+          </label>
+          <label>Badge <input type="text" name="Badge" placeholder="e.g. Bestseller"></label>
+          <label>Color (hex) <input type="text" name="Color" placeholder="#1a1f5e"></label>
+          <label>Stock <input type="number" name="Stock" value="100"></label>
+          <label>Sort Order <input type="number" name="SortOrder" value="0"></label>
+          <label>Status
+            <select name="Status">
+              <option value="Active">Active</option>
+              <option value="Draft">Draft</option>
+              <option value="Archived">Archived</option>
+            </select>
+          </label>
+          <label class="admin-form-full">Sizes (comma-separated) <input type="text" name="Sizes" placeholder="S, M, L, XL"></label>
+          <label class="admin-form-full">Image URL <input type="url" name="ImageURL"></label>
+          <label class="admin-form-full">Description <textarea name="Description" rows="3"></textarea></label>
+        </div>
+        <div class="admin-form-actions">
+          <button type="button" class="btn btn-outline" data-close>Cancel</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Prediction Editor Modal -->
+  <div class="admin-modal" id="predictionModal">
+    <div class="admin-modal-box">
+      <button class="admin-modal-close" data-close>&times;</button>
+      <h2 id="predictionModalTitle">New Prediction</h2>
+      <form id="predictionForm" class="admin-form">
+        <input type="hidden" id="predictionId">
+        <label>Question <textarea name="Question" required rows="2"></textarea></label>
+        <label>Episode <input type="text" name="Episode" placeholder="e.g. Ep 301"></label>
+        <label>Options (one per line)
+          <textarea name="Options" rows="4" placeholder="Yes&#10;No&#10;Maybe"></textarea>
+        </label>
+        <label>Status
+          <select name="Status">
+            <option value="Open">Open</option>
+            <option value="Closed">Closed</option>
+            <option value="Resolved">Resolved</option>
+          </select>
+        </label>
+        <label>Correct Answer <input type="text" name="CorrectAnswer" placeholder="Leave blank until resolved"></label>
+        <div class="admin-form-actions">
+          <button type="button" class="btn btn-outline" data-close>Cancel</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script src="/js/main.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/admin.js"></script>
+</body>
+</html>

@@ -11,30 +11,45 @@
      STICKY AUDIO PLAYER
      ------------------------------------------------------------------------- */
 
-  // Placeholder episode list. Replace the `src` values with real MP3 URLs later.
-  const AUDIO_EPISODES = [
-    {
-      id: 'ep-300',
-      title: 'Ep 300: The Landmark Special',
-      host: 'Charlie, Sid, Noel & Jay',
-      cover: 'https://res.cloudinary.com/djngpyv15/image/upload/v1776447309/274701765_319754193505498_1268754374260370953_n-removebg-preview_k6uyha.png',
-      src: '' // user pastes real audio URL here
-    },
-    {
-      id: 'ep-299',
-      title: 'Ep 299: Atoy Co and the Crispa Dynasty',
-      host: 'Charlie & Sid',
-      cover: 'https://res.cloudinary.com/djngpyv15/image/upload/v1776447309/274701765_319754193505498_1268754374260370953_n-removebg-preview_k6uyha.png',
-      src: ''
-    },
-    {
-      id: 'ep-298',
-      title: 'Ep 298: The Greatest Imports of the 90s',
-      host: 'Noel & Jay',
-      cover: 'https://res.cloudinary.com/djngpyv15/image/upload/v1776447309/274701765_319754193505498_1268754374260370953_n-removebg-preview_k6uyha.png',
-      src: ''
+  // Episodes are fetched live from /.netlify/functions/episodes-list
+  // Falls back to a minimal stub if the API is unreachable (e.g. local preview).
+  const DEFAULT_COVER = 'https://res.cloudinary.com/djngpyv15/image/upload/v1776447309/274701765_319754193505498_1268754374260370953_n-removebg-preview_k6uyha.png';
+  const FALLBACK_EPISODES = [{
+    id: 'placeholder',
+    title: 'Podcast episodes will appear here',
+    host: 'Connect Airtable to load real episodes',
+    cover: DEFAULT_COVER,
+    src: ''
+  }];
+
+  let AUDIO_EPISODES = FALLBACK_EPISODES.slice();
+  let episodesLoaded = false;
+
+  async function fetchEpisodes() {
+    try {
+      const res = await fetch('/.netlify/functions/episodes-list?pageSize=50');
+      if (!res.ok) throw new Error('Bad response');
+      const data = await res.json();
+      if (!data.episodes || !data.episodes.length) return null;
+
+      // Prefer episodes with an audio URL; if any are marked Featured, show only those first.
+      const withAudio = data.episodes.filter(ep => ep.audioUrl);
+      const featured  = withAudio.filter(ep => ep.featured);
+      const pool      = featured.length ? featured : (withAudio.length ? withAudio : data.episodes);
+
+      return pool.map(ep => ({
+        id: ep.id || ('ep-' + ep.episodeNumber),
+        title: ep.episodeNumber ? ('Ep ' + ep.episodeNumber + ': ' + ep.title) : ep.title,
+        host: Array.isArray(ep.hosts) && ep.hosts.length ? ep.hosts.join(', ') : 'AEOB',
+        cover: DEFAULT_COVER,
+        src: ep.audioUrl || '',
+        youtubeUrl: ep.youtubeUrl || ''
+      }));
+    } catch (err) {
+      console.warn('[AEOBAudio] Could not fetch episodes, using fallback.', err);
+      return null;
     }
-  ];
+  }
 
   const PLAYER_STATE_KEY = 'aeob-audio-state';
 
@@ -217,7 +232,17 @@
           loadEpisode(n, true);
         }
       },
-      list: AUDIO_EPISODES
+      refresh(newList) {
+        if (!newList || !newList.length) return;
+        const prevId = AUDIO_EPISODES[idx] && AUDIO_EPISODES[idx].id;
+        AUDIO_EPISODES = newList;
+        window.AEOBAudio.list = AUDIO_EPISODES;
+        // Try to keep the same episode selected, else go to newest
+        const n = prevId ? AUDIO_EPISODES.findIndex(e => e.id === prevId) : -1;
+        idx = n >= 0 ? n : 0;
+        loadEpisode(idx, false);
+      },
+      get list() { return AUDIO_EPISODES; }
     };
 
     audio.playbackRate = speed;
@@ -394,6 +419,14 @@
   function boot() {
     initPlayer();
     initCommentsObserver();
+
+    // Kick off live episode fetch and refresh the player when it arrives
+    fetchEpisodes().then(list => {
+      if (list && window.AEOBAudio && typeof window.AEOBAudio.refresh === 'function') {
+        episodesLoaded = true;
+        window.AEOBAudio.refresh(list);
+      }
+    });
   }
 
   if (document.readyState === 'loading') {

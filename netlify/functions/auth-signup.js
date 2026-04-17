@@ -4,9 +4,9 @@
 const Airtable = require('airtable');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { resolveRole, JWT_SECRET } = require('./_shared/auth');
 
 const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(process.env.AIRTABLE_BASE_ID);
-const JWT_SECRET = process.env.JWT_SECRET || 'aeob-dev-secret';
 const USERS_TABLE = 'Users';
 
 exports.handler = async (event) => {
@@ -62,9 +62,11 @@ exports.handler = async (event) => {
       CreatedAt: new Date().toISOString()
     });
 
+    const role = resolveRole(email.toLowerCase(), 'User');
+
     // Generate JWT
     const token = jwt.sign(
-      { userId: record.id, email: email.toLowerCase(), name },
+      { userId: record.id, email: email.toLowerCase(), name, role },
       JWT_SECRET,
       { expiresIn: '30d' }
     );
@@ -73,6 +75,7 @@ exports.handler = async (event) => {
       id: record.id,
       name,
       email: email.toLowerCase(),
+      role,
       favEra: favEra || '',
       favTeam: favTeam || '',
       points: 0,

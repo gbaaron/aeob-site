@@ -1,11 +1,11 @@
 /* ============================================
    AEOB — Shop
-   Placeholder product catalog, filtering, cart
-   stored in localStorage. Swap PRODUCTS for
-   Shopify/Airtable data later.
+   Fetches products from Airtable via shop-list
+   Netlify function. Falls back to placeholder
+   catalog if the table is empty or offline.
    ============================================ */
 
-const PRODUCTS = [
+const FALLBACK_PRODUCTS = [
   { id:'p-1', name:'AEOB Classic Logo Tee', price:990, category:'apparel', badge:'Bestseller', color:'#cc2030',
     desc:'Heavyweight cotton tee with the classic AEOB shield print.', sizes:['S','M','L','XL','2XL'] },
   { id:'p-2', name:'"Never Say Die" Tribute Tee', price:1090, category:'apparel', badge:'Limited', color:'#1a1f5e',
@@ -32,6 +32,39 @@ const PRODUCTS = [
     desc:'Tribute to June Mar Fajardo\'s six MVPs. Ocean blue print.', sizes:['S','M','L','XL','2XL'] }
 ];
 
+// Live products array (starts as fallback, replaced after fetch)
+let PRODUCTS = FALLBACK_PRODUCTS.slice();
+
+// Map Airtable product to local shape
+function mapProduct(p) {
+  return {
+    id: p.id,
+    name: p.name,
+    price: Number(p.price) || 0,
+    comparePrice: p.comparePrice ? Number(p.comparePrice) : null,
+    category: (p.category || 'apparel').toLowerCase(),
+    badge: p.badge || null,
+    color: p.color || '#1a1f5e',
+    desc: p.description || '',
+    sizes: Array.isArray(p.sizes) && p.sizes.length ? p.sizes : ['One Size'],
+    imageUrl: p.imageUrl || null,
+    stock: p.stock,
+    status: p.status
+  };
+}
+
+async function fetchProducts() {
+  try {
+    const res = await fetch('/.netlify/functions/shop-list');
+    if (!res.ok) return null;
+    const data = await res.json();
+    const list = (data.products || []).map(mapProduct);
+    return list.length ? list : null;
+  } catch (e) {
+    return null;
+  }
+}
+
 // ---------- State ----------
 let currentCategory = 'all';
 let currentSort = 'featured';
@@ -42,7 +75,10 @@ function getCart() { return JSON.parse(localStorage.getItem('aeob-cart') || '[]'
 function saveCart(c) { localStorage.setItem('aeob-cart', JSON.stringify(c)); updateCartBadge(); }
 
 function productImage(p) {
-  // Placeholder colored tile with product initials (replace with real images later)
+  // Use real image if provided, else colored tile with initials
+  if (p.imageUrl) {
+    return `<div class="product-img" style="background-image:url('${p.imageUrl}');background-size:cover;background-position:center;width:100%;aspect-ratio:1;"></div>`;
+  }
   const initials = p.name.split(' ').filter(w => /^[A-Z]/.test(w[0])).slice(0, 3).map(w => w[0]).join('');
   return `<div class="product-img-placeholder" style="background:linear-gradient(135deg, ${p.color} 0%, rgba(0,0,0,0.5) 100%);">
     <div class="product-img-initials">${initials || 'AEOB'}</div>
@@ -266,3 +302,11 @@ renderGrid();
 updateCartBadge();
 renderCartDrawer();
 applyHashCategory();
+
+// Try to load live products; fall back silently on failure
+fetchProducts().then(live => {
+  if (live && live.length) {
+    PRODUCTS = live;
+    renderGrid();
+  }
+});
