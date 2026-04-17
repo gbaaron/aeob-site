@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Watch Live — An Eternity of Basketball</title>
+  <meta name="description" content="Watch An Eternity of Basketball live every Saturday. Multi-platform stream, live chat, and real-time prediction polls.">
+  <meta property="og:title" content="Watch Live | An Eternity of Basketball">
+  <meta property="og:description" content="Catch the AEOB crew live every Saturday with chat and live predictions.">
+  <meta property="og:type" content="website">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+  <!-- Preloader -->
+  <div class="preloader" id="preloader"><div class="preloader-ball"></div></div>
+
+  <!-- Header -->
+  <header class="header" id="header">
+    <div class="header-inner">
+      <a href="/" class="header-logo">
+        <img src="https://res.cloudinary.com/djngpyv15/image/upload/v1776447309/274701765_319754193505498_1268754374260370953_n-removebg-preview_k6uyha.png" alt="AEOB Logo">
+        <span>AEOB</span>
+      </a>
+      <nav class="nav" id="nav">
+        <a href="/">Home</a>
+        <a href="/live.html" class="active">Live</a>
+        <a href="/episodes.html">Episodes</a>
+        <a href="/predictions.html">Predictions</a>
+        <a href="/trivia.html">Trivia</a>
+        <a href="/submissions.html">Fan Zone</a>
+        <a href="/shop.html">Shop</a>
+        <a href="/rewards.html">Rewards</a>
+        <a href="/schedule.html">Schedule</a>
+        <a href="/about.html">About</a>
+      </nav>
+      <div class="header-actions">
+        <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode">&#9790;</button>
+        <button class="btn-login" id="loginBtn">Sign In</button>
+        <div class="user-avatar" id="userAvatar"></div>
+        <button class="hamburger" id="hamburger" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Live Hero / Status Bar -->
+  <section class="live-hero">
+    <div class="container">
+      <div class="live-status-bar">
+        <div class="live-indicator" id="liveIndicator">
+          <span class="live-dot"></span>
+          <span id="liveStatusText">Checking stream status...</span>
+        </div>
+        <h1 class="live-hero-title">Watch Live</h1>
+        <p class="live-hero-subtitle">Join the crew every Saturday for new episodes, live chat, and real-time predictions.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Live Layout -->
+  <section class="section live-section">
+    <div class="container">
+      <div class="live-layout">
+
+        <!-- Left Column: Video + Stream Switcher -->
+        <div class="live-main">
+
+          <!-- Stream Platform Tabs -->
+          <div class="stream-tabs" id="streamTabs">
+            <button class="stream-tab active" data-stream="youtube">
+              <span class="stream-tab-icon">&#9654;</span> YouTube
+            </button>
+            <button class="stream-tab" data-stream="facebook">
+              <span class="stream-tab-icon">f</span> Facebook
+            </button>
+            <button class="stream-tab" data-stream="streamyard">
+              <span class="stream-tab-icon">&#128250;</span> StreamYard
+            </button>
+          </div>
+
+          <!-- Video Player Wrapper -->
+          <div class="live-player-wrap">
+            <!-- Offline state -->
+            <div class="live-offline" id="liveOffline">
+              <div class="live-offline-inner">
+                <div class="live-offline-icon">&#127936;</div>
+                <h2>We&rsquo;re offline right now</h2>
+                <p>The next episode goes live in:</p>
+                <div class="countdown-blocks countdown-blocks-live" id="liveCountdown">
+                  <div class="countdown-block"><div class="num" id="live-days">--</div><div class="unit">Days</div></div>
+                  <div class="countdown-block"><div class="num" id="live-hours">--</div><div class="unit">Hours</div></div>
+                  <div class="countdown-block"><div class="num" id="live-mins">--</div><div class="unit">Mins</div></div>
+                  <div class="countdown-block"><div class="num" id="live-secs">--</div><div class="unit">Secs</div></div>
+                </div>
+                <div class="live-offline-actions">
+                  <button class="btn btn-primary" id="watchPartyBtn">&#128276; Remind Me When Live</button>
+                  <a href="/episodes.html" class="btn btn-outline">Browse Past Episodes</a>
+                </div>
+                <p class="live-offline-note" id="nextEpisodeTitle">Loading next episode...</p>
+              </div>
+            </div>
+
+            <!-- Live player (hidden until live) -->
+            <div class="live-player" id="livePlayer" style="display:none;">
+              <div class="video-wrap" id="liveVideoWrap">
+                <!-- Iframe injected by JS based on selected platform -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Below player: episode info + reactions -->
+          <div class="live-episode-info" id="liveEpisodeInfo">
+            <div class="live-episode-meta">
+              <span class="badge">This Week&rsquo;s Episode</span>
+              <h2 id="liveEpisodeTitle">Loading...</h2>
+              <p id="liveEpisodeDesc">Episode details will appear here when we go live.</p>
+            </div>
+
+            <!-- Live Reactions (always visible) -->
+            <div class="live-reactions">
+              <p class="reactions-label">React to the show</p>
+              <div class="reaction-buttons">
+                <button class="reaction-btn" data-reaction="fire">&#128293; <span class="r-count" data-count="0">0</span></button>
+                <button class="reaction-btn" data-reaction="goat">&#129415; <span class="r-count" data-count="0">0</span></button>
+                <button class="reaction-btn" data-reaction="laugh">&#128514; <span class="r-count" data-count="0">0</span></button>
+                <button class="reaction-btn" data-reaction="shock">&#128562; <span class="r-count" data-count="0">0</span></button>
+                <button class="reaction-btn" data-reaction="clap">&#128079; <span class="r-count" data-count="0">0</span></button>
+                <button class="reaction-btn" data-reaction="basketball">&#127936; <span class="r-count" data-count="0">0</span></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Chat + Live Polls -->
+        <aside class="live-sidebar">
+
+          <!-- Sidebar Tabs -->
+          <div class="sidebar-tabs">
+            <button class="sidebar-tab active" data-sidebar="chat">&#128172; Chat</button>
+            <button class="sidebar-tab" data-sidebar="polls">&#128200; Live Polls</button>
+            <button class="sidebar-tab" data-sidebar="viewers">&#128100; <span id="viewerCount">0</span></button>
+          </div>
+
+          <!-- Chat Panel -->
+          <div class="sidebar-panel active" id="chatPanel">
+            <div class="chat-platform-note">
+              <span id="chatPlatformText">Showing YouTube Live Chat</span>
+            </div>
+            <div class="chat-wrap" id="chatWrap">
+              <div class="chat-placeholder">
+                <div class="chat-placeholder-icon">&#128172;</div>
+                <p>Chat appears here when we go live.</p>
+                <p class="muted-sm">Chat syncs with the stream platform you&rsquo;re watching on.</p>
+              </div>
+            </div>
+            <div class="chat-login-hint" id="chatLoginHint">
+              <p>Want to chat directly on the site?</p>
+              <button class="btn btn-outline btn-sm" id="chatSignInBtn">Sign In</button>
+            </div>
+          </div>
+
+          <!-- Live Polls Panel -->
+          <div class="sidebar-panel" id="pollsPanel">
+            <div class="live-polls-header">
+              <h3>Live Predictions</h3>
+              <p class="muted-sm">Questions unlock as topics come up on the show.</p>
+            </div>
+            <div class="live-polls-list" id="livePollsList">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+          <!-- Viewers Panel -->
+          <div class="sidebar-panel" id="viewersPanel">
+            <div class="viewers-list" id="viewersList">
+              <p class="muted-sm">Fans watching right now appear here during live broadcasts.</p>
+            </div>
+          </div>
+        </aside>
+
+      </div>
+
+      <!-- Upcoming Stream Schedule -->
+      <div class="live-upcoming">
+        <h2>Upcoming Streams</h2>
+        <div class="upcoming-streams" id="upcomingStreams">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="/" class="header-logo" style="margin-bottom:8px;">
+            <img src="https://res.cloudinary.com/djngpyv15/image/upload/v1776447309/274701765_319754193505498_1268754374260370953_n-removebg-preview_k6uyha.png" alt="AEOB" style="height:40px;">
+            <span style="color:#fff;">An Eternity of Basketball</span>
+          </a>
+          <p>Reliving the golden eras of PBA basketball since day one. 300+ episodes and counting.</p>
+        </div>
+        <div><h4>Browse</h4><ul><li><a href="/live.html">Watch Live</a></li><li><a href="/episodes.html">Episodes</a></li><li><a href="/predictions.html">Predictions</a></li><li><a href="/rewards.html">Rewards</a></li></ul></div>
+        <div><h4>More</h4><ul><li><a href="/schedule.html">Schedule</a></li><li><a href="/about.html">About</a></li><li><a href="#">Contact</a></li></ul></div>
+        <div><h4>Listen On</h4><ul><li><a href="#">YouTube</a></li><li><a href="#">Spotify</a></li><li><a href="#">Apple Podcasts</a></li><li><a href="#">Facebook</a></li></ul></div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2024 An Eternity of Basketball. All rights reserved.</span>
+        <span class="network">Part of the Globally Ballin Network</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Back to Top -->
+  <button class="back-to-top" id="backToTop" aria-label="Back to top">&#8593;</button>
+
+  <!-- Scripts -->
+  <script src="/js/main.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/live.js"></script>
+  <script src="/js/aeob-extensions.js"></script>
+</body>
+</html>

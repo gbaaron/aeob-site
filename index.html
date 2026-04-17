@@ -41,15 +41,18 @@
   <header class="header" id="header">
     <div class="header-inner">
       <a href="/" class="header-logo">
-        <img src="/assets/logo-badge.png" alt="AEOB Logo">
+        <img src="https://res.cloudinary.com/djngpyv15/image/upload/v1776447309/274701765_319754193505498_1268754374260370953_n-removebg-preview_k6uyha.png" alt="AEOB Logo">
         <span>AEOB</span>
       </a>
 
       <nav class="nav" id="nav">
         <a href="/" class="active">Home</a>
+        <a href="/live.html">Live</a>
         <a href="/episodes.html">Episodes</a>
         <a href="/predictions.html">Predictions</a>
+        <a href="/trivia.html">Trivia</a>
         <a href="/submissions.html">Fan Zone</a>
+        <a href="/shop.html">Shop</a>
         <a href="/rewards.html">Rewards</a>
         <a href="/schedule.html">Schedule</a>
         <a href="/about.html">About</a>
@@ -67,7 +70,20 @@
   </header>
 
   <!-- Hero Section -->
-  <section class="hero" id="hero">
+  <section class="hero hero-animated" id="hero">
+    <!-- Animated background: swap video source with real footage when ready -->
+    <div class="hero-bg">
+      <video class="hero-bg-video" autoplay muted loop playsinline poster="/assets/hero-poster.jpg">
+        <!-- <source src="/assets/hero-loop.mp4" type="video/mp4"> -->
+      </video>
+      <div class="hero-bg-fallback">
+        <span class="hero-ball hero-ball-1"></span>
+        <span class="hero-ball hero-ball-2"></span>
+        <span class="hero-ball hero-ball-3"></span>
+        <span class="hero-court-lines"></span>
+      </div>
+      <div class="hero-bg-scrim"></div>
+    </div>
     <div class="container">
       <div class="hero-content">
         <div class="hero-text">
@@ -176,6 +192,71 @@
           <h3>Personalized For You</h3>
           <p>Set your favorite era and team. The site surfaces the episodes you&rsquo;ll love most.</p>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Live Strip / On This Day -->
+  <section class="section home-dual" style="padding-top:40px;padding-bottom:40px;">
+    <div class="container">
+      <div class="home-dual-grid">
+
+        <!-- Live Strip -->
+        <a href="/live.html" class="live-strip reveal">
+          <div class="live-strip-pulse"></div>
+          <div class="live-strip-content">
+            <div class="live-strip-label" id="homeLiveLabel">Next Stream</div>
+            <h3 id="homeLiveTitle">Saturday &middot; 8:00 PM PHT</h3>
+            <p id="homeLiveSub">Watch live on our new Live page &mdash; multi-platform stream, chat, and live predictions.</p>
+          </div>
+          <div class="live-strip-cta">Watch Live &rarr;</div>
+        </a>
+
+        <!-- On This Day -->
+        <div class="on-this-day reveal">
+          <div class="on-this-day-date" id="onThisDayDate">—</div>
+          <div class="on-this-day-body">
+            <span class="badge">On This Day in PBA History</span>
+            <h3 id="onThisDayTitle">Loading...</h3>
+            <p id="onThisDayDesc"></p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Era Timeline -->
+  <section class="section era-timeline-section" style="background:var(--bg-secondary);">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="badge">The Journey</span>
+        <h2>Five Decades of PBA</h2>
+        <p>Click an era to dive into the episodes, legends, and moments that defined it.</p>
+      </div>
+      <div class="era-timeline reveal" id="eraTimeline">
+        <!-- Populated by JS -->
+      </div>
+      <div class="era-details reveal" id="eraDetails">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Legend of the Week -->
+  <section class="section legend-section">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="badge">Legend Spotlight</span>
+        <h2>Legend of the Week</h2>
+        <p>Every Monday, a new PBA great steps into the spotlight.</p>
+      </div>
+      <div class="legend-card reveal" id="legendCard">
+        <!-- Populated by JS -->
+      </div>
+      <div class="legend-nav">
+        <button class="btn btn-outline btn-sm" id="legendPrev">&larr; Previous Legend</button>
+        <button class="btn btn-outline btn-sm" id="legendNext">Next Legend &rarr;</button>
       </div>
     </div>
   </section>
@@ -349,7 +430,7 @@
       <div class="footer-grid">
         <div class="footer-brand">
           <a href="/" class="header-logo" style="margin-bottom:8px;">
-            <img src="/assets/logo-badge.png" alt="AEOB" style="height:40px;">
+            <img src="https://res.cloudinary.com/djngpyv15/image/upload/v1776447309/274701765_319754193505498_1268754374260370953_n-removebg-preview_k6uyha.png" alt="AEOB" style="height:40px;">
             <span style="color:#fff;">An Eternity of Basketball</span>
           </a>
           <p>Reliving the golden eras of PBA basketball since day one. 300+ episodes and counting.</p>
@@ -490,5 +571,7 @@
   <script src="/js/auth.js"></script>
   <script src="/js/episodes.js"></script>
   <script src="/js/schedule.js"></script>
+  <script src="/js/home-widgets.js"></script>
+  <script src="/js/aeob-extensions.js"></script>
 </body>
 </html>

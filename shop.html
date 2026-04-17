@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Official AEOB Shop — An Eternity of Basketball</title>
+  <meta name="description" content="Official An Eternity of Basketball merchandise. Shirts, caps, mugs, and classic PBA-era throwback designs.">
+  <meta property="og:title" content="AEOB Shop">
+  <meta property="og:description" content="Official merch for PBA history fans. Shirts, caps, throwback designs.">
+  <meta property="og:type" content="website">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+  <div class="preloader" id="preloader"><div class="preloader-ball"></div></div>
+
+  <!-- Header -->
+  <header class="header" id="header">
+    <div class="header-inner">
+      <a href="/" class="header-logo"><img src="https://res.cloudinary.com/djngpyv15/image/upload/v1776447309/274701765_319754193505498_1268754374260370953_n-removebg-preview_k6uyha.png" alt="AEOB Logo"><span>AEOB</span></a>
+      <nav class="nav" id="nav">
+        <a href="/">Home</a>
+        <a href="/live.html">Live</a>
+        <a href="/episodes.html">Episodes</a>
+        <a href="/predictions.html">Predictions</a>
+        <a href="/trivia.html">Trivia</a>
+        <a href="/submissions.html">Fan Zone</a>
+        <a href="/shop.html" class="active">Shop</a>
+        <a href="/rewards.html">Rewards</a>
+        <a href="/schedule.html">Schedule</a>
+        <a href="/about.html">About</a>
+      </nav>
+      <div class="header-actions">
+        <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode">&#9790;</button>
+        <button class="cart-toggle" id="cartToggle" aria-label="Open cart">
+          &#128722;
+          <span class="cart-badge" id="cartBadge" style="display:none;">0</span>
+        </button>
+        <button class="btn-login" id="loginBtn">Sign In</button>
+        <div class="user-avatar" id="userAvatar"></div>
+        <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero -->
+    <section class="shop-hero">
+      <div class="container">
+        <span class="badge">Official Merchandise</span>
+        <h1>The AEOB Shop</h1>
+        <p>Repping PBA history, one throwback at a time.</p>
+      </div>
+    </section>
+
+    <!-- Category Filter -->
+    <section class="section" style="padding-top:32px;padding-bottom:24px;">
+      <div class="container">
+        <div class="shop-toolbar">
+          <div class="shop-categories" id="shopCategories">
+            <button class="shop-cat active" data-cat="all">All Items</button>
+            <button class="shop-cat" data-cat="apparel">Apparel</button>
+            <button class="shop-cat" data-cat="caps">Caps</button>
+            <button class="shop-cat" data-cat="accessories">Accessories</button>
+            <button class="shop-cat" data-cat="throwback">Classic Era</button>
+            <button class="shop-cat" data-cat="new">New Arrivals</button>
+          </div>
+          <div class="shop-sort-wrap">
+            <select id="shopSort" class="form-input form-select">
+              <option value="featured">Featured</option>
+              <option value="price-asc">Price: Low to High</option>
+              <option value="price-desc">Price: High to Low</option>
+              <option value="newest">Newest First</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Product Grid -->
+    <section class="section" style="padding-top:0;">
+      <div class="container">
+        <div class="shop-grid" id="shopGrid"><!-- Populated by JS --></div>
+      </div>
+    </section>
+
+    <!-- Rewards Tease -->
+    <section class="section shop-perks-section">
+      <div class="container">
+        <div class="shop-perks">
+          <div class="shop-perks-item">
+            <div class="perks-icon">&#9989;</div>
+            <h4>Free PH Shipping</h4>
+            <p>On orders over ₱2,000.</p>
+          </div>
+          <div class="shop-perks-item">
+            <div class="perks-icon">&#127942;</div>
+            <h4>Rewards Discount</h4>
+            <p>Legend rank saves 15% automatically.</p>
+          </div>
+          <div class="shop-perks-item">
+            <div class="perks-icon">&#128222;</div>
+            <h4>Friendly Support</h4>
+            <p>Questions? Message us on social.</p>
+          </div>
+          <div class="shop-perks-item">
+            <div class="perks-icon">&#128230;</div>
+            <h4>Easy Returns</h4>
+            <p>14-day returns on unused items.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Cart Drawer -->
+  <div class="cart-drawer" id="cartDrawer">
+    <div class="cart-drawer-inner">
+      <div class="cart-drawer-header">
+        <h3>Your Cart</h3>
+        <button class="close-cart" id="closeCart" aria-label="Close cart">&times;</button>
+      </div>
+      <div class="cart-items" id="cartItems">
+        <div class="cart-empty">
+          <div class="cart-empty-icon">&#128722;</div>
+          <p>Your cart is empty.</p>
+        </div>
+      </div>
+      <div class="cart-footer" id="cartFooter" style="display:none;">
+        <div class="cart-subtotal">
+          <span>Subtotal</span>
+          <strong id="cartSubtotal">₱0.00</strong>
+        </div>
+        <p class="muted-sm">Shipping and taxes calculated at checkout.</p>
+        <button class="btn btn-primary btn-block" id="checkoutBtn">Checkout</button>
+        <button class="btn btn-link btn-block" id="clearCartBtn">Clear Cart</button>
+      </div>
+    </div>
+  </div>
+  <div class="cart-overlay" id="cartOverlay"></div>
+
+  <!-- Product Quickview Modal -->
+  <div class="quickview-modal" id="quickviewModal">
+    <button class="close-quickview" id="closeQuickview">&times;</button>
+    <div class="quickview-inner" id="quickviewInner"></div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="/" class="header-logo" style="margin-bottom:8px;"><img src="https://res.cloudinary.com/djngpyv15/image/upload/v1776447309/274701765_319754193505498_1268754374260370953_n-removebg-preview_k6uyha.png" alt="AEOB" style="height:40px;"><span style="color:#fff;">An Eternity of Basketball</span></a>
+          <p>Reliving the golden eras of PBA basketball since day one. 300+ episodes and counting.</p>
+        </div>
+        <div><h4>Shop</h4><ul><li><a href="/shop.html">All Merch</a></li><li><a href="/shop.html#apparel">Apparel</a></li><li><a href="/shop.html#caps">Caps</a></li><li><a href="/shop.html#throwback">Classic Era</a></li></ul></div>
+        <div><h4>Play</h4><ul><li><a href="/live.html">Watch Live</a></li><li><a href="/trivia.html">Trivia</a></li><li><a href="/predictions.html">Predictions</a></li><li><a href="/rewards.html">Rewards</a></li></ul></div>
+        <div><h4>More</h4><ul><li><a href="/episodes.html">Episodes</a></li><li><a href="/schedule.html">Schedule</a></li><li><a href="/about.html">About</a></li></ul></div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2024 An Eternity of Basketball. All rights reserved.</span>
+        <span class="network">Part of the Globally Ballin Network</span>
+      </div>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+  <button class="back-to-top" id="backToTop" aria-label="Back to top">&#8593;</button>
+
+  <script src="/js/main.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/shop.js"></script>
+  <script src="/js/aeob-extensions.js"></script>
+</body>
+</html>

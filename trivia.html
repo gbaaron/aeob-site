@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PBA Trivia Challenge — An Eternity of Basketball</title>
+  <meta name="description" content="Test your PBA history knowledge with our weekly trivia challenge. Climb the leaderboard, earn rewards points, prove you're a real PBA fan.">
+  <meta property="og:title" content="PBA Trivia | AEOB">
+  <meta property="og:description" content="Weekly 10-question PBA trivia. Beat the clock. Beat the crew.">
+  <meta property="og:type" content="website">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+  <div class="preloader" id="preloader"><div class="preloader-ball"></div></div>
+
+  <!-- Header -->
+  <header class="header" id="header">
+    <div class="header-inner">
+      <a href="/" class="header-logo"><img src="https://res.cloudinary.com/djngpyv15/image/upload/v1776447309/274701765_319754193505498_1268754374260370953_n-removebg-preview_k6uyha.png" alt="AEOB Logo"><span>AEOB</span></a>
+      <nav class="nav" id="nav">
+        <a href="/">Home</a>
+        <a href="/live.html">Live</a>
+        <a href="/episodes.html">Episodes</a>
+        <a href="/predictions.html">Predictions</a>
+        <a href="/trivia.html" class="active">Trivia</a>
+        <a href="/submissions.html">Fan Zone</a>
+        <a href="/shop.html">Shop</a>
+        <a href="/rewards.html">Rewards</a>
+        <a href="/schedule.html">Schedule</a>
+        <a href="/about.html">About</a>
+      </nav>
+      <div class="header-actions">
+        <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode">&#9790;</button>
+        <button class="btn-login" id="loginBtn">Sign In</button>
+        <div class="user-avatar" id="userAvatar"></div>
+        <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero -->
+    <section class="trivia-hero">
+      <div class="container">
+        <span class="badge">Weekly Challenge</span>
+        <h1>PBA Trivia Challenge</h1>
+        <p>10 questions. 20 seconds each. How well do you really know PBA history?</p>
+
+        <div class="trivia-stats" id="trivStats">
+          <div class="trivia-stat">
+            <div class="trivia-stat-label">Best Score</div>
+            <div class="trivia-stat-value" id="trivBest">0</div>
+          </div>
+          <div class="trivia-stat">
+            <div class="trivia-stat-label">Games Played</div>
+            <div class="trivia-stat-value" id="trivPlayed">0</div>
+          </div>
+          <div class="trivia-stat">
+            <div class="trivia-stat-label">Points Earned</div>
+            <div class="trivia-stat-value" id="trivPoints">0</div>
+          </div>
+          <div class="trivia-stat">
+            <div class="trivia-stat-label">This Week&rsquo;s Rank</div>
+            <div class="trivia-stat-value" id="trivRank">&mdash;</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main area -->
+    <section class="section">
+      <div class="container">
+        <div class="trivia-layout">
+          <!-- Game Panel -->
+          <div class="trivia-game-card" id="trivGameCard">
+
+            <!-- Intro Screen -->
+            <div class="trivia-screen active" id="screenIntro">
+              <div class="trivia-intro">
+                <div class="trivia-intro-icon">&#127942;</div>
+                <h2>Ready to play?</h2>
+                <p>You&rsquo;ll get 10 questions across multiple PBA eras. Each question has 20 seconds. Faster answers = more points. Good luck!</p>
+                <ul class="trivia-rules">
+                  <li><strong>+100</strong> for correct answers</li>
+                  <li><strong>+5 bonus</strong> per second remaining</li>
+                  <li><strong>Streak multiplier</strong> at 3, 5, 7 correct in a row</li>
+                  <li><strong>Leaderboard resets</strong> every Monday</li>
+                </ul>
+                <button class="btn btn-primary btn-lg" id="startTrivia">Start Challenge</button>
+                <div class="trivia-category-picker">
+                  <span>Pick a category:</span>
+                  <select id="trivCategory" class="form-input form-select" style="max-width:240px;display:inline-block;">
+                    <option value="mixed">Mixed Era</option>
+                    <option value="1970s">1970s Only</option>
+                    <option value="1980s">1980s Only</option>
+                    <option value="1990s">1990s Only</option>
+                    <option value="2000s">2000s Only</option>
+                    <option value="2010s">2010s Only</option>
+                    <option value="imports">Imports Only</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Playing Screen -->
+            <div class="trivia-screen" id="screenPlaying">
+              <div class="trivia-playing-header">
+                <div class="trivia-progress-text">Question <span id="trivQnum">1</span> / 10</div>
+                <div class="trivia-score-live">
+                  <span>Score:</span>
+                  <strong id="trivScoreLive">0</strong>
+                </div>
+              </div>
+              <div class="trivia-progress-bar"><div class="trivia-progress-fill" id="trivProgressFill"></div></div>
+
+              <div class="trivia-timer-wrap">
+                <svg class="trivia-timer-svg" viewBox="0 0 100 100">
+                  <circle class="timer-bg" cx="50" cy="50" r="45" />
+                  <circle class="timer-fill" id="trivTimerCircle" cx="50" cy="50" r="45" />
+                </svg>
+                <div class="trivia-timer-num" id="trivTimer">20</div>
+              </div>
+
+              <h2 class="trivia-question" id="trivQuestion">Loading...</h2>
+
+              <div class="trivia-options" id="trivOptions"><!-- Populated by JS --></div>
+
+              <div class="trivia-streak" id="trivStreak" style="display:none;">
+                <span class="streak-emoji">&#128293;</span>
+                <span id="trivStreakCount">0</span> Streak
+              </div>
+            </div>
+
+            <!-- Result Screen -->
+            <div class="trivia-screen" id="screenResult">
+              <div class="trivia-result">
+                <div class="trivia-result-icon" id="trivResultIcon">&#127942;</div>
+                <h2 id="trivResultTitle">Game Over</h2>
+                <div class="trivia-final-score">
+                  <div class="trivia-final-num" id="trivFinalScore">0</div>
+                  <div class="trivia-final-label">points</div>
+                </div>
+                <div class="trivia-result-stats">
+                  <div><span>Correct</span><strong id="trivFinalCorrect">0</strong></div>
+                  <div><span>Best Streak</span><strong id="trivFinalStreak">0</strong></div>
+                  <div><span>Accuracy</span><strong id="trivFinalAcc">0%</strong></div>
+                </div>
+                <div class="trivia-result-actions">
+                  <button class="btn btn-primary" id="playAgainBtn">Play Again</button>
+                  <button class="btn btn-outline" id="shareResultBtn">Share Result</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Weekly Leaderboard -->
+          <aside class="trivia-sidebar">
+            <div class="trivia-leaderboard">
+              <div class="trivia-lb-header">
+                <h3>This Week&rsquo;s Top Scores</h3>
+                <span class="muted-sm" id="trivLbCountdown">Resets in —</span>
+              </div>
+              <div class="trivia-lb-list" id="trivLbList"><!-- Populated by JS --></div>
+            </div>
+
+            <div class="trivia-past-games">
+              <h3>Your Recent Games</h3>
+              <div class="past-games-list" id="pastGamesList">
+                <p class="muted-sm">Finished games will appear here.</p>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="/" class="header-logo" style="margin-bottom:8px;"><img src="https://res.cloudinary.com/djngpyv15/image/upload/v1776447309/274701765_319754193505498_1268754374260370953_n-removebg-preview_k6uyha.png" alt="AEOB" style="height:40px;"><span style="color:#fff;">An Eternity of Basketball</span></a>
+          <p>Reliving the golden eras of PBA basketball since day one. 300+ episodes and counting.</p>
+        </div>
+        <div><h4>Play</h4><ul><li><a href="/trivia.html">Trivia Challenge</a></li><li><a href="/predictions.html">Predictions</a></li><li><a href="/rewards.html">Rewards</a></li><li><a href="/shop.html">Shop</a></li></ul></div>
+        <div><h4>Browse</h4><ul><li><a href="/live.html">Watch Live</a></li><li><a href="/episodes.html">Episodes</a></li><li><a href="/schedule.html">Schedule</a></li><li><a href="/about.html">About</a></li></ul></div>
+        <div><h4>Listen On</h4><ul><li><a href="#">YouTube</a></li><li><a href="#">Spotify</a></li><li><a href="#">Apple Podcasts</a></li><li><a href="#">Facebook</a></li></ul></div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2024 An Eternity of Basketball. All rights reserved.</span>
+        <span class="network">Part of the Globally Ballin Network</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+  <button class="back-to-top" id="backToTop" aria-label="Back to top">&#8593;</button>
+
+  <script src="/js/main.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/trivia.js"></script>
+  <script src="/js/aeob-extensions.js"></script>
+</body>
+</html>

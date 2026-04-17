@@ -1,6 +1,21 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Node
 node_modules/
+npm-debug.log*
+*.log
+
+# Netlify
 .netlify/
+
+# Editor / tooling
+.vscode/
+.idea/
+.claude/
+
+# Env
 .env
 .env.local
-.DS_Store
-*.log
