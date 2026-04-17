@@ -5680,3 +5680,83 @@ body .audio-launcher.visible ~ .back-to-top { bottom: 88px; }
     font-size: 16px;
   }
 }
+
+/* ==========================================================================
+   TRIVIA FULLSCREEN MODE (anti-cheat)
+   Apply a dark immersive look while the game card is the fullscreen element.
+   ========================================================================== */
+#trivGameCard:fullscreen,
+#trivGameCard:-webkit-full-screen {
+  width: 100vw;
+  height: 100vh;
+  max-width: none;
+  border-radius: 0;
+  margin: 0;
+  padding: 24px 32px;
+  background: linear-gradient(160deg, #0b1230 0%, #1a1f5e 50%, #2a1a3e 100%);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+#trivGameCard:fullscreen .trivia-wwtbam,
+#trivGameCard:-webkit-full-screen .trivia-wwtbam {
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+  gap: 32px;
+}
+
+#trivGameCard:fullscreen .trivia-question,
+#trivGameCard:-webkit-full-screen .trivia-question {
+  color: #fff;
+  font-size: clamp(1.4rem, 2.6vw, 2rem);
+}
+
+#trivGameCard:fullscreen .trivia-stage,
+#trivGameCard:-webkit-full-screen .trivia-stage {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
+  padding: 32px;
+  backdrop-filter: blur(8px);
+}
+
+#trivGameCard:fullscreen .trivia-playing-header,
+#trivGameCard:-webkit-full-screen .trivia-playing-header,
+#trivGameCard:fullscreen .trivia-score-live,
+#trivGameCard:-webkit-full-screen .trivia-score-live,
+#trivGameCard:fullscreen .trivia-progress-text,
+#trivGameCard:-webkit-full-screen .trivia-progress-text {
+  color: #fff;
+}
+
+#trivGameCard:fullscreen .trivia-option,
+#trivGameCard:-webkit-full-screen .trivia-option {
+  background: rgba(255,255,255,0.06);
+  color: #fff;
+  border-color: rgba(255,255,255,0.15);
+  font-size: 1.05rem;
+}
+
+#trivGameCard:fullscreen .trivia-option:hover,
+#trivGameCard:-webkit-full-screen .trivia-option:hover {
+  background: rgba(244, 166, 42, 0.25);
+  border-color: var(--orange-accent);
+}
+
+#trivGameCard:fullscreen .trivia-cheat-warn,
+#trivGameCard:-webkit-full-screen .trivia-cheat-warn {
+  color: rgba(255,255,255,0.7);
+}
+
+@media (max-width: 900px) {
+  #trivGameCard:fullscreen,
+  #trivGameCard:-webkit-full-screen {
+    padding: 16px;
+  }
+  #trivGameCard:fullscreen .trivia-stage,
+  #trivGameCard:-webkit-full-screen .trivia-stage {
+    padding: 20px 16px;
+  }
+}

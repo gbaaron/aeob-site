@@ -293,6 +293,9 @@ function startGame() {
   showScreen('screenPlaying');
   renderLadder();
   renderQuestion();
+  // Enter fullscreen AFTER attaching anti-cheat so the initial enter event
+  // from requestGameFullscreen doesn't trip the forfeit handler.
+  requestGameFullscreen();
 }
 
 function renderQuestion() {
@@ -384,6 +387,7 @@ function endGame(reason) {
   gameActive = false;
   clearInterval(timerInterval);
   detachAntiCheat();
+  exitGameFullscreen();
 
   let banked = 0;
   let outcome = '—';
@@ -417,7 +421,7 @@ function endGame(reason) {
     outcome = 'Anti-Cheat Triggered';
     title = 'Game Forfeited';
     icon = '&#128683;';
-    sub = 'Tab switch or window blur detected. Keep your eyes on the court.';
+    sub = 'Tab switch, fullscreen exit, or window blur detected. Keep your eyes on the court.';
   }
 
   const stats = getStats();
@@ -449,6 +453,8 @@ function endGame(reason) {
 }
 
 /* ------------ Anti-cheat ------------ */
+let fsEntering = false; // grace flag while we ask browser to enter fullscreen
+
 function onBlur() {
   if (gameActive && !answered) endGame('cheat');
 }
@@ -458,17 +464,62 @@ function onVisibilityChange() {
 function onCopy(e) {
   if (gameActive) { e.preventDefault(); e.stopPropagation(); }
 }
+function onKeydownBlock(e) {
+  if (!gameActive) return;
+  // Block print, find, view-source, save, and common devtools shortcuts
+  const k = (e.key || '').toLowerCase();
+  const ctrl = e.ctrlKey || e.metaKey;
+  const shift = e.shiftKey;
+  const blocked =
+    (ctrl && ['p', 'f', 's', 'u', 'c', 'x', 'a'].includes(k)) ||
+    (ctrl && shift && ['i', 'j', 'c'].includes(k)) ||
+    k === 'f12';
+  if (blocked) { e.preventDefault(); e.stopPropagation(); }
+}
+function isFullscreen() {
+  return !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+}
+function requestGameFullscreen() {
+  const el = document.getElementById('trivGameCard');
+  if (!el) return Promise.resolve();
+  const fn = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
+  if (!fn) return Promise.resolve();
+  fsEntering = true;
+  try {
+    const p = fn.call(el);
+    const done = () => { fsEntering = false; };
+    if (p && p.then) return p.then(done, done);
+    setTimeout(done, 300);
+  } catch (e) { fsEntering = false; }
+  return Promise.resolve();
+}
+function exitGameFullscreen() {
+  if (!isFullscreen()) return;
+  const fn = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen;
+  if (fn) { try { fn.call(document); } catch(e){} }
+}
+function onFullscreenChange() {
+  if (!gameActive || fsEntering || answered) return;
+  // If user exited fullscreen during active play → forfeit
+  if (!isFullscreen()) endGame('cheat');
+}
 function attachAntiCheat() {
   if (blurHandlerAttached) return;
   window.addEventListener('blur', onBlur);
   document.addEventListener('visibilitychange', onVisibilityChange);
   document.addEventListener('copy', onCopy, true);
+  document.addEventListener('keydown', onKeydownBlock, true);
+  document.addEventListener('fullscreenchange', onFullscreenChange);
+  document.addEventListener('webkitfullscreenchange', onFullscreenChange);
   blurHandlerAttached = true;
 }
 function detachAntiCheat() {
   window.removeEventListener('blur', onBlur);
   document.removeEventListener('visibilitychange', onVisibilityChange);
   document.removeEventListener('copy', onCopy, true);
+  document.removeEventListener('keydown', onKeydownBlock, true);
+  document.removeEventListener('fullscreenchange', onFullscreenChange);
+  document.removeEventListener('webkitfullscreenchange', onFullscreenChange);
   blurHandlerAttached = false;
 }
 
