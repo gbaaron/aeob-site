@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PBA Trivia Challenge — An Eternity of Basketball</title>
-  <meta name="description" content="Test your PBA history knowledge with our weekly trivia challenge. Climb the leaderboard, earn rewards points, prove you're a real PBA fan.">
-  <meta property="og:title" content="PBA Trivia | AEOB">
-  <meta property="og:description" content="Weekly 10-question PBA trivia. Beat the clock. Beat the crew.">
+  <title>PBA Trivia Millionaire — An Eternity of Basketball</title>
+  <meta name="description" content="Climb the PBA Millionaire ladder. 15 questions, doubling credits, 3 safe levels, 15-second timer. No AI. Just you vs the history.">
+  <meta property="og:title" content="PBA Trivia Millionaire | AEOB">
+  <meta property="og:description" content="15 questions. Doubling credits. 3 safe levels. Walk away any time. Tab-switch = game over.">
   <meta property="og:type" content="website">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -48,13 +48,13 @@
     <!-- Hero -->
     <section class="trivia-hero">
       <div class="container">
-        <span class="badge">Weekly Challenge</span>
-        <h1>PBA Trivia Challenge</h1>
-        <p>10 questions. 20 seconds each. How well do you really know PBA history?</p>
+        <span class="badge">Who Wants To Be A PBA Millionaire</span>
+        <h1>PBA Trivia Millionaire</h1>
+        <p>15 questions. Credits double every level. 3 safe locks along the way. 15 seconds per answer &mdash; no time to cheat.</p>
 
         <div class="trivia-stats" id="trivStats">
           <div class="trivia-stat">
-            <div class="trivia-stat-label">Best Score</div>
+            <div class="trivia-stat-label">Top Credits Won</div>
             <div class="trivia-stat-value" id="trivBest">0</div>
           </div>
           <div class="trivia-stat">
@@ -62,7 +62,7 @@
             <div class="trivia-stat-value" id="trivPlayed">0</div>
           </div>
           <div class="trivia-stat">
-            <div class="trivia-stat-label">Points Earned</div>
+            <div class="trivia-stat-label">Lifetime Credits</div>
             <div class="trivia-stat-value" id="trivPoints">0</div>
           </div>
           <div class="trivia-stat">
@@ -83,20 +83,20 @@
             <!-- Intro Screen -->
             <div class="trivia-screen active" id="screenIntro">
               <div class="trivia-intro">
-                <div class="trivia-intro-icon">&#127942;</div>
-                <h2>Ready to play?</h2>
-                <p>You&rsquo;ll get 10 questions across multiple PBA eras. Each question has 20 seconds. Faster answers = more points. Good luck!</p>
+                <div class="trivia-intro-icon">&#128176;</div>
+                <h2>Who Wants To Be A PBA Millionaire?</h2>
+                <p>15 questions. Credits double each level starting at <strong>1</strong> &mdash; all the way up to <strong>16,384</strong>.</p>
                 <ul class="trivia-rules">
-                  <li><strong>+100</strong> for correct answers</li>
-                  <li><strong>+5 bonus</strong> per second remaining</li>
-                  <li><strong>Streak multiplier</strong> at 3, 5, 7 correct in a row</li>
-                  <li><strong>Leaderboard resets</strong> every Monday</li>
+                  <li><strong>15 seconds</strong> per question. No time to Google.</li>
+                  <li><strong>3 safe levels:</strong> Q5 (16), Q10 (512), Q13 (4,096). Miss after a safe level &mdash; you keep the safe total.</li>
+                  <li><strong>Walk away any time</strong> and pocket whatever credits you have earned so far.</li>
+                  <li><strong>Tab switch or lose focus</strong> and the game ends. Anti-cheat is on.</li>
                 </ul>
-                <button class="btn btn-primary btn-lg" id="startTrivia">Start Challenge</button>
+                <button class="btn btn-primary btn-lg" id="startTrivia">Start the Climb</button>
                 <div class="trivia-category-picker">
-                  <span>Pick a category:</span>
+                  <span>Era:</span>
                   <select id="trivCategory" class="form-input form-select" style="max-width:240px;display:inline-block;">
-                    <option value="mixed">Mixed Era</option>
+                    <option value="mixed">Mixed PBA History</option>
                     <option value="1970s">1970s Only</option>
                     <option value="1980s">1980s Only</option>
                     <option value="1990s">1990s Only</option>
@@ -110,30 +110,38 @@
 
             <!-- Playing Screen -->
             <div class="trivia-screen" id="screenPlaying">
-              <div class="trivia-playing-header">
-                <div class="trivia-progress-text">Question <span id="trivQnum">1</span> / 10</div>
-                <div class="trivia-score-live">
-                  <span>Score:</span>
-                  <strong id="trivScoreLive">0</strong>
+              <div class="trivia-wwtbam">
+                <div class="trivia-stage" oncontextmenu="return false;">
+                  <div class="trivia-playing-header">
+                    <div class="trivia-progress-text">Question <span id="trivQnum">1</span> of 15</div>
+                    <div class="trivia-score-live">
+                      <span>Playing for:</span>
+                      <strong id="trivScoreLive">1</strong>
+                      <span class="muted-sm">credits</span>
+                    </div>
+                  </div>
+
+                  <div class="trivia-timer-wrap">
+                    <svg class="trivia-timer-svg" viewBox="0 0 100 100">
+                      <circle class="timer-bg" cx="50" cy="50" r="45" />
+                      <circle class="timer-fill" id="trivTimerCircle" cx="50" cy="50" r="45" />
+                    </svg>
+                    <div class="trivia-timer-num" id="trivTimer">15</div>
+                  </div>
+
+                  <h2 class="trivia-question noselect" id="trivQuestion">Loading...</h2>
+
+                  <div class="trivia-options noselect" id="trivOptions"><!-- Populated by JS --></div>
+
+                  <div class="trivia-stage-actions">
+                    <button class="btn btn-outline btn-sm" id="walkAwayBtn">Walk Away (keep current credits)</button>
+                    <span class="trivia-cheat-warn muted-sm">No tab switching. No selecting text. No right-click.</span>
+                  </div>
                 </div>
-              </div>
-              <div class="trivia-progress-bar"><div class="trivia-progress-fill" id="trivProgressFill"></div></div>
 
-              <div class="trivia-timer-wrap">
-                <svg class="trivia-timer-svg" viewBox="0 0 100 100">
-                  <circle class="timer-bg" cx="50" cy="50" r="45" />
-                  <circle class="timer-fill" id="trivTimerCircle" cx="50" cy="50" r="45" />
-                </svg>
-                <div class="trivia-timer-num" id="trivTimer">20</div>
-              </div>
-
-              <h2 class="trivia-question" id="trivQuestion">Loading...</h2>
-
-              <div class="trivia-options" id="trivOptions"><!-- Populated by JS --></div>
-
-              <div class="trivia-streak" id="trivStreak" style="display:none;">
-                <span class="streak-emoji">&#128293;</span>
-                <span id="trivStreakCount">0</span> Streak
+                <aside class="trivia-ladder" id="trivLadder">
+                  <!-- Populated by JS -->
+                </aside>
               </div>
             </div>
 
@@ -142,14 +150,15 @@
               <div class="trivia-result">
                 <div class="trivia-result-icon" id="trivResultIcon">&#127942;</div>
                 <h2 id="trivResultTitle">Game Over</h2>
+                <p class="trivia-result-sub muted-sm" id="trivResultSub"></p>
                 <div class="trivia-final-score">
                   <div class="trivia-final-num" id="trivFinalScore">0</div>
-                  <div class="trivia-final-label">points</div>
+                  <div class="trivia-final-label">credits banked</div>
                 </div>
                 <div class="trivia-result-stats">
+                  <div><span>Reached</span><strong id="trivFinalLevel">Q0</strong></div>
                   <div><span>Correct</span><strong id="trivFinalCorrect">0</strong></div>
-                  <div><span>Best Streak</span><strong id="trivFinalStreak">0</strong></div>
-                  <div><span>Accuracy</span><strong id="trivFinalAcc">0%</strong></div>
+                  <div><span>Outcome</span><strong id="trivFinalOutcome">—</strong></div>
                 </div>
                 <div class="trivia-result-actions">
                   <button class="btn btn-primary" id="playAgainBtn">Play Again</button>

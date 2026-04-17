@@ -5494,3 +5494,108 @@ body .audio-launcher.visible ~ .back-to-top { bottom: 88px; }
   .admin-content { padding: 20px; }
   .admin-form-grid { grid-template-columns: 1fr; }
 }
+
+/* ============================================
+   Trivia Millionaire (WWTBAM) layout
+   ============================================ */
+.trivia-wwtbam {
+  display: grid;
+  grid-template-columns: 1fr 260px;
+  gap: 24px;
+  align-items: start;
+}
+.trivia-stage { min-width: 0; }
+.noselect {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.trivia-stage-actions {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 18px;
+  flex-wrap: wrap; gap: 10px;
+}
+.trivia-cheat-warn {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* Prize ladder */
+.trivia-ladder {
+  background: linear-gradient(180deg, #0a1033 0%, #1a1f5e 100%);
+  color: #fff;
+  border-radius: 14px;
+  padding: 14px 10px;
+  font-family: 'Inter', sans-serif;
+  position: sticky; top: 90px;
+  box-shadow: 0 10px 30px rgba(10,16,51,0.25);
+}
+.ladder-title {
+  text-align: center;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  font-weight: 800;
+  color: #f4a62a;
+  padding: 8px 0 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+  margin-bottom: 8px;
+}
+.ladder-row {
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  gap: 8px;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  position: relative;
+  transition: background 0.15s, color 0.15s, transform 0.15s;
+}
+.ladder-row + .ladder-row { margin-top: 2px; }
+.ladder-num {
+  color: #f4a62a;
+  font-weight: 700;
+  font-size: 0.78rem;
+  text-align: right;
+}
+.ladder-credits {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.ladder-safe {
+  font-size: 0.7rem;
+  opacity: 0.7;
+}
+.ladder-row.safe {
+  background: rgba(244, 166, 42, 0.08);
+}
+.ladder-row.safe .ladder-credits { color: #f4a62a; }
+.ladder-row.passed { opacity: 0.45; }
+.ladder-row.passed .ladder-credits { text-decoration: line-through; }
+.ladder-row.current {
+  background: linear-gradient(90deg, #cc2030 0%, #f4a62a 100%);
+  color: #fff;
+  transform: translateX(-4px);
+  box-shadow: 0 4px 14px rgba(204,32,48,0.4);
+}
+.ladder-row.current .ladder-num,
+.ladder-row.current .ladder-credits { color: #fff; }
+.ladder-row.top .ladder-credits { font-weight: 800; }
+
+.trivia-result-sub {
+  max-width: 520px;
+  margin: 0 auto 12px;
+  line-height: 1.5;
+}
+
+@media (max-width: 900px) {
+  .trivia-wwtbam { grid-template-columns: 1fr; }
+  .trivia-ladder {
+    position: static;
+    order: 2;
+    max-height: 280px;
+    overflow-y: auto;
+  }
+}

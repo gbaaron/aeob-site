@@ -4,8 +4,8 @@
     {
       "name": "aeob-dev",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["http-server", "/Users/Aaron/Desktop/Global Media/Globally Ballin/AEOB/aeob-site", "-c-1", "--cors"],
-      "port": 8888,
+      "runtimeArgs": ["http-server", ".", "-c-1", "--cors"],
+      "port": 8080,
       "autoPort": true
     }
   ]

@@ -37,18 +37,30 @@
       const featured  = withAudio.filter(ep => ep.featured);
       const pool      = featured.length ? featured : (withAudio.length ? withAudio : data.episodes);
 
-      return pool.map(ep => ({
+      // If nothing has audio but things have YouTube URLs, use YouTube fallback
+      const poolHasAudio = pool.some(ep => ep.audioUrl);
+      const finalPool = poolHasAudio ? pool : data.episodes.filter(ep => ep.youtubeUrl);
+
+      return finalPool.map(ep => ({
         id: ep.id || ('ep-' + ep.episodeNumber),
         title: ep.episodeNumber ? ('Ep ' + ep.episodeNumber + ': ' + ep.title) : ep.title,
         host: Array.isArray(ep.hosts) && ep.hosts.length ? ep.hosts.join(', ') : 'AEOB',
         cover: DEFAULT_COVER,
         src: ep.audioUrl || '',
-        youtubeUrl: ep.youtubeUrl || ''
+        youtubeUrl: ep.youtubeUrl || '',
+        youtubeId: extractYouTubeId(ep.youtubeUrl)
       }));
     } catch (err) {
       console.warn('[AEOBAudio] Could not fetch episodes, using fallback.', err);
       return null;
     }
+  }
+
+  // Extract YouTube video ID from any common URL format
+  function extractYouTubeId(url) {
+    if (!url) return '';
+    const m = String(url).match(/(?:v=|youtu\.be\/|embed\/|shorts\/)([A-Za-z0-9_-]{11})/);
+    return m ? m[1] : '';
   }
 
   const PLAYER_STATE_KEY = 'aeob-audio-state';
@@ -93,6 +105,7 @@
         </div>
       </div>
       <audio id="audioEl" preload="metadata"></audio>
+      <div id="audioYT" style="position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden;"></div>
     `;
     document.body.appendChild(bar);
 
@@ -111,6 +124,20 @@
     const m = Math.floor(sec / 60);
     const s = sec % 60;
     return m + ':' + String(s).padStart(2, '0');
+  }
+
+  // Load the YouTube IFrame API once, return a ready promise.
+  let ytApiPromise = null;
+  function loadYouTubeApi() {
+    if (ytApiPromise) return ytApiPromise;
+    ytApiPromise = new Promise((resolve) => {
+      if (window.YT && window.YT.Player) return resolve(window.YT);
+      const tag = document.createElement('script');
+      tag.src = 'https://www.youtube.com/iframe_api';
+      document.head.appendChild(tag);
+      window.onYouTubeIframeAPIReady = () => resolve(window.YT);
+    });
+    return ytApiPromise;
   }
 
   function initPlayer() {
@@ -138,10 +165,81 @@
     let speed = state.speed || 1;
     let visible = state.visible !== false;
 
+    // Playback mode: 'audio' | 'yt' | 'none'
+    let mode = 'none';
+    let ytPlayer = null;
+    let ytReady = false;
+    let ytPoll = null;
+
     function applyVisibility() {
       bar.classList.toggle('open', visible);
       launcher.classList.toggle('visible', !visible);
       document.body.classList.toggle('audio-bar-open', visible);
+    }
+
+    function setPlayIcon(playing) {
+      playBtn.innerHTML = playing ? '&#10073;&#10073;' : '&#9654;';
+      playBtn.setAttribute('aria-label', playing ? 'Pause' : 'Play');
+    }
+
+    function stopAll() {
+      try { audio.pause(); } catch (e) {}
+      try { audio.removeAttribute('src'); audio.load(); } catch (e) {}
+      if (ytPlayer && ytReady) {
+        try { ytPlayer.stopVideo(); } catch (e) {}
+      }
+      clearInterval(ytPoll);
+      ytPoll = null;
+    }
+
+    function startYtPoll() {
+      clearInterval(ytPoll);
+      ytPoll = setInterval(() => {
+        if (!ytPlayer || !ytReady) return;
+        try {
+          const cur = ytPlayer.getCurrentTime() || 0;
+          const dur = ytPlayer.getDuration() || 0;
+          currentEl.textContent = fmtTime(cur);
+          if (dur && progress.max !== String(Math.floor(dur))) {
+            progress.max = Math.floor(dur);
+            durationEl.textContent = fmtTime(dur);
+          }
+          progress.value = Math.floor(cur);
+        } catch (e) {}
+      }, 500);
+    }
+
+    function loadYoutube(ep, autoplay) {
+      mode = 'yt';
+      loadYouTubeApi().then(YT => {
+        if (!ytPlayer) {
+          ytPlayer = new YT.Player('audioYT', {
+            height: '1', width: '1',
+            videoId: ep.youtubeId,
+            playerVars: { autoplay: autoplay ? 1 : 0, controls: 0, disablekb: 1, modestbranding: 1, playsinline: 1 },
+            events: {
+              onReady: (e) => {
+                ytReady = true;
+                try { e.target.setPlaybackRate(speed); } catch (err) {}
+                if (autoplay) {
+                  try { e.target.playVideo(); } catch (err) {}
+                }
+                startYtPoll();
+              },
+              onStateChange: (e) => {
+                if (e.data === YT.PlayerState.PLAYING) { setPlayIcon(true); startYtPoll(); }
+                else if (e.data === YT.PlayerState.PAUSED) { setPlayIcon(false); }
+                else if (e.data === YT.PlayerState.ENDED) { loadEpisode(idx + 1, true); }
+              }
+            }
+          });
+        } else if (ytReady) {
+          ytPlayer.loadVideoById(ep.youtubeId);
+          try { ytPlayer.setPlaybackRate(speed); } catch (err) {}
+          if (!autoplay) { try { ytPlayer.pauseVideo(); } catch (err) {} }
+          startYtPoll();
+        }
+      });
     }
 
     function loadEpisode(n, autoplay) {
@@ -150,34 +248,44 @@
       cover.src = ep.cover || '';
       titleEl.textContent = ep.title;
       subEl.textContent = ep.host;
+
+      stopAll();
+      setPlayIcon(false);
+      currentEl.textContent = '0:00';
+      durationEl.textContent = '0:00';
+      progress.value = 0;
+
       if (ep.src) {
+        mode = 'audio';
         audio.src = ep.src;
-        if (autoplay) {
-          audio.play().catch(() => {});
-        }
+        audio.playbackRate = speed;
+        if (autoplay) audio.play().catch(() => {});
+      } else if (ep.youtubeId) {
+        loadYoutube(ep, autoplay);
       } else {
-        audio.removeAttribute('src');
+        mode = 'none';
       }
       savePlayerState({ id: ep.id, speed, visible });
     }
 
     playBtn.addEventListener('click', () => {
-      if (!audio.src) {
-        titleEl.textContent = AUDIO_EPISODES[idx].title + ' (audio coming soon)';
-        return;
+      const ep = AUDIO_EPISODES[idx];
+      if (mode === 'audio') {
+        if (audio.paused) audio.play(); else audio.pause();
+      } else if (mode === 'yt' && ytPlayer && ytReady) {
+        const st = ytPlayer.getPlayerState();
+        if (st === 1) ytPlayer.pauseVideo(); else ytPlayer.playVideo();
+      } else if (ep && ep.youtubeId) {
+        loadYoutube(ep, true);
+      } else if (ep && ep.src) {
+        audio.src = ep.src; audio.play().catch(() => {});
+      } else {
+        titleEl.textContent = ep.title + ' (audio coming soon)';
       }
-      if (audio.paused) audio.play(); else audio.pause();
     });
 
-    audio.addEventListener('play', () => {
-      playBtn.innerHTML = '&#10073;&#10073;';
-      playBtn.setAttribute('aria-label', 'Pause');
-    });
-    audio.addEventListener('pause', () => {
-      playBtn.innerHTML = '&#9654;';
-      playBtn.setAttribute('aria-label', 'Play');
-    });
-
+    audio.addEventListener('play', () => setPlayIcon(true));
+    audio.addEventListener('pause', () => setPlayIcon(false));
     audio.addEventListener('loadedmetadata', () => {
       durationEl.textContent = fmtTime(audio.duration);
       progress.max = Math.floor(audio.duration) || 100;
@@ -189,31 +297,42 @@
     audio.addEventListener('ended', () => loadEpisode(idx + 1, true));
 
     progress.addEventListener('input', () => {
-      if (audio.duration) audio.currentTime = Number(progress.value);
+      const v = Number(progress.value);
+      if (mode === 'audio' && audio.duration) audio.currentTime = v;
+      else if (mode === 'yt' && ytPlayer && ytReady) {
+        try { ytPlayer.seekTo(v, true); } catch (e) {}
+      }
     });
 
-    prevBtn.addEventListener('click', () => loadEpisode(idx - 1, !audio.paused));
-    nextBtn.addEventListener('click', () => loadEpisode(idx + 1, !audio.paused));
+    prevBtn.addEventListener('click', () => loadEpisode(idx - 1, true));
+    nextBtn.addEventListener('click', () => loadEpisode(idx + 1, true));
 
     speedBtn.addEventListener('click', () => {
       const speeds = [1, 1.25, 1.5, 2, 0.75];
       const i = speeds.indexOf(speed);
       speed = speeds[(i + 1) % speeds.length];
-      audio.playbackRate = speed;
+      if (mode === 'audio') audio.playbackRate = speed;
+      else if (mode === 'yt' && ytPlayer && ytReady) { try { ytPlayer.setPlaybackRate(speed); } catch (e) {} }
       speedBtn.textContent = speed + 'x';
       savePlayerState({ id: AUDIO_EPISODES[idx].id, speed, visible });
     });
 
     muteBtn.addEventListener('click', () => {
-      audio.muted = !audio.muted;
-      muteBtn.innerHTML = audio.muted ? '&#128263;' : '&#128266;';
+      if (mode === 'audio') {
+        audio.muted = !audio.muted;
+        muteBtn.innerHTML = audio.muted ? '&#128263;' : '&#128266;';
+      } else if (mode === 'yt' && ytPlayer && ytReady) {
+        if (ytPlayer.isMuted()) { ytPlayer.unMute(); muteBtn.innerHTML = '&#128266;'; }
+        else { ytPlayer.mute(); muteBtn.innerHTML = '&#128263;'; }
+      }
     });
 
     closeBtn.addEventListener('click', () => {
       visible = false;
       savePlayerState({ id: AUDIO_EPISODES[idx].id, speed, visible });
       applyVisibility();
-      audio.pause();
+      stopAll();
+      setPlayIcon(false);
     });
 
     launcher.addEventListener('click', () => {
