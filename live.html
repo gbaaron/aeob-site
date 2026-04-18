@@ -194,9 +194,22 @@
               <p class="muted-sm">Questions unlock as topics come up on the show.</p>
             </div>
 
-            <!-- Admin-only: Create Poll + Stream Setup -->
+            <!-- Admin-only: Session + Create Poll + Stream Setup -->
             <div class="admin-live-tools" data-admin style="display:none;">
               <details class="admin-tool-card" open>
+                <summary>&#128308; Session control</summary>
+                <div class="admin-stream-setup">
+                  <p class="muted-sm" id="sessionStatus">No active session</p>
+                  <form id="sessionStartForm" class="admin-poll-form">
+                    <input type="text" id="sessionTitle" placeholder="Episode title (optional)" maxlength="160">
+                    <div class="admin-poll-form-foot">
+                      <button type="submit" class="btn btn-primary btn-sm" id="sessionStartBtn">Start live session</button>
+                      <button type="button" class="btn btn-sm" id="sessionEndBtn" style="display:none;">End session</button>
+                    </div>
+                  </form>
+                </div>
+              </details>
+              <details class="admin-tool-card">
                 <summary>&#128736;&#65039; Create a live poll</summary>
                 <form id="adminCreatePoll" class="admin-poll-form">
                   <input type="text" id="newPollQ" placeholder="Poll question" maxlength="160" required>
