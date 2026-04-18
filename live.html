@@ -74,14 +74,14 @@
 
           <!-- Stream Platform Tabs -->
           <div class="stream-tabs" id="streamTabs">
-            <button class="stream-tab active" data-stream="youtube">
+            <button class="stream-tab active" data-stream="aeob">
+              <span class="stream-tab-icon">&#127936;</span> AEOB
+            </button>
+            <button class="stream-tab" data-stream="youtube">
               <span class="stream-tab-icon">&#9654;</span> YouTube
             </button>
             <button class="stream-tab" data-stream="facebook">
               <span class="stream-tab-icon">f</span> Facebook
-            </button>
-            <button class="stream-tab" data-stream="streamyard">
-              <span class="stream-tab-icon">&#128250;</span> StreamYard
             </button>
           </div>
 
@@ -212,20 +212,32 @@
                 <p class="muted-sm" id="adminPollMsg"></p>
               </details>
               <details class="admin-tool-card">
-                <summary>&#128250; Stream setup (RTMP)</summary>
+                <summary>&#128250; AEOB stream setup</summary>
                 <div class="admin-stream-setup">
                   <p class="muted-sm">
-                    AEOB doesn't run its own RTMP ingest &mdash; the /live page embeds whichever platform
-                    you're streaming to. In StreamYard, add these as <strong>Destinations</strong>:
+                    Netlify can't host RTMP ingest &mdash; you need a streaming provider in between.
+                    Recommended: <strong>Cloudflare Stream Live</strong>.
                   </p>
-                  <ul class="rtmp-list">
-                    <li><strong>YouTube Live</strong> &mdash; <span class="muted-sm">Studio &rsaquo; Go Live &rsaquo; copy the Stream URL + Key.</span></li>
-                    <li><strong>Facebook Live</strong> &mdash; <span class="muted-sm">Live Producer &rsaquo; Streaming Software &rsaquo; copy the Server URL + Stream Key.</span></li>
-                  </ul>
+                  <ol class="rtmp-steps">
+                    <li>Cloudflare Dash &rsaquo; Stream &rsaquo; <strong>Live Inputs</strong> &rsaquo; Create.</li>
+                    <li>Copy the <strong>RTMPS URL</strong> and <strong>Stream Key</strong>.</li>
+                    <li>In StreamYard &rsaquo; <strong>Custom RTMP destination</strong>, paste both.</li>
+                    <li>Copy the Live Input's <strong>Iframe URL</strong> (looks like <code>https://customer-xxx.cloudflarestream.com/&lt;uid&gt;/iframe</code>).</li>
+                    <li>Paste it below &mdash; the AEOB tab plays it natively.</li>
+                  </ol>
+                  <form id="aeobPlaybackForm" class="admin-poll-form">
+                    <label class="admin-poll-check" style="flex-direction:column;align-items:flex-start;gap:4px;width:100%;">
+                      <span>Playback iframe URL</span>
+                      <input type="url" id="aeobPlaybackUrl" placeholder="https://customer-xxx.cloudflarestream.com/.../iframe" style="width:100%;padding:8px 10px;border:1px solid var(--border-color);border-radius:var(--radius-sm);background:var(--bg-card);color:var(--text-primary);">
+                    </label>
+                    <div class="admin-poll-form-foot">
+                      <span class="muted-sm" id="aeobPlaybackStatus">Not configured</span>
+                      <button type="submit" class="btn btn-primary btn-sm">Save</button>
+                    </div>
+                  </form>
                   <p class="muted-sm">
-                    If you want a custom AEOB-branded RTMP endpoint (e.g. Cloudflare Stream, Mux),
-                    provision one there and paste its ingest URL into StreamYard. The site can then embed
-                    its HLS player instead of YouTube/Facebook.
+                    Also works with <strong>Mux</strong>, <strong>AWS IVS</strong>, <strong>Bunny Stream</strong>,
+                    or any provider that gives you an iframe embed / HLS URL.
                   </p>
                 </div>
               </details>

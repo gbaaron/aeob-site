@@ -38,29 +38,43 @@ function liveToast(msg) {
   setTimeout(() => toast.classList.remove('show'), 2500);
 }
 
+// ---------- AEOB native playback config ----------
+const AEOB_PLAYBACK_KEY = 'aeob-playback-url';
+function getPlaybackUrl() {
+  return localStorage.getItem(AEOB_PLAYBACK_KEY) || '';
+}
+function setPlaybackUrl(url) {
+  if (url) localStorage.setItem(AEOB_PLAYBACK_KEY, url);
+  else localStorage.removeItem(AEOB_PLAYBACK_KEY);
+}
+
 // ---------- Stream Platform Switcher ----------
 const streamTabs = document.querySelectorAll('.stream-tab');
 const videoWrap = document.getElementById('liveVideoWrap');
 const chatPlatformText = document.getElementById('chatPlatformText');
-let currentStream = 'youtube';
+let currentStream = 'aeob';
 
 function renderStream(platform) {
   if (!videoWrap) return;
   currentStream = platform;
   let html = '';
-  if (platform === 'youtube') {
+  if (platform === 'aeob') {
+    const url = getPlaybackUrl();
+    if (url) {
+      html = `<iframe src="${url}" frameborder="0" allowfullscreen allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture"></iframe>`;
+    } else {
+      html = `<div class="stream-placeholder">
+        <p><strong>AEOB native stream not configured.</strong></p>
+        <p class="muted-sm">An admin needs to paste a playback URL in Polls &rsaquo; AEOB stream setup.</p>
+      </div>`;
+    }
+    if (chatPlatformText) chatPlatformText.textContent = 'Chat syncs with YouTube or Facebook — switch tab above';
+  } else if (platform === 'youtube') {
     html = `<iframe src="https://www.youtube.com/embed/live_stream?channel=${LIVE_CONFIG.youtubeChannelId}&autoplay=1" frameborder="0" allowfullscreen allow="autoplay; encrypted-media"></iframe>`;
     if (chatPlatformText) chatPlatformText.textContent = 'Showing YouTube Live Chat';
   } else if (platform === 'facebook') {
     html = `<iframe src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2F${LIVE_CONFIG.facebookPageId}%2Flive%2F&show_text=false&autoplay=1" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
     if (chatPlatformText) chatPlatformText.textContent = 'Showing Facebook Live Chat';
-  } else if (platform === 'streamyard') {
-    if (LIVE_CONFIG.streamyardEmbedId) {
-      html = `<iframe src="https://streamyard.com/watch/${LIVE_CONFIG.streamyardEmbedId}" frameborder="0" allowfullscreen allow="autoplay; encrypted-media"></iframe>`;
-    } else {
-      html = `<div class="stream-placeholder"><p>StreamYard embed ID not configured yet.</p><p class="muted-sm">Paste your StreamYard embed code into <code>LIVE_CONFIG.streamyardEmbedId</code> in live.js.</p></div>`;
-    }
-    if (chatPlatformText) chatPlatformText.textContent = 'Chat available on YouTube or Facebook';
   }
   videoWrap.innerHTML = html;
   renderChat(platform);
@@ -76,7 +90,7 @@ function renderChat(platform) {
   } else if (platform === 'facebook') {
     chatHtml = `<div class="chat-placeholder"><p>Facebook chat is available inside the video player above.</p></div>`;
   } else {
-    chatHtml = `<div class="chat-placeholder"><p>Switch to YouTube or Facebook to see live chat.</p></div>`;
+    chatHtml = `<div class="chat-placeholder"><p>The AEOB player has no built-in chat &mdash; use the <strong>Q&amp;A</strong> tab above, or switch to YouTube/Facebook for platform chat.</p></div>`;
   }
   chatWrap.innerHTML = chatHtml;
 }
@@ -459,6 +473,48 @@ if (adminPollForm) {
 
 // Re-render polls (and toggle admin controls) when auth changes
 window.addEventListener('authStateChanged', renderLivePolls);
+
+// ---------- Admin: AEOB playback URL ----------
+function refreshPlaybackStatus() {
+  const input = document.getElementById('aeobPlaybackUrl');
+  const status = document.getElementById('aeobPlaybackStatus');
+  if (!input || !status) return;
+  const url = getPlaybackUrl();
+  input.value = url;
+  status.textContent = url ? 'Configured — AEOB tab is live' : 'Not configured';
+  status.classList.toggle('is-ok', !!url);
+}
+
+const playbackForm = document.getElementById('aeobPlaybackForm');
+if (playbackForm) {
+  playbackForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!(window.Auth && Auth.isAdmin && Auth.isAdmin())) {
+      liveToast('Admin only');
+      return;
+    }
+    const input = document.getElementById('aeobPlaybackUrl');
+    const raw = (input.value || '').trim();
+    if (raw && !/^https?:\/\//i.test(raw)) {
+      liveToast('URL must start with https://');
+      return;
+    }
+    setPlaybackUrl(raw);
+    refreshPlaybackStatus();
+    // If the user is currently on the AEOB tab, re-render immediately
+    if (currentStream === 'aeob' && LIVE_CONFIG.isLive) renderStream('aeob');
+    // Also: having a playback URL counts as "live" for the AEOB tab
+    LIVE_CONFIG.isLive = !!raw || LIVE_CONFIG.isLive;
+    applyLiveState();
+    liveToast(raw ? 'AEOB stream URL saved' : 'AEOB stream URL cleared');
+  });
+}
+refreshPlaybackStatus();
+
+// Auto-go-live when a playback URL is configured
+if (getPlaybackUrl()) {
+  LIVE_CONFIG.isLive = true;
+}
 
 // ---------- Questions / Q&A ----------
 const QUESTIONS_KEY = 'aeob-live-questions';

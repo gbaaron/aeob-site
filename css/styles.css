@@ -3721,6 +3721,22 @@ img { max-width: 100%; height: auto; display: block; }
 .admin-stream-setup p { margin: 0 0 8px; }
 .rtmp-list { margin: 0 0 8px 18px; padding: 0; }
 .rtmp-list li { margin-bottom: 4px; }
+.rtmp-steps {
+  margin: 0 0 10px 18px;
+  padding: 0;
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+.rtmp-steps li { margin-bottom: 4px; }
+.rtmp-steps code {
+  font-size: 0.78rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  padding: 1px 5px;
+  border-radius: 3px;
+  word-break: break-all;
+}
+#aeobPlaybackStatus.is-ok { color: #16a34a; font-weight: 600; }
 
 .poll-admin-controls {
   display: flex; gap: 6px; margin-top: 8px;
