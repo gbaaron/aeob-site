@@ -79,10 +79,11 @@ exports.handler = async (event) => {
 
   } catch (err) {
     console.error('Login error:', err);
+    const raw = (err && (err.message || err.toString())) || 'Unknown error';
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ error: 'Login failed. Please try again.' })
+      body: JSON.stringify({ error: 'Login failed. Please try again.', detail: raw })
     };
   }
 };

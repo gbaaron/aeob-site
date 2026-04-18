@@ -90,10 +90,21 @@ exports.handler = async (event) => {
 
   } catch (err) {
     console.error('Signup error:', err);
+    const raw = (err && (err.message || err.toString())) || 'Unknown error';
+    let friendly = 'Signup failed. Please try again.';
+    if (/UNKNOWN_FIELD_NAME/i.test(raw)) {
+      friendly = 'Airtable Users table is missing a required field: ' + raw;
+    } else if (/INVALID_MULTIPLE_CHOICE_OPTIONS|CANNOT_PARSE|INVALID_VALUE_FOR_COLUMN/i.test(raw)) {
+      friendly = 'Airtable rejected a field value: ' + raw;
+    } else if (/AUTHENTICATION_REQUIRED|INVALID_API_KEY|NOT_AUTHORIZED/i.test(raw)) {
+      friendly = 'Airtable auth failed — check AIRTABLE_API_KEY in Netlify.';
+    } else if (/NOT_FOUND|BASE_NOT_FOUND/i.test(raw)) {
+      friendly = 'Airtable base or table not found — check AIRTABLE_BASE_ID in Netlify.';
+    }
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ error: 'Signup failed. Please try again.' })
+      body: JSON.stringify({ error: friendly, detail: raw })
     };
   }
 };
