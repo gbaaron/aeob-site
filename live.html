@@ -123,16 +123,20 @@
               <p id="liveEpisodeDesc">Episode details will appear here when we go live.</p>
             </div>
 
-            <!-- Live Reactions (always visible) -->
+            <!-- Live Reactions (tier-gated) -->
             <div class="live-reactions">
-              <p class="reactions-label">React to the show</p>
-              <div class="reaction-buttons">
-                <button class="reaction-btn" data-reaction="fire">&#128293; <span class="r-count" data-count="0">0</span></button>
-                <button class="reaction-btn" data-reaction="goat">&#129415; <span class="r-count" data-count="0">0</span></button>
-                <button class="reaction-btn" data-reaction="laugh">&#128514; <span class="r-count" data-count="0">0</span></button>
-                <button class="reaction-btn" data-reaction="shock">&#128562; <span class="r-count" data-count="0">0</span></button>
-                <button class="reaction-btn" data-reaction="clap">&#128079; <span class="r-count" data-count="0">0</span></button>
-                <button class="reaction-btn" data-reaction="basketball">&#127936; <span class="r-count" data-count="0">0</span></button>
+              <p class="reactions-label">React to the show <span class="reactions-tier-hint" id="reactionsTierHint"></span></p>
+              <div class="reaction-buttons" id="reactionButtons">
+                <button class="reaction-btn" data-reaction="fire" data-tier="Rookie" title="Rookie+">&#128293; <span class="r-count" data-count="0">0</span></button>
+                <button class="reaction-btn" data-reaction="laugh" data-tier="Rookie" title="Rookie+">&#128514; <span class="r-count" data-count="0">0</span></button>
+                <button class="reaction-btn" data-reaction="clap" data-tier="Rookie" title="Rookie+">&#128079; <span class="r-count" data-count="0">0</span></button>
+                <button class="reaction-btn" data-reaction="basketball" data-tier="Rookie" title="Rookie+">&#127936; <span class="r-count" data-count="0">0</span></button>
+                <button class="reaction-btn" data-reaction="shock" data-tier="Veteran" title="Veteran+">&#128562; <span class="r-count" data-count="0">0</span></button>
+                <button class="reaction-btn" data-reaction="heart" data-tier="Veteran" title="Veteran+">&#10084;&#65039; <span class="r-count" data-count="0">0</span></button>
+                <button class="reaction-btn" data-reaction="goat" data-tier="All-Star" title="All-Star+">&#128016; <span class="r-count" data-count="0">0</span></button>
+                <button class="reaction-btn" data-reaction="rocket" data-tier="All-Star" title="All-Star+">&#128640; <span class="r-count" data-count="0">0</span></button>
+                <button class="reaction-btn" data-reaction="crown" data-tier="Legend" title="Legend only">&#128081; <span class="r-count" data-count="0">0</span></button>
+                <button class="reaction-btn" data-reaction="diamond" data-tier="Legend" title="Legend only">&#128142; <span class="r-count" data-count="0">0</span></button>
               </div>
             </div>
           </div>
@@ -144,7 +148,8 @@
           <!-- Sidebar Tabs -->
           <div class="sidebar-tabs">
             <button class="sidebar-tab active" data-sidebar="chat">&#128172; Chat</button>
-            <button class="sidebar-tab" data-sidebar="polls">&#128200; Live Polls</button>
+            <button class="sidebar-tab" data-sidebar="questions">&#10067; Q&amp;A</button>
+            <button class="sidebar-tab" data-sidebar="polls">&#128200; Polls</button>
             <button class="sidebar-tab" data-sidebar="viewers">&#128100; <span id="viewerCount">0</span></button>
           </div>
 
@@ -166,12 +171,66 @@
             </div>
           </div>
 
+          <!-- Questions / Q&A Panel -->
+          <div class="sidebar-panel" id="questionsPanel">
+            <div class="live-polls-header">
+              <h3>Questions for the Hosts</h3>
+              <p class="muted-sm">Higher tiers get highlighted so the crew sees you first.</p>
+            </div>
+            <div class="questions-compose" id="questionsCompose">
+              <textarea id="questionInput" maxlength="240" rows="2" placeholder="Drop a question for the show..."></textarea>
+              <div class="questions-compose-foot">
+                <span class="muted-sm" id="questionTierLabel">Sign in to post</span>
+                <button class="btn btn-primary btn-sm" id="questionSubmit" disabled>Post</button>
+              </div>
+            </div>
+            <div class="questions-list" id="questionsList"></div>
+          </div>
+
           <!-- Live Polls Panel -->
           <div class="sidebar-panel" id="pollsPanel">
             <div class="live-polls-header">
               <h3>Live Predictions</h3>
               <p class="muted-sm">Questions unlock as topics come up on the show.</p>
             </div>
+
+            <!-- Admin-only: Create Poll + Stream Setup -->
+            <div class="admin-live-tools" data-admin style="display:none;">
+              <details class="admin-tool-card" open>
+                <summary>&#128736;&#65039; Create a live poll</summary>
+                <form id="adminCreatePoll" class="admin-poll-form">
+                  <input type="text" id="newPollQ" placeholder="Poll question" maxlength="160" required>
+                  <input type="text" class="poll-opt-input" data-i="0" placeholder="Option 1" maxlength="80" required>
+                  <input type="text" class="poll-opt-input" data-i="1" placeholder="Option 2" maxlength="80" required>
+                  <input type="text" class="poll-opt-input" data-i="2" placeholder="Option 3 (optional)" maxlength="80">
+                  <input type="text" class="poll-opt-input" data-i="3" placeholder="Option 4 (optional)" maxlength="80">
+                  <div class="admin-poll-form-foot">
+                    <label class="admin-poll-check"><input type="checkbox" id="newPollLocked"> Start locked</label>
+                    <button type="submit" class="btn btn-primary btn-sm">Publish</button>
+                  </div>
+                </form>
+                <p class="muted-sm" id="adminPollMsg"></p>
+              </details>
+              <details class="admin-tool-card">
+                <summary>&#128250; Stream setup (RTMP)</summary>
+                <div class="admin-stream-setup">
+                  <p class="muted-sm">
+                    AEOB doesn't run its own RTMP ingest &mdash; the /live page embeds whichever platform
+                    you're streaming to. In StreamYard, add these as <strong>Destinations</strong>:
+                  </p>
+                  <ul class="rtmp-list">
+                    <li><strong>YouTube Live</strong> &mdash; <span class="muted-sm">Studio &rsaquo; Go Live &rsaquo; copy the Stream URL + Key.</span></li>
+                    <li><strong>Facebook Live</strong> &mdash; <span class="muted-sm">Live Producer &rsaquo; Streaming Software &rsaquo; copy the Server URL + Stream Key.</span></li>
+                  </ul>
+                  <p class="muted-sm">
+                    If you want a custom AEOB-branded RTMP endpoint (e.g. Cloudflare Stream, Mux),
+                    provision one there and paste its ingest URL into StreamYard. The site can then embed
+                    its HLS player instead of YouTube/Facebook.
+                  </p>
+                </div>
+              </details>
+            </div>
+
             <div class="live-polls-list" id="livePollsList">
               <!-- Populated by JS -->
             </div>
