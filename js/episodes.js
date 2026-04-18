@@ -54,14 +54,14 @@ const Episodes = (() => {
     return `
       <div class="card episode-card" data-id="${ep.id}">
         <div class="thumb-wrap">
-          <img src="${thumbSrc}" alt="${ep.title}" loading="lazy">
+          <img src="${thumbSrc}" alt="${ep.title}" loading="lazy" onclick="Episodes.playInBar('${ep.id}')" style="cursor:pointer;">
           ${durationStr ? `<span class="duration">${durationStr}</span>` : ''}
-          <div class="play-overlay" onclick="Episodes.openPlayer('${ep.id}')">&#9654;</div>
+          <div class="play-overlay" onclick="Episodes.playInBar('${ep.id}')" aria-label="Play episode" title="Play">&#9654;</div>
           <button class="fav-btn ${isFav ? 'active' : ''}" onclick="Episodes.toggleFav('${ep.id}', event)" aria-label="Favorite">
             ${isFav ? '&#9829;' : '&#9825;'}
           </button>
         </div>
-        <div class="card-body">
+        <div class="card-body" onclick="Episodes.openPlayer('${ep.id}')" style="cursor:pointer;">
           <h3>${ep.title}</h3>
           <div class="episode-meta">
             ${dateStr ? `<span>${dateStr}</span>` : ''}
@@ -188,19 +188,37 @@ const Episodes = (() => {
     }
   }
 
-  // ---------- Episode Player Modal ----------
+  // ---------- Play in Sticky Bar ----------
+  function playInBar(episodeId) {
+    const ep = allEpisodes.find(e => e.id === episodeId);
+    if (!ep) return;
+    if (window.AEOBAudio && typeof window.AEOBAudio.playEpisode === 'function') {
+      window.AEOBAudio.playEpisode(ep);
+      if (window.showToast) window.showToast('Playing: ' + ep.title, 'success');
+      awardPoints('watch', 5);
+    } else {
+      // Fallback: if the sticky bar hasn't initialized yet, open the info modal.
+      openPlayer(episodeId);
+    }
+  }
+
+  // ---------- Episode Player Modal (info / reviews) ----------
   function openPlayer(episodeId) {
     const ep = allEpisodes.find(e => e.id === episodeId);
     if (!ep || !modal) return;
 
-    const ytId = window.extractYoutubeId ? window.extractYoutubeId(ep.youtubeUrl || '') : '';
-    if (ytId) {
-      videoWrap.innerHTML = `<iframe src="https://www.youtube.com/embed/${ytId}?autoplay=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
-    } else {
-      videoWrap.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100%;background:#1a1f5e;color:#fff;font-size:1.2rem;padding:20px;text-align:center;">
-        <p>Video player will load once a YouTube URL is added for this episode.<br><br>${ep.title}</p>
+    // Show a thumbnail + "Play episode" button instead of auto-embedding video.
+    // Playback now happens in the sticky bar.
+    const ytThumb = window.getYoutubeThumbnail ? window.getYoutubeThumbnail(ep.youtubeUrl || '') : '';
+    const epNum = ep.episodeNumber || '';
+    const thumbSrc = ytThumb || `https://placehold.co/960x540/1a1f5e/ffffff?text=Ep+${epNum}`;
+    videoWrap.innerHTML = `
+      <div class="modal-play-hero" style="position:relative;width:100%;height:100%;background:#000;display:flex;align-items:center;justify-content:center;cursor:pointer;" onclick="Episodes.playInBar('${ep.id}')">
+        <img src="${thumbSrc}" alt="${ep.title}" style="width:100%;height:100%;object-fit:cover;opacity:0.7;">
+        <button class="btn btn-primary" style="position:absolute;display:inline-flex;align-items:center;gap:8px;font-size:1.05rem;padding:12px 22px;" onclick="event.stopPropagation();Episodes.playInBar('${ep.id}')">
+          <span style="font-size:1.2rem;">&#9654;</span> Play episode
+        </button>
       </div>`;
-    }
 
     const isLoggedIn = window.Auth?.isLoggedIn();
     const ratingSection = isLoggedIn ? `
@@ -326,10 +344,10 @@ const Episodes = (() => {
         return `
           <div class="card episode-card" data-id="${ep.id}">
             <div class="thumb-wrap">
-              <img src="${thumbSrc}" alt="${ep.title}" loading="lazy">
-              <div class="play-overlay" onclick="Episodes.openPlayer('${ep.id}')">&#9654;</div>
+              <img src="${thumbSrc}" alt="${ep.title}" loading="lazy" onclick="Episodes.playInBar('${ep.id}')" style="cursor:pointer;">
+              <div class="play-overlay" onclick="Episodes.playInBar('${ep.id}')" aria-label="Play episode" title="Play">&#9654;</div>
             </div>
-            <div class="card-body">
+            <div class="card-body" onclick="Episodes.openPlayer('${ep.id}')" style="cursor:pointer;">
               <h3>${ep.title}</h3>
               ${ep.reason ? `<div class="rec-reason">${ep.reason}</div>` : ''}
             </div>
@@ -364,6 +382,19 @@ const Episodes = (() => {
     const data = await fetchEpisodes();
     allEpisodes = data.episodes || [];
     filteredEpisodes = [...allEpisodes];
+
+    // Give the sticky audio bar the full archive so prev/next can cycle everything
+    // and so playInBar can play any episode (not just the 10 it fetches itself).
+    if (allEpisodes.length && window.AEOBAudio && typeof window.AEOBAudio.refresh === 'function') {
+      const playerList = allEpisodes.map(ep => ({
+        id: ep.id || ('ep-' + ep.episodeNumber),
+        title: ep.episodeNumber ? ('Ep ' + ep.episodeNumber + ': ' + ep.title) : ep.title,
+        host: Array.isArray(ep.hosts) && ep.hosts.length ? ep.hosts.join(', ') : 'AEOB',
+        src: ep.audioUrl || '',
+        youtubeUrl: ep.youtubeUrl || ''
+      }));
+      window.AEOBAudio.refresh(playerList);
+    }
 
     if (isHomePage) {
       renderGrid(allEpisodes.slice(0, 3));
@@ -415,6 +446,7 @@ const Episodes = (() => {
   return {
     openPlayer,
     closePlayer,
+    playInBar,
     toggleFav,
     applyFilters,
     getEpisodes: () => allEpisodes,

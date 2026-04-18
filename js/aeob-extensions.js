@@ -163,7 +163,10 @@
     let idx = Math.max(0, AUDIO_EPISODES.findIndex(e => e.id === state.id));
     if (idx < 0) idx = 0;
     let speed = state.speed || 1;
-    let visible = state.visible !== false;
+    // Bar is hidden until the user explicitly plays something. Once they have a
+    // saved episode from a prior session, reopen the bar for them.
+    let hasPicked = !!state.id && state.id !== 'placeholder';
+    let visible = hasPicked && state.visible !== false;
 
     // Playback mode: 'audio' | 'yt' | 'none'
     let mode = 'none';
@@ -341,11 +344,42 @@
       applyVisibility();
     });
 
+    // Normalize an episode from the Episodes API shape to the player shape.
+    function toPlayerShape(raw) {
+      if (!raw || typeof raw !== 'object') return null;
+      return {
+        id: raw.id || ('ep-' + (raw.episodeNumber || Date.now())),
+        title: raw.episodeNumber ? ('Ep ' + raw.episodeNumber + ': ' + raw.title) : (raw.title || 'Untitled'),
+        host: Array.isArray(raw.hosts) && raw.hosts.length
+          ? raw.hosts.join(', ')
+          : (raw.host || 'AEOB'),
+        cover: raw.cover || DEFAULT_COVER,
+        src: raw.src || raw.audioUrl || '',
+        youtubeUrl: raw.youtubeUrl || '',
+        youtubeId: raw.youtubeId || extractYouTubeId(raw.youtubeUrl || '')
+      };
+    }
+
     // Public API so episode cards can trigger playback
     window.AEOBAudio = {
-      playEpisode(id) {
-        const n = AUDIO_EPISODES.findIndex(e => e.id === id);
+      playEpisode(input) {
+        let n = -1;
+        if (typeof input === 'string') {
+          n = AUDIO_EPISODES.findIndex(e => e.id === input);
+        } else if (input && typeof input === 'object') {
+          const ep = toPlayerShape(input);
+          if (!ep) return;
+          n = AUDIO_EPISODES.findIndex(e => e.id === ep.id);
+          if (n < 0) {
+            AUDIO_EPISODES = [ep].concat(AUDIO_EPISODES.filter(e => e.id !== 'placeholder'));
+            n = 0;
+          } else {
+            AUDIO_EPISODES[n] = ep;
+          }
+          // AUDIO_EPISODES updated in place; window.AEOBAudio.list is a getter over it.
+        }
         if (n >= 0) {
+          hasPicked = true;
           visible = true;
           applyVisibility();
           loadEpisode(n, true);
@@ -354,12 +388,14 @@
       refresh(newList) {
         if (!newList || !newList.length) return;
         const prevId = AUDIO_EPISODES[idx] && AUDIO_EPISODES[idx].id;
-        AUDIO_EPISODES = newList;
-        window.AEOBAudio.list = AUDIO_EPISODES;
-        // Try to keep the same episode selected, else go to newest
+        // Normalize every entry so refresh() from episodes.js works too.
+        AUDIO_EPISODES = newList.map(e => toPlayerShape(e)).filter(Boolean);
+        // window.AEOBAudio.list is a getter over AUDIO_EPISODES, no reassignment needed.
         const n = prevId ? AUDIO_EPISODES.findIndex(e => e.id === prevId) : -1;
         idx = n >= 0 ? n : 0;
-        loadEpisode(idx, false);
+        // Only re-load episode UI if we already had something showing; otherwise
+        // leave the bar dormant until the user picks something.
+        if (hasPicked) loadEpisode(idx, false);
       },
       get list() { return AUDIO_EPISODES; }
     };
@@ -367,7 +403,8 @@
     audio.playbackRate = speed;
     speedBtn.textContent = speed + 'x';
     applyVisibility();
-    loadEpisode(idx, false);
+    // Only preload the saved episode if the user actually had one before.
+    if (hasPicked) loadEpisode(idx, false);
   }
 
   /* -------------------------------------------------------------------------
