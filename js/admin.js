@@ -561,16 +561,68 @@
       tbody.innerHTML = '<tr><td colspan="6" class="muted-sm">No users found.</td></tr>';
       return;
     }
-    tbody.innerHTML = list.map(u => `
-      <tr>
-        <td>${esc(u.name || '—')}</td>
-        <td>${esc(u.email || '—')}</td>
-        <td><span class="admin-status admin-status-${esc((u.role || 'user').toLowerCase())}">${esc(u.role || 'User')}</span></td>
-        <td>${esc(u.tier || 'Rookie')}</td>
-        <td>${esc(u.points || 0)}</td>
-        <td class="muted-sm">${esc(u.favEra || '—')} / ${esc(u.favTeam || '—')}</td>
-      </tr>
-    `).join('');
+    const me = Auth.getUser() || {};
+    const iAmSuper = me.role === 'SuperAdmin';
+    tbody.innerHTML = list.map(u => {
+      const role = u.role || 'User';
+      const isSelf = me.id === u.id;
+      const touchesSuper = role === 'SuperAdmin';
+      const disabled = isSelf || (touchesSuper && !iAmSuper);
+      const opts = ['User', 'Admin'].concat(iAmSuper ? ['SuperAdmin'] : (touchesSuper ? ['SuperAdmin'] : []));
+      const selectHtml = disabled
+        ? `<span class="admin-status admin-status-${esc(role.toLowerCase())}">${esc(role)}</span>${isSelf ? ' <span class="muted-sm">(you)</span>' : ''}`
+        : `<select class="form-input form-select role-select" data-user-id="${esc(u.id)}" data-prev="${esc(role)}" style="max-width:150px;padding:6px 8px;font-size:0.85rem;">
+             ${opts.map(o => `<option value="${esc(o)}"${o === role ? ' selected' : ''}>${esc(o)}</option>`).join('')}
+           </select>`;
+      return `
+        <tr>
+          <td>${esc(u.name || '—')}</td>
+          <td>${esc(u.email || '—')}</td>
+          <td>${selectHtml}</td>
+          <td>${esc(u.tier || 'Rookie')}</td>
+          <td>${esc(u.points || 0)}</td>
+          <td class="muted-sm">${esc(u.favEra || '—')} / ${esc(u.favTeam || '—')}</td>
+        </tr>
+      `;
+    }).join('');
+
+    tbody.querySelectorAll('.role-select').forEach(sel => {
+      sel.addEventListener('change', async () => {
+        const id = sel.dataset.userId;
+        const prev = sel.dataset.prev;
+        const next = sel.value;
+        if (next === prev) return;
+        sel.disabled = true;
+        try {
+          await Auth.authFetch('admin-users?id=' + encodeURIComponent(id), {
+            method: 'PATCH',
+            body: JSON.stringify({ role: next })
+          });
+          sel.dataset.prev = next;
+          // Update cache
+          const cached = usersCache.find(x => x.id === id);
+          if (cached) cached.role = next;
+          showToast(`Role updated to ${next}.`);
+        } catch (err) {
+          sel.value = prev;
+          showToast('Failed: ' + (err.message || 'could not update role'), true);
+        } finally {
+          sel.disabled = false;
+        }
+      });
+    });
+  }
+
+  function showToast(msg, isErr) {
+    const t = document.getElementById('toast');
+    if (t) {
+      t.textContent = msg;
+      t.classList.toggle('error', !!isErr);
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2800);
+    } else {
+      (isErr ? console.warn : console.log)(msg);
+    }
   }
 
   const userSearch = document.getElementById('userSearch');
