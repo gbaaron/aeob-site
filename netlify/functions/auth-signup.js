@@ -50,17 +50,20 @@ exports.handler = async (event) => {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create user in Airtable
-    const record = await base(USERS_TABLE).create({
+    // Build record — omit single-select fields when no value was chosen
+    // (Airtable rejects empty strings for single-select options).
+    const fields = {
       Name: name,
       Email: email.toLowerCase(),
       Password: hashedPassword,
-      FavEra: favEra || '',
-      FavTeam: favTeam || '',
       Points: 0,
       Tier: 'Rookie',
       CreatedAt: new Date().toISOString()
-    });
+    };
+    if (favEra) fields.FavEra = favEra;
+    if (favTeam) fields.FavTeam = favTeam;
+
+    const record = await base(USERS_TABLE).create(fields);
 
     const isAdmin = resolveIsAdmin(email.toLowerCase(), false);
 
