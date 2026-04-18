@@ -748,10 +748,10 @@ if (chatSignInBtn) {
 
 // ---------- Apply server state ----------
 function applyServerState() {
-  // Flip live/offline based on active session (with valid stream URL)
-  const sessionActive = !!LIVE_STATE.session;
+  // Go live if EITHER an active session exists OR a local playback URL is set.
+  // This lets admins preview the stream even without a server session.
   const hasPlayableUrl = !!activePlaybackUrl();
-  LIVE_CONFIG.isLive = sessionActive && hasPlayableUrl;
+  LIVE_CONFIG.isLive = hasPlayableUrl;
 
   applyLiveState();
   updateSessionStatus();
