@@ -6,7 +6,8 @@ const jwt = require('jsonwebtoken');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'aeob-dev-secret';
 
-/** Comma-separated emails treated as Admin regardless of Airtable Role. */
+/** Comma-separated emails treated as Admin regardless of Airtable checkbox.
+ *  Useful for bootstrapping the first admin. */
 function getAdminEmails() {
   return (process.env.ADMIN_EMAILS || '')
     .split(',')
@@ -14,16 +15,12 @@ function getAdminEmails() {
     .filter(Boolean);
 }
 
-function resolveRole(email, airtableRole) {
+/** Resolve admin status from Airtable IsAdmin checkbox + env-var bypass. */
+function resolveIsAdmin(email, airtableIsAdmin) {
+  if (airtableIsAdmin === true) return true;
   const admins = getAdminEmails();
-  if (email && admins.includes(email.toLowerCase())) return 'Admin';
-  const r = (airtableRole || '').trim();
-  if (r === 'Admin' || r === 'SuperAdmin') return r;
-  return 'User';
-}
-
-function isAdminRole(role) {
-  return role === 'Admin' || role === 'SuperAdmin';
+  if (email && admins.includes(String(email).toLowerCase())) return true;
+  return false;
 }
 
 function jsonHeaders(extra) {
@@ -44,12 +41,19 @@ function verifyToken(event) {
   catch { return null; }
 }
 
+function tokenIsAdmin(decoded) {
+  if (!decoded) return false;
+  if (decoded.isAdmin === true) return true;
+  // Back-compat for older tokens that used a role string
+  return decoded.role === 'Admin' || decoded.role === 'SuperAdmin';
+}
+
 function requireAdmin(event) {
   const decoded = verifyToken(event);
   if (!decoded) {
     return { ok: false, response: { statusCode: 401, headers: jsonHeaders(), body: JSON.stringify({ error: 'Unauthorized' }) } };
   }
-  if (!isAdminRole(decoded.role)) {
+  if (!tokenIsAdmin(decoded)) {
     return { ok: false, response: { statusCode: 403, headers: jsonHeaders(), body: JSON.stringify({ error: 'Forbidden — admin only' }) } };
   }
   return { ok: true, user: decoded };
@@ -80,8 +84,8 @@ function jsonResponse(statusCode, body, extraHeaders) {
 
 module.exports = {
   JWT_SECRET,
-  resolveRole,
-  isAdminRole,
+  resolveIsAdmin,
+  tokenIsAdmin,
   verifyToken,
   requireAdmin,
   requireUser,

@@ -4,7 +4,7 @@
 const Airtable = require('airtable');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { resolveRole, JWT_SECRET } = require('./_shared/auth');
+const { resolveIsAdmin, JWT_SECRET } = require('./_shared/auth');
 
 const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(process.env.AIRTABLE_BASE_ID);
 const USERS_TABLE = 'Users';
@@ -51,11 +51,11 @@ exports.handler = async (event) => {
       return { statusCode: 401, headers, body: JSON.stringify({ error: 'Invalid email or password' }) };
     }
 
-    const role = resolveRole(fields.Email, fields.Role);
+    const isAdmin = resolveIsAdmin(fields.Email, fields.IsAdmin === true);
 
     // Generate JWT
     const token = jwt.sign(
-      { userId: record.id, email: fields.Email, name: fields.Name, role },
+      { userId: record.id, email: fields.Email, name: fields.Name, isAdmin },
       JWT_SECRET,
       { expiresIn: '30d' }
     );
@@ -64,7 +64,7 @@ exports.handler = async (event) => {
       id: record.id,
       name: fields.Name,
       email: fields.Email,
-      role,
+      isAdmin,
       favEra: fields.FavEra || '',
       favTeam: fields.FavTeam || '',
       points: fields.Points || 0,

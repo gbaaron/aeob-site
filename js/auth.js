@@ -44,6 +44,8 @@ const Auth = (() => {
   function isAdmin() {
     const u = getUser();
     if (!u) return false;
+    if (u.isAdmin === true) return true;
+    // Back-compat for users still holding an older token
     return u.role === 'Admin' || u.role === 'SuperAdmin';
   }
 
