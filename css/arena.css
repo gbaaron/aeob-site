@@ -1,0 +1,468 @@
+/* ============================================================
+   AEOB — Arena Hype design system
+   Scoped to: <body data-design="arena-hype">
+   Think: jumbotron, broadcast LED, stadium chrome, scorebug chyrons.
+   ============================================================ */
+
+body[data-design="arena-hype"] {
+  /* -- palette -- */
+  --ah-black:        #05070d;
+  --ah-deep:         #0b1426;
+  --ah-navy:         #101d3a;
+  --ah-navy-soft:    #1a2a50;
+  --ah-chrome:       #d8dee9;
+  --ah-ice:          #e8f0ff;
+  --ah-electric:     #3a8dff;
+  --ah-electric-hi:  #67b1ff;
+  --ah-hot:          #ff6b1f;
+  --ah-hot-hi:       #ff8f4a;
+  --ah-gold:         #ffc532;
+  --ah-red:          #ff2d3a;
+
+  --ah-text:         #eaf0ff;
+  --ah-muted:        #8ea0c0;
+
+  /* LED / jumbotron grid */
+  --ah-led: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='6' height='6' viewBox='0 0 6 6'><circle cx='3' cy='3' r='0.9' fill='white' fill-opacity='0.08'/></svg>");
+  --ah-chrome-grid: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'><path d='M0 0H40M0 40H40M0 0V40M40 0V40' stroke='rgba(255,255,255,0.04)' stroke-width='1'/></svg>");
+  --ah-scan: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'><path d='M0 0H4' stroke='rgba(255,255,255,0.02)'/></svg>");
+
+  background:
+    radial-gradient(1200px 700px at 15% -10%, rgba(58,141,255,0.25), transparent 60%),
+    radial-gradient(1000px 600px at 90% 10%, rgba(255,107,31,0.18), transparent 55%),
+    radial-gradient(900px 600px at 50% 100%, rgba(255,197,50,0.10), transparent 60%),
+    linear-gradient(180deg, var(--ah-black) 0%, var(--ah-deep) 100%);
+  color: var(--ah-text);
+  font-family: 'Rajdhani', 'Oswald', sans-serif;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+body[data-design="arena-hype"]::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: var(--ah-led), var(--ah-chrome-grid), var(--ah-scan);
+  background-size: 6px 6px, 40px 40px, 4px 4px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.9;
+  mix-blend-mode: screen;
+}
+
+body[data-design="arena-hype"]::after {
+  content: '';
+  position: fixed; inset: 0;
+  background: radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.6) 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ---------- Header: broadcast bar ---------- */
+body[data-design="arena-hype"] .header {
+  background: linear-gradient(180deg, rgba(5,7,13,0.92), rgba(11,20,38,0.85));
+  border-bottom: 2px solid var(--ah-electric);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 4px 30px rgba(58,141,255,0.22);
+}
+body[data-design="arena-hype"] .header-inner {
+  position: relative;
+}
+body[data-design="arena-hype"] .header-logo span {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--ah-ice);
+  text-transform: uppercase;
+  text-shadow: 0 0 18px rgba(58,141,255,0.6);
+}
+body[data-design="arena-hype"] .nav a {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--ah-chrome);
+  white-space: nowrap;
+  position: relative;
+  padding: 4px 2px;
+  transition: color 0.2s ease;
+}
+body[data-design="arena-hype"] .nav a:hover {
+  color: var(--ah-electric-hi);
+}
+body[data-design="arena-hype"] .nav a.active {
+  color: var(--ah-hot-hi);
+}
+body[data-design="arena-hype"] .nav a.active::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: -6px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--ah-hot), var(--ah-gold));
+  box-shadow: 0 0 12px rgba(255,107,31,0.8);
+}
+
+/* ---------- Page hero: jumbotron lower-third ---------- */
+body[data-design="arena-hype"] .page-hero {
+  position: relative;
+  padding: 96px 0 80px;
+  background:
+    radial-gradient(ellipse 900px 500px at 20% 30%, rgba(58,141,255,0.28), transparent 60%),
+    radial-gradient(ellipse 700px 400px at 85% 70%, rgba(255,107,31,0.24), transparent 60%),
+    linear-gradient(135deg, var(--ah-deep), var(--ah-navy));
+  border-bottom: 4px solid var(--ah-electric);
+  overflow: hidden;
+  isolation: isolate;
+}
+body[data-design="arena-hype"] .page-hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: var(--ah-led);
+  background-size: 6px 6px;
+  opacity: 0.5;
+  z-index: 0;
+}
+body[data-design="arena-hype"] .page-hero::after {
+  content: 'AEOB BROADCAST';
+  position: absolute;
+  top: 32px; left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.5em;
+  font-size: 12px;
+  color: var(--ah-electric-hi);
+  text-shadow: 0 0 10px rgba(58,141,255,0.8);
+  z-index: 2;
+}
+body[data-design="arena-hype"] .page-hero .container {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+}
+body[data-design="arena-hype"] .page-hero-title {
+  font-family: 'Bebas Neue', 'Oswald', sans-serif;
+  font-weight: 400;
+  font-size: clamp(56px, 10vw, 120px);
+  letter-spacing: 0.04em;
+  line-height: 0.92;
+  text-transform: uppercase;
+  color: var(--ah-ice);
+  background: linear-gradient(180deg, #ffffff 0%, #b8d4ff 50%, #4a7bc4 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 4px 0 rgba(58,141,255,0.4)) drop-shadow(0 0 30px rgba(58,141,255,0.5));
+  margin: 24px 0 20px;
+}
+body[data-design="arena-hype"] .page-hero-subtitle {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 500;
+  font-size: clamp(16px, 1.6vw, 20px);
+  color: var(--ah-chrome);
+  max-width: 720px;
+  margin: 0 auto 32px;
+  letter-spacing: 0.02em;
+}
+
+/* Scorebug stat strip below hero title */
+body[data-design="arena-hype"] .page-hero .container::after {
+  content: '300+ EPISODES    •    4 ERAS    •    EST 1975    •    LIVE ARCHIVE';
+  display: block;
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  font-size: 11px;
+  color: var(--ah-gold);
+  border-top: 1px solid rgba(255,197,50,0.35);
+  border-bottom: 1px solid rgba(255,197,50,0.35);
+  padding: 12px 0;
+  margin-top: 32px;
+  max-width: 780px;
+  margin-left: auto; margin-right: auto;
+  background: linear-gradient(90deg, transparent, rgba(255,197,50,0.08), transparent);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* ---------- Tabs as scorebug chyrons ---------- */
+body[data-design="arena-hype"] .tabs {
+  display: flex; gap: 0;
+  border-bottom: 2px solid rgba(58,141,255,0.2);
+  margin-bottom: 32px;
+}
+body[data-design="arena-hype"] .tab-btn {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  font-size: 14px;
+  text-transform: uppercase;
+  padding: 18px 32px;
+  background: transparent;
+  color: var(--ah-chrome);
+  border: none;
+  border-bottom: 3px solid transparent;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+body[data-design="arena-hype"] .tab-btn:hover {
+  color: var(--ah-electric-hi);
+  background: linear-gradient(180deg, transparent, rgba(58,141,255,0.08));
+}
+body[data-design="arena-hype"] .tab-btn.active {
+  color: var(--ah-ice);
+  background: linear-gradient(180deg, rgba(58,141,255,0.18), rgba(58,141,255,0.04));
+  border-bottom-color: var(--ah-hot);
+  box-shadow: 0 -2px 0 var(--ah-electric) inset;
+}
+body[data-design="arena-hype"] .tab-btn.active::after {
+  content: '●';
+  position: absolute;
+  top: 6px; right: 10px;
+  color: var(--ah-red);
+  font-size: 8px;
+  animation: ahPulse 1.4s ease-in-out infinite;
+}
+@keyframes ahPulse {
+  0%,100% { opacity: 1; } 50% { opacity: 0.35; }
+}
+
+/* ---------- Filter toolbar: chrome dash ---------- */
+body[data-design="arena-hype"] .episodes-toolbar {
+  background: linear-gradient(180deg, rgba(16,29,58,0.9), rgba(11,20,38,0.95));
+  border: 1px solid rgba(58,141,255,0.3);
+  border-top: 2px solid var(--ah-electric);
+  border-radius: 6px;
+  padding: 20px 24px;
+  margin-bottom: 32px;
+  position: relative;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08);
+}
+body[data-design="arena-hype"] .episodes-toolbar::before {
+  content: 'FILTERS / LIVE';
+  position: absolute;
+  top: -10px; left: 20px;
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  color: var(--ah-gold);
+  background: var(--ah-deep);
+  padding: 2px 10px;
+  border: 1px solid var(--ah-gold);
+}
+body[data-design="arena-hype"] .search-input,
+body[data-design="arena-hype"] .filter-select {
+  background: rgba(5,7,13,0.6);
+  border: 1px solid rgba(58,141,255,0.35);
+  color: var(--ah-ice);
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 12px 16px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+body[data-design="arena-hype"] .search-input:focus,
+body[data-design="arena-hype"] .filter-select:focus {
+  outline: none;
+  border-color: var(--ah-electric);
+  box-shadow: 0 0 0 3px rgba(58,141,255,0.25), 0 0 18px rgba(58,141,255,0.4);
+}
+body[data-design="arena-hype"] .search-input::placeholder {
+  color: var(--ah-muted);
+}
+
+/* ---------- Episode cards: jumbotron tiles ---------- */
+body[data-design="arena-hype"] .episode-card,
+body[data-design="arena-hype"] .card.episode-card {
+  background: linear-gradient(180deg, var(--ah-navy-soft), var(--ah-deep));
+  border: 1px solid rgba(58,141,255,0.25);
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+  transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), border-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+body[data-design="arena-hype"] .episode-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 6px;
+  padding: 1px;
+  background: linear-gradient(135deg, var(--ah-electric), transparent 40%, transparent 60%, var(--ah-hot));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 2;
+}
+body[data-design="arena-hype"] .episode-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--ah-electric);
+  box-shadow: 0 16px 50px rgba(58,141,255,0.35), 0 4px 20px rgba(0,0,0,0.6);
+}
+body[data-design="arena-hype"] .episode-card:hover::before {
+  opacity: 1;
+}
+body[data-design="arena-hype"] .episode-card .thumb-wrap {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16/9;
+}
+body[data-design="arena-hype"] .episode-card .thumb-wrap img {
+  width: 100%; height: 100%; object-fit: cover;
+  filter: contrast(1.05) saturate(1.1) brightness(0.92);
+  transition: transform 0.5s ease, filter 0.3s ease;
+}
+body[data-design="arena-hype"] .episode-card:hover .thumb-wrap img {
+  transform: scale(1.06);
+  filter: contrast(1.1) saturate(1.25) brightness(1);
+}
+body[data-design="arena-hype"] .episode-card .thumb-wrap::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, transparent 50%, rgba(5,7,13,0.95));
+}
+body[data-design="arena-hype"] .episode-card .duration {
+  position: absolute;
+  bottom: 10px; right: 10px;
+  background: var(--ah-black);
+  color: var(--ah-gold);
+  font-family: 'Oswald', monospace;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  padding: 4px 10px;
+  border: 1px solid var(--ah-gold);
+  border-radius: 2px;
+  z-index: 3;
+}
+body[data-design="arena-hype"] .episode-card .play-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: radial-gradient(circle at center, rgba(5,7,13,0.3) 0%, rgba(5,7,13,0.85) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 2;
+  color: var(--ah-electric-hi);
+  font-size: 60px;
+  text-shadow: 0 0 30px rgba(58,141,255,0.8);
+}
+body[data-design="arena-hype"] .episode-card:hover .play-overlay {
+  opacity: 1;
+}
+body[data-design="arena-hype"] .episode-card .fav-btn {
+  position: absolute;
+  top: 10px; right: 10px;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: rgba(5,7,13,0.8);
+  border: 1px solid rgba(255,197,50,0.35);
+  color: var(--ah-gold);
+  z-index: 3;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+body[data-design="arena-hype"] .episode-card .fav-btn:hover {
+  background: var(--ah-hot);
+  border-color: var(--ah-hot);
+  color: white;
+  transform: scale(1.1);
+}
+body[data-design="arena-hype"] .episode-card .card-body {
+  padding: 20px 22px 22px;
+  position: relative;
+}
+body[data-design="arena-hype"] .episode-card h3 {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 1.15;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: var(--ah-ice);
+  margin: 0 0 12px;
+}
+body[data-design="arena-hype"] .episode-card .episode-meta {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ah-electric-hi);
+  margin-bottom: 12px;
+}
+body[data-design="arena-hype"] .episode-card .episode-tag {
+  display: inline-block;
+  font-family: 'Oswald', sans-serif;
+  font-weight: 600;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  background: linear-gradient(180deg, rgba(255,107,31,0.15), rgba(255,107,31,0.05));
+  border: 1px solid rgba(255,107,31,0.4);
+  color: var(--ah-hot-hi);
+  border-radius: 2px;
+  margin: 3px 3px 0 0;
+}
+
+/* ---------- Buttons ---------- */
+body[data-design="arena-hype"] .btn,
+body[data-design="arena-hype"] .load-more-btn,
+body[data-design="arena-hype"] .btn-outline {
+  font-family: 'Oswald', sans-serif !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.2em !important;
+  text-transform: uppercase !important;
+  padding: 14px 32px !important;
+  background: linear-gradient(180deg, var(--ah-electric) 0%, #2a6dce 100%) !important;
+  color: var(--ah-ice) !important;
+  border: 1px solid var(--ah-electric-hi) !important;
+  border-radius: 4px !important;
+  box-shadow: 0 4px 18px rgba(58,141,255,0.35), inset 0 1px 0 rgba(255,255,255,0.2) !important;
+  cursor: pointer;
+  transition: all 0.2s ease !important;
+}
+body[data-design="arena-hype"] .btn:hover,
+body[data-design="arena-hype"] .load-more-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(58,141,255,0.55), inset 0 1px 0 rgba(255,255,255,0.3) !important;
+  filter: brightness(1.1);
+}
+
+/* ---------- Footer ---------- */
+body[data-design="arena-hype"] .footer {
+  background: linear-gradient(180deg, var(--ah-deep) 0%, var(--ah-black) 100%);
+  border-top: 2px solid var(--ah-electric);
+  box-shadow: 0 -4px 30px rgba(58,141,255,0.2);
+  color: var(--ah-chrome);
+}
+body[data-design="arena-hype"] .footer h4 {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ah-hot-hi);
+  font-size: 13px;
+}
+body[data-design="arena-hype"] .footer a {
+  color: var(--ah-chrome);
+  transition: color 0.2s ease;
+}
+body[data-design="arena-hype"] .footer a:hover { color: var(--ah-electric-hi); }
+
+/* ---------- Empty state ---------- */
+body[data-design="arena-hype"] .empty-state,
+body[data-design="arena-hype"] .episodes-grid:empty::after {
+  color: var(--ah-chrome);
+  font-family: 'Oswald', sans-serif;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}

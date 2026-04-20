@@ -1,0 +1,635 @@
+/* ============================================================
+   AEOB — Retro Press design overlay
+   Opt-in via <body data-design="retro-press">
+   Skins existing global classes (.page-hero, .tabs, .card,
+   .episode-card, .filter-select, etc.) without changing markup
+   so page JS keeps working.
+   Fonts loaded via <link> in page head (Playfair Display, Oswald,
+   Caveat — Inter already globally loaded).
+   ============================================================ */
+
+body[data-design="retro-press"] {
+  /* ---------- Paper palette ---------- */
+  --rp-paper:        #f4e9d0;   /* primary cream */
+  --rp-paper-warm:   #ecdfbe;   /* slightly deeper for secondary surfaces */
+  --rp-paper-edge:   #d9c69a;   /* aged edge */
+  --rp-paper-dark:   #1f1a14;   /* dark-mode cream inverse */
+  --rp-paper-dark2:  #15110b;
+
+  /* ---------- Ink ---------- */
+  --rp-ink:          #1a1712;   /* darkest ink */
+  --rp-ink-soft:     #3d342a;   /* body */
+  --rp-ink-faded:    #7a6f61;   /* muted */
+  --rp-rule:         #2a231b;   /* rule lines */
+
+  /* ---------- Accents (vintage-shifted from AEOB palette) ---------- */
+  --rp-red:          #a8312c;   /* faded red */
+  --rp-red-deep:     #782120;
+  --rp-blue:         #2a3d6e;   /* faded blue */
+  --rp-blue-deep:    #1a244a;
+  --rp-gold:         #b8811f;   /* gold leaf */
+  --rp-gold-dim:     #8a5e11;
+  --rp-teal:         #2f6b6b;   /* aged teal */
+  --rp-stamp-red:    #b53027;   /* rubber stamp */
+
+  /* ---------- Era pennant colors ---------- */
+  --rp-era-70s:      #b8811f;   /* mustard */
+  --rp-era-80s:      #a8312c;   /* faded red */
+  --rp-era-90s:      #2a3d6e;   /* faded blue */
+  --rp-era-00s:      #2f6b6b;   /* teal */
+
+  /* ---------- Texture layers (as reusable vars) ---------- */
+  --rp-noise: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='5'/><feColorMatrix values='0 0 0 0 0.1  0 0 0 0 0.08  0 0 0 0 0.06  0 0 0 0.22 0'/></filter><rect width='200' height='200' filter='url(%23n)'/></svg>");
+  --rp-halftone: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='6' height='6'><circle cx='1' cy='1' r='0.7' fill='%23000' fill-opacity='0.18'/></svg>");
+  --rp-grid: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40'><path d='M0 0h40M0 40h40M0 0v40M40 0v40' stroke='%231a1712' stroke-opacity='0.05'/></svg>");
+
+  /* ---------- Paper backdrop ---------- */
+  background-color: var(--rp-paper) !important;
+  color: var(--rp-ink-soft) !important;
+  font-family: 'Inter', -apple-system, sans-serif;
+}
+
+/* Layered paper texture — sits above body::before halftone */
+body[data-design="retro-press"]::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background-image:
+    var(--rp-noise),
+    radial-gradient(ellipse at top left, rgba(138, 94, 17, 0.08), transparent 55%),
+    radial-gradient(ellipse at bottom right, rgba(168, 49, 44, 0.06), transparent 55%),
+    radial-gradient(ellipse at center, transparent 45%, rgba(26, 23, 18, 0.15) 100%);
+  background-size: 200px 200px, auto, auto, auto;
+  mix-blend-mode: multiply;
+}
+
+body[data-design="retro-press"] .header,
+body[data-design="retro-press"] main,
+body[data-design="retro-press"] .footer,
+body[data-design="retro-press"] .toast,
+body[data-design="retro-press"] .episode-modal,
+body[data-design="retro-press"] .auth-modal,
+body[data-design="retro-press"] .back-to-top {
+  position: relative;
+  z-index: 2;
+}
+
+/* ---------- Dark mode (late-night locker room) ---------- */
+body[data-design="retro-press"][data-theme="dark"],
+[data-theme="dark"] body[data-design="retro-press"] {
+  --rp-paper:      #1a1611;
+  --rp-paper-warm: #22190f;
+  --rp-paper-edge: #2c2416;
+  --rp-ink:        #f2e7c8;
+  --rp-ink-soft:   #dac9a1;
+  --rp-ink-faded:  #8d8066;
+  --rp-rule:       #dac9a1;
+  background-color: var(--rp-paper) !important;
+  color: var(--rp-ink-soft) !important;
+}
+body[data-design="retro-press"][data-theme="dark"]::after {
+  background-image:
+    var(--rp-noise),
+    radial-gradient(ellipse at top, rgba(184, 129, 31, 0.12), transparent 60%);
+  mix-blend-mode: screen;
+}
+
+/* ---------- Header (less surgery — keep it functional, just re-skin) ---------- */
+body[data-design="retro-press"] .header {
+  background: var(--rp-paper-warm) !important;
+  border-bottom: 3px double var(--rp-rule) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+body[data-design="retro-press"] .header-logo span {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  color: var(--rp-ink) !important;
+}
+body[data-design="retro-press"] .nav a {
+  font-family: 'Oswald', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--rp-ink-soft) !important;
+  position: relative;
+}
+body[data-design="retro-press"] .nav a.active::after,
+body[data-design="retro-press"] .nav a:hover::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: -6px;
+  height: 3px;
+  background: var(--rp-stamp-red);
+  transform: skewX(-18deg);
+}
+
+/* ---------- Masthead (replaces .page-hero) ---------- */
+body[data-design="retro-press"] .page-hero {
+  background: transparent !important;
+  padding: 56px 0 16px !important;
+  position: relative;
+  text-align: center;
+}
+body[data-design="retro-press"] .page-hero::before,
+body[data-design="retro-press"] .page-hero::after {
+  content: '';
+  display: block;
+  width: min(920px, 90%);
+  margin: 0 auto;
+  height: 10px;
+  border-top: 3px solid var(--rp-rule);
+  border-bottom: 1px solid var(--rp-rule);
+}
+body[data-design="retro-press"] .page-hero::before { margin-bottom: 14px; }
+body[data-design="retro-press"] .page-hero::after  { margin-top: 22px; }
+
+body[data-design="retro-press"] .page-hero-title {
+  font-family: 'Playfair Display', serif !important;
+  font-style: italic;
+  font-weight: 900;
+  font-size: clamp(44px, 7vw, 84px) !important;
+  line-height: 1 !important;
+  letter-spacing: -0.01em;
+  color: var(--rp-ink) !important;
+  margin: 6px 0 4px !important;
+  text-shadow: 1px 1px 0 rgba(26, 23, 18, 0.04);
+}
+body[data-design="retro-press"] .page-hero-subtitle {
+  font-family: 'Playfair Display', serif !important;
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(16px, 1.4vw, 19px) !important;
+  color: var(--rp-ink-soft) !important;
+  max-width: 620px;
+  margin: 4px auto 0 !important;
+  line-height: 1.55;
+}
+
+/* Masthead overline + dateline inserted via CSS::before/::after on .container */
+body[data-design="retro-press"] .page-hero .container {
+  position: relative;
+}
+body[data-design="retro-press"] .page-hero .container::before {
+  content: 'An Eternity of Basketball · Vol. XIV';
+  display: block;
+  font-family: 'Oswald', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.35em;
+  font-size: 11px;
+  color: var(--rp-ink-faded);
+  margin-bottom: 4px;
+}
+body[data-design="retro-press"] .page-hero .container::after {
+  content: 'Issue № 300 · PBA Archive · Est. 1975';
+  display: block;
+  font-family: 'Oswald', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  font-size: 11px;
+  color: var(--rp-ink-faded);
+  margin-top: 14px;
+}
+
+/* ---------- Tabs → pennant tabs ---------- */
+body[data-design="retro-press"] .tabs {
+  border-bottom: 3px double var(--rp-rule) !important;
+  gap: 4px !important;
+  padding-bottom: 0 !important;
+}
+body[data-design="retro-press"] .tab-btn {
+  font-family: 'Oswald', sans-serif !important;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  padding: 10px 22px 12px !important;
+  color: var(--rp-ink-faded) !important;
+  background: transparent !important;
+  border: 0 !important;
+  position: relative;
+  clip-path: polygon(0 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+  transition: color 0.2s;
+}
+body[data-design="retro-press"] .tab-btn.active {
+  color: var(--rp-paper) !important;
+  background: var(--rp-ink) !important;
+}
+body[data-design="retro-press"] .tab-btn:hover:not(.active) { color: var(--rp-stamp-red) !important; }
+
+/* ---------- Filing card toolbar (replaces .episodes-toolbar) ---------- */
+body[data-design="retro-press"] .episodes-toolbar {
+  background: var(--rp-paper-warm) !important;
+  border: 2px solid var(--rp-rule) !important;
+  border-radius: 0 !important;
+  padding: 20px 22px 22px !important;
+  position: relative;
+  margin-top: 28px !important;
+  box-shadow:
+    4px 4px 0 rgba(26, 23, 18, 0.15),
+    inset 0 0 0 1px var(--rp-paper);
+  background-image:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 27px,
+      rgba(42, 61, 110, 0.12) 27px,
+      rgba(42, 61, 110, 0.12) 28px
+    );
+}
+body[data-design="retro-press"] .episodes-toolbar::before {
+  content: 'Filed Under';
+  position: absolute;
+  top: -14px;
+  left: 18px;
+  background: var(--rp-stamp-red);
+  color: #fff6e6;
+  font-family: 'Oswald', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  font-size: 11px;
+  padding: 4px 12px 5px;
+  transform: rotate(-1.5deg);
+  box-shadow: 2px 2px 0 rgba(26, 23, 18, 0.2);
+}
+
+body[data-design="retro-press"] .search-input {
+  background: transparent !important;
+  border: 0 !important;
+  border-bottom: 2px solid var(--rp-rule) !important;
+  border-radius: 0 !important;
+  padding: 10px 4px !important;
+  font-family: 'Courier New', 'Courier', monospace !important;
+  font-size: 15px !important;
+  color: var(--rp-ink) !important;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+body[data-design="retro-press"] .search-input::placeholder {
+  color: var(--rp-ink-faded) !important;
+  font-style: italic;
+  font-weight: 400;
+}
+body[data-design="retro-press"] .search-input:focus {
+  outline: 0 !important;
+  border-bottom-color: var(--rp-stamp-red) !important;
+}
+
+body[data-design="retro-press"] .filter-select {
+  background: var(--rp-paper) !important;
+  border: 1.5px solid var(--rp-rule) !important;
+  border-radius: 0 !important;
+  color: var(--rp-ink) !important;
+  font-family: 'Oswald', sans-serif !important;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 12.5px !important;
+  font-weight: 500 !important;
+  padding: 10px 28px 10px 12px !important;
+  box-shadow: 2px 2px 0 rgba(26, 23, 18, 0.12);
+  cursor: pointer;
+}
+body[data-design="retro-press"] .filter-select:focus { outline: 0; border-color: var(--rp-stamp-red) !important; }
+body[data-design="retro-press"] .filter-select:hover { background: var(--rp-paper-warm) !important; }
+
+/* ---------- Episodes grid (news clipping cards) ---------- */
+body[data-design="retro-press"] .episodes-grid {
+  margin-top: 40px !important;
+  gap: 28px 24px !important;
+}
+body[data-design="retro-press"] .episode-card,
+body[data-design="retro-press"] .card.episode-card {
+  background: var(--rp-paper) !important;
+  border: 2px solid var(--rp-rule) !important;
+  border-radius: 0 !important;
+  box-shadow:
+    6px 6px 0 rgba(26, 23, 18, 0.18),
+    inset 0 0 40px rgba(184, 129, 31, 0.06) !important;
+  position: relative;
+  overflow: visible !important;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+body[data-design="retro-press"] .episode-card::before {
+  /* Stamp / sticker in the corner */
+  content: '№';
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 52px;
+  height: 52px;
+  background: var(--rp-stamp-red);
+  color: #fff6e6;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-weight: 900;
+  font-size: 24px;
+  box-shadow: 2px 2px 0 rgba(26, 23, 18, 0.25);
+  transform: rotate(-8deg);
+  z-index: 3;
+}
+body[data-design="retro-press"] .episode-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow:
+    10px 10px 0 rgba(26, 23, 18, 0.22),
+    inset 0 0 40px rgba(184, 129, 31, 0.08) !important;
+}
+body[data-design="retro-press"] .episode-card .thumb-wrap {
+  border-bottom: 2px solid var(--rp-rule);
+  position: relative;
+  overflow: hidden;
+}
+body[data-design="retro-press"] .episode-card .thumb-wrap::after {
+  /* Halftone overlay on photo */
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--rp-halftone);
+  background-size: 4px 4px;
+  mix-blend-mode: multiply;
+  opacity: 0.35;
+  pointer-events: none;
+}
+body[data-design="retro-press"] .episode-card .thumb-wrap img {
+  filter: sepia(0.18) contrast(1.05) saturate(0.85);
+}
+body[data-design="retro-press"] .episode-card .duration {
+  background: var(--rp-ink) !important;
+  color: var(--rp-paper) !important;
+  font-family: 'Oswald', sans-serif !important;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 11px !important;
+  border-radius: 0 !important;
+  padding: 3px 8px 4px !important;
+}
+body[data-design="retro-press"] .episode-card .fav-btn {
+  background: var(--rp-paper) !important;
+  border: 2px solid var(--rp-rule) !important;
+  color: var(--rp-stamp-red) !important;
+  border-radius: 0 !important;
+  font-size: 18px !important;
+  box-shadow: 2px 2px 0 rgba(26, 23, 18, 0.2);
+}
+body[data-design="retro-press"] .episode-card .fav-btn.active {
+  background: var(--rp-stamp-red) !important;
+  color: #fff6e6 !important;
+}
+body[data-design="retro-press"] .episode-card .play-overlay {
+  background: rgba(26, 23, 18, 0.82) !important;
+  color: var(--rp-paper) !important;
+  border-radius: 0 !important;
+  border: 2px solid var(--rp-paper) !important;
+  box-shadow: 0 0 0 2px var(--rp-ink);
+}
+body[data-design="retro-press"] .episode-card .card-body {
+  padding: 18px 20px 20px !important;
+  position: relative;
+}
+body[data-design="retro-press"] .episode-card .card-body::before {
+  /* tiny kicker over title */
+  content: 'The Archive';
+  display: block;
+  font-family: 'Oswald', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  font-size: 10px;
+  color: var(--rp-stamp-red);
+  margin-bottom: 6px;
+}
+body[data-design="retro-press"] .episode-card h3 {
+  font-family: 'Playfair Display', serif !important;
+  font-weight: 900 !important;
+  font-style: italic;
+  font-size: 20px !important;
+  line-height: 1.2 !important;
+  color: var(--rp-ink) !important;
+  margin: 0 0 10px !important;
+}
+body[data-design="retro-press"] .episode-card .episode-meta {
+  font-family: 'Oswald', sans-serif !important;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 11px !important;
+  color: var(--rp-ink-faded) !important;
+  padding-top: 8px;
+  border-top: 1px solid var(--rp-rule);
+}
+body[data-design="retro-press"] .episode-card .episode-meta span { color: var(--rp-ink-faded) !important; }
+body[data-design="retro-press"] .episode-card .episode-meta span + span::before {
+  content: '·';
+  margin: 0 6px;
+  color: var(--rp-stamp-red);
+  font-weight: 900;
+}
+body[data-design="retro-press"] .episode-card .episode-tags {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+body[data-design="retro-press"] .episode-card .episode-tag {
+  background: var(--rp-paper-warm) !important;
+  color: var(--rp-ink-soft) !important;
+  border: 1px solid var(--rp-rule);
+  border-radius: 0 !important;
+  font-family: 'Oswald', sans-serif !important;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 10px !important;
+  padding: 3px 8px !important;
+  font-weight: 500;
+}
+
+/* Skeleton cards — keep functional but paper-tinted */
+body[data-design="retro-press"] .episode-card.skeleton {
+  background: var(--rp-paper-warm) !important;
+}
+body[data-design="retro-press"] .skeleton-thumbnail,
+body[data-design="retro-press"] .skeleton-line {
+  background: linear-gradient(90deg, rgba(26,23,18,0.08), rgba(26,23,18,0.15), rgba(26,23,18,0.08)) !important;
+  border-radius: 0 !important;
+}
+
+/* ---------- Load more ---------- */
+body[data-design="retro-press"] .load-more-container {
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+  padding-top: 22px;
+  border-top: 3px double var(--rp-rule);
+}
+body[data-design="retro-press"] .load-more-btn {
+  background: var(--rp-ink) !important;
+  color: var(--rp-paper) !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  font-family: 'Oswald', sans-serif !important;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-weight: 600 !important;
+  padding: 14px 32px !important;
+  position: relative;
+  box-shadow: 4px 4px 0 var(--rp-stamp-red);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+body[data-design="retro-press"] .load-more-btn::after {
+  content: ' →';
+  color: var(--rp-stamp-red);
+  letter-spacing: 0;
+}
+body[data-design="retro-press"] .load-more-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--rp-stamp-red);
+}
+
+/* ---------- Favorites placeholder ---------- */
+body[data-design="retro-press"] .favorites-placeholder {
+  background: var(--rp-paper-warm) !important;
+  border: 2px dashed var(--rp-rule) !important;
+  border-radius: 0 !important;
+  padding: 60px 30px !important;
+  text-align: center;
+}
+body[data-design="retro-press"] .favorites-placeholder h3 {
+  font-family: 'Playfair Display', serif !important;
+  font-style: italic;
+  font-weight: 900;
+  color: var(--rp-ink) !important;
+  font-size: 28px !important;
+  margin-bottom: 10px;
+}
+body[data-design="retro-press"] .favorites-placeholder p {
+  color: var(--rp-ink-soft) !important;
+  font-family: 'Playfair Display', serif !important;
+  font-style: italic;
+  font-size: 16px !important;
+  margin-bottom: 24px;
+}
+
+/* ---------- Buttons (primary / outline) ---------- */
+body[data-design="retro-press"] .btn,
+body[data-design="retro-press"] .btn-primary {
+  border-radius: 0 !important;
+  font-family: 'Oswald', sans-serif !important;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-weight: 600 !important;
+  background: var(--rp-stamp-red) !important;
+  color: #fff6e6 !important;
+  border: 0 !important;
+  box-shadow: 3px 3px 0 var(--rp-ink);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+body[data-design="retro-press"] .btn:hover,
+body[data-design="retro-press"] .btn-primary:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0 var(--rp-ink);
+}
+body[data-design="retro-press"] .btn-outline {
+  background: transparent !important;
+  color: var(--rp-ink) !important;
+  border: 2px solid var(--rp-ink) !important;
+  box-shadow: 3px 3px 0 var(--rp-stamp-red);
+}
+body[data-design="retro-press"] .btn-outline:hover {
+  background: var(--rp-ink) !important;
+  color: var(--rp-paper) !important;
+}
+
+/* ---------- Footer ---------- */
+body[data-design="retro-press"] .footer {
+  background: var(--rp-ink) !important;
+  color: var(--rp-paper) !important;
+  border-top: 6px double var(--rp-stamp-red);
+  position: relative;
+}
+body[data-design="retro-press"] .footer::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 100%;
+  background-image: var(--rp-halftone);
+  background-size: 3px 3px;
+  opacity: 0.15;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+body[data-design="retro-press"] .footer * { position: relative; }
+body[data-design="retro-press"] .footer h4 {
+  font-family: 'Oswald', sans-serif !important;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--rp-gold) !important;
+  font-size: 13px !important;
+}
+body[data-design="retro-press"] .footer a { color: var(--rp-paper) !important; opacity: 0.85; }
+body[data-design="retro-press"] .footer a:hover { opacity: 1; color: var(--rp-gold) !important; }
+
+/* ---------- Theme toggle button ---------- */
+body[data-design="retro-press"] .dark-toggle {
+  background: var(--rp-paper) !important;
+  border: 2px solid var(--rp-rule) !important;
+  color: var(--rp-ink) !important;
+  border-radius: 0 !important;
+  box-shadow: 2px 2px 0 var(--rp-stamp-red);
+}
+
+/* ---------- Auth / Login button in header ---------- */
+body[data-design="retro-press"] .btn-login {
+  background: var(--rp-ink) !important;
+  color: var(--rp-paper) !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  font-family: 'Oswald', sans-serif !important;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  box-shadow: 2px 2px 0 var(--rp-stamp-red);
+}
+
+/* ---------- Reusable primitives (for later pages) ---------- */
+body[data-design="retro-press"] .rp-kicker {
+  font-family: 'Oswald', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  font-size: 10px;
+  color: var(--rp-stamp-red);
+}
+body[data-design="retro-press"] .rp-pennant {
+  display: inline-block;
+  font-family: 'Oswald', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 600;
+  font-size: 11px;
+  color: #fff6e6;
+  background: var(--rp-ink);
+  padding: 3px 12px 4px 8px;
+  clip-path: polygon(0 0, 100% 0, calc(100% - 8px) 50%, 100% 100%, 0 100%);
+}
+body[data-design="retro-press"] .rp-pennant[data-era="1970s"] { background: var(--rp-era-70s); }
+body[data-design="retro-press"] .rp-pennant[data-era="1980s"] { background: var(--rp-era-80s); }
+body[data-design="retro-press"] .rp-pennant[data-era="1990s"] { background: var(--rp-era-90s); }
+body[data-design="retro-press"] .rp-pennant[data-era="2000s"] { background: var(--rp-era-00s); }
+
+body[data-design="retro-press"] .rp-rule {
+  border: 0;
+  height: 0;
+  border-top: 3px double var(--rp-rule);
+  margin: 24px 0;
+}
+body[data-design="retro-press"] .rp-margin-note {
+  font-family: 'Caveat', cursive;
+  font-size: 22px;
+  color: var(--rp-blue);
+  transform: rotate(-2deg);
+  display: inline-block;
+}

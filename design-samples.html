@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex,nofollow">
+    <title>AEOB — Design Samples</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=Oswald:wght@400;500;600;700&family=Caveat:wght@400;700&family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/retro.css">
+    <link rel="stylesheet" href="/css/arena.css">
+    <link rel="stylesheet" href="/css/court.css">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+    <style>
+        /* Floating toolbar — sits above whatever design is active */
+        .design-picker {
+            position: fixed;
+            top: 12px; left: 50%;
+            transform: translateX(-50%);
+            z-index: 99999;
+            display: flex;
+            gap: 6px;
+            background: rgba(10, 10, 14, 0.92);
+            border: 1px solid rgba(255,255,255,0.18);
+            padding: 6px;
+            border-radius: 999px;
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+            font-family: 'Inter', sans-serif;
+        }
+        .design-picker button {
+            background: transparent;
+            color: rgba(255,255,255,0.65);
+            border: none;
+            padding: 8px 18px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        .design-picker button:hover {
+            color: #fff;
+            background: rgba(255,255,255,0.08);
+        }
+        .design-picker button.active {
+            background: #fff;
+            color: #111;
+        }
+        .design-picker .sep {
+            width: 1px;
+            background: rgba(255,255,255,0.15);
+            margin: 4px 2px;
+        }
+        .design-note {
+            position: fixed;
+            bottom: 12px; left: 50%;
+            transform: translateX(-50%);
+            z-index: 99999;
+            background: rgba(10,10,14,0.92);
+            color: rgba(255,255,255,0.8);
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            letter-spacing: 0.08em;
+            padding: 8px 18px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.12);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            pointer-events: none;
+        }
+        @media (max-width: 640px) {
+            .design-picker { flex-wrap: wrap; justify-content: center; max-width: calc(100vw - 24px); }
+        }
+    </style>
+</head>
+<body data-design="arena-hype">
+
+    <!-- Floating design picker -->
+    <div class="design-picker" role="tablist">
+        <button type="button" data-pick="none">Baseline</button>
+        <div class="sep"></div>
+        <button type="button" data-pick="arena-hype" class="active">Arena Hype</button>
+        <button type="button" data-pick="hardwood-court">Hardwood Court</button>
+    </div>
+    <div class="design-note" id="designNote">Showing: Arena Hype</div>
+
+    <!-- Header -->
+    <header class="header" id="header">
+      <div class="header-inner">
+        <a href="/" class="header-logo">
+          <img src="https://res.cloudinary.com/djngpyv15/image/upload/v1776447309/274701765_319754193505498_1268754374260370953_n-removebg-preview_k6uyha.png" alt="AEOB Logo">
+          <span>AEOB</span>
+        </a>
+        <nav class="nav">
+          <a href="/">Home</a>
+          <a href="/live.html">Live</a>
+          <a href="/episodes.html" class="active">Episodes</a>
+          <a href="/cards.html">Cards</a>
+          <a href="/predictions.html">Predictions</a>
+          <a href="/trivia.html">Trivia</a>
+          <a href="/submissions.html">Fan Zone</a>
+          <a href="/shop.html">Shop</a>
+          <a href="/rewards.html">Rewards</a>
+          <a href="/schedule.html">Schedule</a>
+          <a href="/about.html">About</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+
+        <!-- Page Hero -->
+        <section class="page-hero">
+            <div class="container">
+                <h1 class="page-hero-title">Episode Archive</h1>
+                <p class="page-hero-subtitle">Over 300 episodes spanning every era of PBA history — from the league's founding in 1975 to the modern game. Search, filter, and revisit the stories that shaped Philippine basketball.</p>
+            </div>
+        </section>
+
+        <!-- Episodes Section -->
+        <section class="section episodes-section">
+            <div class="container">
+
+                <div class="tabs">
+                    <button class="tab-btn active">All Episodes</button>
+                    <button class="tab-btn">My Favorites</button>
+                </div>
+
+                <div class="tab-panel active">
+                    <div class="episodes-toolbar">
+                        <div class="search-box">
+                            <input type="text" class="search-input" placeholder="Search episodes by title, topic, or guest...">
+                        </div>
+                        <div class="filter-group">
+                            <select class="filter-select">
+                                <option>All Eras</option>
+                                <option>1970s — The Founding Years</option>
+                                <option>1980s — The Golden Era</option>
+                                <option>1990s — The Expansion Years</option>
+                                <option>2000s &amp; Beyond</option>
+                            </select>
+                            <select class="filter-select">
+                                <option>All Teams</option>
+                                <option>Crispa</option>
+                                <option>Toyota</option>
+                                <option>Ginebra</option>
+                            </select>
+                            <select class="filter-select">
+                                <option>All Hosts</option>
+                                <option>Charlie Cuna</option>
+                                <option>Sid Ventura</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="episodes-grid" id="demoGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:28px;"></div>
+
+                    <div class="load-more-container" style="text-align:center;margin-top:40px;">
+                        <button class="btn btn-outline load-more-btn">Load More Episodes</button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <a href="/" class="header-logo" style="margin-bottom:8px;">
+              <img src="https://res.cloudinary.com/djngpyv15/image/upload/v1776447309/274701765_319754193505498_1268754374260370953_n-removebg-preview_k6uyha.png" alt="AEOB" style="height:40px;">
+              <span style="color:#fff;">An Eternity of Basketball</span>
+            </a>
+            <p>Reliving the golden eras of PBA basketball since day one. 300+ episodes and counting.</p>
+          </div>
+          <div><h4>Browse</h4><ul><li><a href="/episodes.html">Episodes</a></li><li><a href="/predictions.html">Predictions</a></li><li><a href="/submissions.html">Fan Zone</a></li><li><a href="/rewards.html">Rewards</a></li></ul></div>
+          <div><h4>More</h4><ul><li><a href="/schedule.html">Schedule</a></li><li><a href="/about.html">About</a></li><li><a href="#">Contact</a></li></ul></div>
+          <div><h4>Listen On</h4><ul><li><a href="#">YouTube</a></li><li><a href="#">Spotify</a></li><li><a href="#">Apple Podcasts</a></li><li><a href="#">Facebook</a></li></ul></div>
+        </div>
+        <div class="footer-bottom">
+          <span>&copy; 2024 An Eternity of Basketball. All rights reserved.</span>
+          <span class="network">Part of the Globally Ballin Network</span>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+        // Seed demo cards once
+        (function(){
+            var demo = [
+                {t:"The Founding of the PBA: 1975", e:"1970s", h:"Charlie Cuna", d:"1:24:12", tags:["founding","history"]},
+                {t:"Crispa vs Toyota: The Rivalry That Built a League", e:"1970s", h:"Sid Ventura", d:"1:48:03", tags:["crispa","toyota","rivalry"]},
+                {t:"Ginebra and the Never Say Die Era", e:"1980s", h:"Jay Mercado", d:"2:11:47", tags:["ginebra","jaworski"]},
+                {t:"Great Taste: The Team Time Forgot", e:"1980s", h:"Noel Zarate", d:"1:32:18", tags:["great-taste","80s"]},
+                {t:"Purefoods vs Alaska: The 90s Rivalry", e:"1990s", h:"Sid Ventura", d:"1:58:44", tags:["purefoods","alaska"]},
+                {t:"Modern PBA: Import Conferences Reimagined", e:"2000s", h:"Charlie Cuna", d:"1:41:09", tags:["modern","imports"]}
+            ];
+            var thumbs = [
+                "https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg",
+                "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=800&auto=format&fit=crop",
+                "https://images.unsplash.com/photo-1518650902094-59e2540f1c25?w=800&auto=format&fit=crop",
+                "https://images.unsplash.com/photo-1574623452334-1e0ac2b3ccb4?w=800&auto=format&fit=crop",
+                "https://images.unsplash.com/photo-1552667466-07770ae110d0?w=800&auto=format&fit=crop",
+                "https://images.unsplash.com/photo-1504450758481-7338eba7524a?w=800&auto=format&fit=crop"
+            ];
+            var grid = document.getElementById('demoGrid');
+            grid.innerHTML = demo.map(function(ep, i){
+                return '<div class="card episode-card" data-era="'+ep.e+'">'
+                    + '<div class="thumb-wrap">'
+                    +   '<img src="'+thumbs[i]+'" alt="" loading="lazy">'
+                    +   '<span class="duration">'+ep.d+'</span>'
+                    +   '<div class="play-overlay">&#9654;</div>'
+                    +   '<button class="fav-btn" type="button">&hearts;</button>'
+                    + '</div>'
+                    + '<div class="card-body">'
+                    +   '<h3>'+ep.t+'</h3>'
+                    +   '<div class="episode-meta"><span>'+ep.e+'</span> &middot; <span>'+ep.h+'</span></div>'
+                    +   '<div class="episode-tags">'+ep.tags.map(function(t){return '<span class="episode-tag">'+t+'</span>';}).join('')+'</div>'
+                    + '</div>'
+                    + '</div>';
+            }).join('');
+        })();
+
+        // Design picker wiring
+        (function(){
+            var labels = {
+                'none': 'Showing: Baseline (current site)',
+                'arena-hype': 'Showing: Arena Hype — jumbotron / broadcast energy',
+                'hardwood-court': 'Showing: Hardwood Court — painted-key arena, documentary feel'
+            };
+            var note = document.getElementById('designNote');
+            var buttons = document.querySelectorAll('.design-picker button');
+            buttons.forEach(function(b){
+                b.addEventListener('click', function(){
+                    var pick = b.dataset.pick;
+                    if (pick === 'none') document.body.removeAttribute('data-design');
+                    else document.body.setAttribute('data-design', pick);
+                    buttons.forEach(function(x){ x.classList.toggle('active', x === b); });
+                    note.textContent = labels[pick];
+                    window.scrollTo({top: 0, behavior: 'smooth'});
+                });
+            });
+        })();
+    </script>
+
+</body>
+</html>
