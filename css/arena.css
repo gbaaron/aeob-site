@@ -3,6 +3,7 @@
    Scoped to: <body data-design="arena-hype">
    Think: jumbotron, broadcast LED, stadium chrome, scorebug chyrons.
    ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;500;600;700&family=Rajdhani:wght@400;500;600;700&display=swap');
 
 body[data-design="arena-hype"] {
   /* -- palette -- */
@@ -14,10 +15,10 @@ body[data-design="arena-hype"] {
   --ah-ice:          #e8f0ff;
   --ah-electric:     #3a8dff;
   --ah-electric-hi:  #67b1ff;
-  --ah-hot:          #ff6b1f;
-  --ah-hot-hi:       #ff8f4a;
+  --ah-hot:          #e31937;   /* logo red — secondary accent */
+  --ah-hot-hi:       #ff4856;   /* logo red, brighter */
   --ah-gold:         #ffc532;
-  --ah-red:          #ff2d3a;
+  --ah-red:          #ff2d3a;   /* live-dot pulse red */
 
   --ah-text:         #eaf0ff;
   --ah-muted:        #8ea0c0;
@@ -29,7 +30,7 @@ body[data-design="arena-hype"] {
 
   background:
     radial-gradient(1200px 700px at 15% -10%, rgba(58,141,255,0.25), transparent 60%),
-    radial-gradient(1000px 600px at 90% 10%, rgba(255,107,31,0.18), transparent 55%),
+    radial-gradient(1000px 600px at 90% 10%, rgba(227,25,55,0.10), transparent 55%),
     radial-gradient(900px 600px at 50% 100%, rgba(255,197,50,0.10), transparent 60%),
     linear-gradient(180deg, var(--ah-black) 0%, var(--ah-deep) 100%);
   color: var(--ah-text);
@@ -99,7 +100,7 @@ body[data-design="arena-hype"] .nav a.active::after {
   left: 0; right: 0; bottom: -6px;
   height: 3px;
   background: linear-gradient(90deg, var(--ah-hot), var(--ah-gold));
-  box-shadow: 0 0 12px rgba(255,107,31,0.8);
+  box-shadow: 0 0 12px rgba(227,25,55,0.8);
 }
 
 /* ---------- Page hero: jumbotron lower-third ---------- */
@@ -108,7 +109,7 @@ body[data-design="arena-hype"] .page-hero {
   padding: 96px 0 80px;
   background:
     radial-gradient(ellipse 900px 500px at 20% 30%, rgba(58,141,255,0.28), transparent 60%),
-    radial-gradient(ellipse 700px 400px at 85% 70%, rgba(255,107,31,0.24), transparent 60%),
+    radial-gradient(ellipse 700px 400px at 85% 70%, rgba(227,25,55,0.14), transparent 60%),
     linear-gradient(135deg, var(--ah-deep), var(--ah-navy));
   border-bottom: 4px solid var(--ah-electric);
   overflow: hidden;
@@ -406,8 +407,8 @@ body[data-design="arena-hype"] .episode-card .episode-tag {
   letter-spacing: 0.2em;
   text-transform: uppercase;
   padding: 4px 10px;
-  background: linear-gradient(180deg, rgba(255,107,31,0.15), rgba(255,107,31,0.05));
-  border: 1px solid rgba(255,107,31,0.4);
+  background: linear-gradient(180deg, rgba(227,25,55,0.15), rgba(227,25,55,0.05));
+  border: 1px solid rgba(227,25,55,0.4);
   color: var(--ah-hot-hi);
   border-radius: 2px;
   margin: 3px 3px 0 0;
