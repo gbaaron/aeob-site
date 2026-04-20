@@ -111,6 +111,11 @@ exports.handler = async (event) => {
     return jsonResponse(200, { owned: hydrated, balance, tier });
   } catch (err) {
     console.error('cards-my-collection error:', err);
-    return jsonResponse(500, { error: 'Failed to load collection' });
+    return jsonResponse(500, {
+      error: 'Failed to load collection',
+      message: err && err.message ? err.message : String(err),
+      statusCode: err && err.statusCode,
+      userIdFromToken: tokenUser && tokenUser.userId
+    });
   }
 };
