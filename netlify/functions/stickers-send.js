@@ -1,5 +1,7 @@
 /* AEOB — User sends a paid sticker on the livestream.
-   - Tier-gates on server (client display is just a hint)
+   - Open to EVERYONE: any signed-in user with enough credits can send
+     any active sticker. Tier gates live on the separate (free) emoji
+     reactions feature, not on stickers.
    - Verifies active session
    - Verifies balance, deducts Points, logs a negative RewardsLog entry
    - Rate limit: 1 sticker per user per 3 seconds */
@@ -15,14 +17,14 @@ const SESSIONS_TABLE = 'LiveSessions';
 const USERS_TABLE = 'Users';
 const REWARDS_TABLE = 'RewardsLog';
 
-const TIER_ORDER = ['Rookie', 'Veteran', 'All-Star', 'Legend'];
+// Tier is still attached to the send record (so the sender chip can style
+// the user's badge on-screen) but it is NOT used to gate what they can send.
 const TIERS = [
   { name: 'Rookie',   min: 0 },
   { name: 'Veteran',  min: 250 },
   { name: 'All-Star', min: 750 },
   { name: 'Legend',   min: 1500 }
 ];
-function tierRank(name) { const i = TIER_ORDER.indexOf(name); return i < 0 ? 0 : i; }
 function tierForPoints(points) {
   let tier = 'Rookie';
   for (const t of TIERS) { if (points >= t.min) tier = t.name; }
@@ -76,7 +78,6 @@ exports.handler = async (event) => {
     }
 
     const cost = Number(sticker.fields.Cost) || 0;
-    const requiredTier = sticker.fields.RequiredTier || 'Rookie';
     const animation = (sticker.fields.AnimationType || 'float').toLowerCase();
     const stickerName = sticker.fields.Name || 'Sticker';
     const stickerEmoji = sticker.fields.Emoji || '\uD83C\uDFC0';
@@ -93,12 +94,7 @@ exports.handler = async (event) => {
     const userTier = userRec.fields.Tier || tierForPoints(currentPoints);
     const userName = userRec.fields.Name || user.name || 'Fan';
 
-    // 3. Tier gate
-    if (tierRank(userTier) < tierRank(requiredTier)) {
-      return jsonResponse(403, { error: `Reach ${requiredTier} to send this sticker` });
-    }
-
-    // 4. Balance check
+    // 3. Balance check
     if (currentPoints < cost) {
       return jsonResponse(402, {
         error: `Need ${cost - currentPoints} more credits`,
@@ -107,7 +103,7 @@ exports.handler = async (event) => {
       });
     }
 
-    // 5. Active session
+    // 4. Active session
     const sessions = await base(SESSIONS_TABLE).select({
       filterByFormula: `{IsActive} = TRUE()`,
       maxRecords: 1,
@@ -118,7 +114,7 @@ exports.handler = async (event) => {
     }
     const sessionId = sessions[0].id;
 
-    // 6. Rate limit per user
+    // 5. Rate limit per user
     const cutoff = new Date(Date.now() - RATE_LIMIT_MS).toISOString();
     const recentSends = await base(SENDS_TABLE).select({
       filterByFormula: `AND({UserId} = '${String(user.userId).replace(/'/g, "\\'")}', IS_AFTER({CreatedAt}, '${cutoff}'))`,
@@ -129,7 +125,7 @@ exports.handler = async (event) => {
       return jsonResponse(429, { error: 'Slow down a little' });
     }
 
-    // 7. Deduct balance + recompute tier
+    // 6. Deduct balance + recompute tier
     const newBalance = currentPoints - cost;
     const newTier = tierForPoints(newBalance);
     await base(USERS_TABLE).update(user.userId, {
@@ -137,7 +133,7 @@ exports.handler = async (event) => {
       Tier: newTier
     });
 
-    // 8. Log the spend as a negative RewardsLog entry
+    // 7. Log the spend as a negative RewardsLog entry
     await base(REWARDS_TABLE).create({
       UserId: user.userId,
       Action: `Sticker: ${stickerName}`,
@@ -145,7 +141,7 @@ exports.handler = async (event) => {
       CreatedAt: new Date().toISOString()
     }).catch(err => console.warn('RewardsLog write failed (non-fatal):', err.message));
 
-    // 9. Create the send record (denormalized so live-state stays fast)
+    // 8. Create the send record (denormalized so live-state stays fast)
     const send = await base(SENDS_TABLE).create({
       SessionId: sessionId,
       StickerId: stickerId,

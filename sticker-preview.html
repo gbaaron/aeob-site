@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AEOB Sticker Preview</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#127936;</text></svg>">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    body {
+      min-height: 100vh;
+      background: #0b0f17;
+      color: #e8ecf3;
+      font-family: 'Inter', system-ui, sans-serif;
+      margin: 0;
+      padding: 24px;
+    }
+    .preview-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .preview-hero h1 {
+      margin: 0 0 8px 0;
+      font-size: 32px;
+      letter-spacing: 0.5px;
+    }
+    .preview-hero p {
+      margin: 0 0 24px 0;
+      color: #9aa5b4;
+      max-width: 680px;
+    }
+    .preview-stage-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background:
+        linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.04);
+      margin-bottom: 20px;
+    }
+    .preview-stage-wrap::after {
+      content: 'Simulated video frame';
+      position: absolute;
+      bottom: 10px; right: 14px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.35);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .preview-stage-wrap .fake-court {
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(ellipse 600px 400px at 50% 60%, rgba(232,119,43,0.18), transparent 60%),
+        radial-gradient(ellipse 400px 300px at 20% 30%, rgba(168,85,247,0.12), transparent 60%),
+        radial-gradient(ellipse 400px 300px at 80% 30%, rgba(56,189,248,0.12), transparent 60%);
+      pointer-events: none;
+    }
+    .preview-controls {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .preview-btn {
+      padding: 14px 16px;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.04);
+      color: inherit;
+      cursor: pointer;
+      font: inherit;
+      text-align: left;
+      transition: background 0.18s, transform 0.18s, border-color 0.18s;
+    }
+    .preview-btn:hover {
+      background: rgba(232,119,43,0.12);
+      border-color: rgba(232,119,43,0.4);
+      transform: translateY(-1px);
+    }
+    .preview-btn strong {
+      display: block;
+      font-size: 15px;
+      margin-bottom: 4px;
+    }
+    .preview-btn span {
+      display: block;
+      font-size: 12px;
+      color: #9aa5b4;
+    }
+    .preview-section-title {
+      font-size: 18px;
+      margin: 28px 0 12px 0;
+      letter-spacing: 0.3px;
+    }
+    .preview-section-sub {
+      color: #9aa5b4;
+      font-size: 13px;
+      margin: 0 0 16px 0;
+    }
+    .preview-grid-wrap {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 24px;
+    }
+    .preview-chips-demo {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding: 18px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 14px;
+      margin-bottom: 24px;
+    }
+    .preview-footer {
+      text-align: center;
+      color: #6b7280;
+      font-size: 12px;
+      padding: 24px 0;
+    }
+    .preview-tag {
+      display: inline-block;
+      padding: 2px 8px;
+      background: rgba(232,119,43,0.15);
+      border: 1px solid rgba(232,119,43,0.4);
+      border-radius: 4px;
+      font-size: 11px;
+      color: #ffb58a;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="preview-wrap">
+    <div class="preview-hero">
+      <span class="preview-tag">Preview only</span>
+      <h1>Sticker animation preview</h1>
+      <p>
+        Fire each animation over the simulated video frame. Paid stickers are open to everyone &mdash;
+        any signed-in user with enough credits can send any sticker. Tier locks live on the separate
+        (free) emoji reactions feature, not on stickers.
+      </p>
+    </div>
+
+    <div class="preview-stage-wrap" id="previewStageWrap">
+      <div class="fake-court"></div>
+      <div class="sticker-stage" id="stickerStage" aria-hidden="true"></div>
+    </div>
+
+    <h2 class="preview-section-title">Fire an animation</h2>
+    <p class="preview-section-sub">Each button triggers the same animation code the live stream uses.</p>
+    <div class="preview-controls" id="previewControls"></div>
+
+    <h2 class="preview-section-title">Sticker catalog grid</h2>
+    <p class="preview-section-sub">This is how the sticker grid looks inside the livestream sidebar. Click any sticker to fire it.</p>
+    <div class="preview-grid-wrap">
+      <div class="sticker-grid" id="previewGrid"></div>
+    </div>
+
+    <h2 class="preview-section-title">Sender chips by tier</h2>
+    <p class="preview-section-sub">Tier styling on the sender chip still reflects the user's current tier (earned from points), just for visual flair &mdash; it does not gate sending.</p>
+    <div class="preview-chips-demo" id="previewChips"></div>
+
+    <div class="preview-footer">
+      Powered by Globally Ballin &middot; AEOB sticker system preview
+    </div>
+  </div>
+
+  <script>
+    // --- Preview sticker catalog (mirrors DEMO_STICKERS in stickers-list.js) ---
+    const SAMPLE_STICKERS = [
+      { id: 'demo-three',     name: 'Three!',          emoji: '\uD83C\uDFAF', cost: 10,   animation: 'float',    description: 'Nothing but net.' },
+      { id: 'demo-clap',      name: 'Clap Pack',       emoji: '\uD83D\uDC4F', cost: 15,   animation: 'float',    description: 'Show the love.' },
+      { id: 'demo-rain',      name: 'Basketball Rain', emoji: '\uD83C\uDFC0', cost: 25,   animation: 'rain',     description: 'It\u2019s raining hoops.' },
+      { id: 'demo-crossover', name: 'Crossover',       emoji: '\uD83D\uDCAB', cost: 50,   animation: 'burst',    description: 'Broke his ankles.' },
+      { id: 'demo-fave',      name: 'Fan Favorite',    emoji: '\u2764\uFE0F\u200D\uD83D\uDD25', cost: 75, animation: 'burst', description: 'Instant classic.' },
+      { id: 'demo-dunk',      name: 'Slam Dunk',       emoji: '\uD83D\uDCA5', cost: 150,  animation: 'burst',    description: 'Poster-worthy jam.' },
+      { id: 'demo-buzzer',    name: 'Buzzer Beater',   emoji: '\u23F0',       cost: 300,  animation: 'takeover', description: 'Game-winner territory.' },
+      { id: 'demo-champ',     name: 'Championship',    emoji: '\uD83C\uDFC6', cost: 500,  animation: 'takeover', description: 'Parade route vibes.' },
+      { id: 'demo-mvp',       name: 'MVP Chant',       emoji: '\uD83D\uDC51', cost: 1000, animation: 'takeover', description: 'M-V-P! M-V-P!' },
+      { id: 'demo-goat',      name: 'GOAT Mode',       emoji: '\uD83D\uDC10', cost: 2500, animation: 'takeover', description: 'Peak icon status.' }
+    ];
+
+    const SAMPLE_USER = { name: 'Aaron', tier: 'All-Star' };
+    const TIERS = ['Rookie', 'Veteran', 'All-Star', 'Legend'];
+
+    function escapeHtml(str) {
+      return String(str == null ? '' : str).replace(/[&<>"']/g, c => (
+        {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]
+      ));
+    }
+    function tierClass(tier) {
+      const key = String(tier || 'Rookie').toLowerCase().replace(/[^a-z]/g, '');
+      return 'tier-' + key;
+    }
+    function prefersReducedMotion() {
+      return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    }
+    function stageBounds() {
+      const stage = document.getElementById('stickerStage');
+      const r = stage.getBoundingClientRect();
+      return { width: r.width, height: r.height };
+    }
+
+    function visualHtml(send) {
+      if (send.imageUrl) {
+        return `<img src="${escapeHtml(send.imageUrl)}" alt="${escapeHtml(send.name || '')}">`;
+      }
+      return `<span class="sticker-el-emoji">${escapeHtml(send.emoji || '\uD83C\uDFC0')}</span>`;
+    }
+
+    function buildSenderChip(send) {
+      const tier = send.userTier || 'Rookie';
+      const msg = send.message ? `<span class="sticker-chip-msg">${escapeHtml(send.message)}</span>` : '';
+      return `<div class="sticker-sender-chip ${tierClass(tier)}">
+        <span class="sticker-chip-tier">${escapeHtml(tier)}</span>
+        <span class="sticker-chip-name">${escapeHtml(send.userName || 'Fan')}</span>
+        <span class="sticker-chip-action">sent <strong>${escapeHtml(send.name || 'a sticker')}</strong></span>
+        ${msg}
+      </div>`;
+    }
+
+    function spawnStickerEl(stage, send, opts) {
+      const el = document.createElement('div');
+      el.className = `sticker-el sticker-el--${send.animation || 'float'} sticker-el--${opts.size || 'md'}`;
+      el.innerHTML = visualHtml(send);
+      if (opts.x !== undefined) el.style.left = opts.x + 'px';
+      if (opts.y !== undefined) el.style.top = opts.y + 'px';
+      if (opts.delay) el.style.animationDelay = opts.delay + 'ms';
+      if (opts.duration) el.style.animationDuration = opts.duration + 'ms';
+      stage.appendChild(el);
+      const lifetime = (opts.duration || 2500) + (opts.delay || 0) + 200;
+      setTimeout(() => el.remove(), lifetime);
+      return el;
+    }
+
+    function spawnSenderChip(stage, send, position, lifetimeMs) {
+      const chip = document.createElement('div');
+      chip.className = 'sticker-chip-wrap sticker-chip-wrap--' + (position || 'bottom');
+      chip.innerHTML = buildSenderChip(send);
+      stage.appendChild(chip);
+      setTimeout(() => chip.classList.add('sticker-chip-out'), Math.max(300, lifetimeMs - 400));
+      setTimeout(() => chip.remove(), lifetimeMs);
+      return chip;
+    }
+
+    let activeTakeover = false;
+    const takeoverQueue = [];
+
+    function playStickerAnimation(send) {
+      const stage = document.getElementById('stickerStage');
+      if (!stage) return;
+      const bounds = stageBounds();
+      if (!bounds.width || !bounds.height) return;
+      const reduced = prefersReducedMotion();
+      const kind = send.animation || 'float';
+
+      if (kind === 'float') {
+        const x = 40 + Math.random() * (bounds.width - 120);
+        spawnStickerEl(stage, send, { x, y: bounds.height - 90, size: 'md', duration: reduced ? 1400 : 2600 });
+        spawnSenderChip(stage, send, 'bottom', 2600);
+        return;
+      }
+      if (kind === 'rain') {
+        const count = reduced ? 3 : 10;
+        for (let i = 0; i < count; i++) {
+          const x = Math.random() * (bounds.width - 60);
+          spawnStickerEl(stage, send, { x, y: -60, size: 'sm', delay: i * 120, duration: reduced ? 1600 : 2800 + Math.random() * 700 });
+        }
+        spawnSenderChip(stage, send, 'top', 3000);
+        return;
+      }
+      if (kind === 'burst') {
+        const cx = bounds.width / 2;
+        const cy = bounds.height / 2;
+        spawnStickerEl(stage, send, { x: cx - 70, y: cy - 70, size: 'xl', duration: reduced ? 1400 : 2200 });
+        if (!reduced) {
+          const petals = 6;
+          for (let i = 0; i < petals; i++) {
+            const angle = (i / petals) * Math.PI * 2;
+            const rx = cx + Math.cos(angle) * 130 - 30;
+            const ry = cy + Math.sin(angle) * 130 - 30;
+            spawnStickerEl(stage, send, { x: rx, y: ry, size: 'md', delay: 180, duration: 1700 });
+          }
+        }
+        spawnSenderChip(stage, send, 'center', 3200);
+        return;
+      }
+      if (kind === 'takeover') {
+        if (activeTakeover) { takeoverQueue.push(send); return; }
+        activeTakeover = true;
+        const overlay = document.createElement('div');
+        overlay.className = 'sticker-takeover-overlay';
+        overlay.innerHTML = `
+          <div class="sticker-takeover-bg"></div>
+          <div class="sticker-takeover-center">
+            <div class="sticker-takeover-sticker">${visualHtml(send)}</div>
+            <div class="sticker-takeover-name">${escapeHtml(send.name || '')}</div>
+          </div>
+          <div class="sticker-takeover-sender">
+            ${buildSenderChip(send)}
+          </div>
+        `;
+        stage.appendChild(overlay);
+        setTimeout(() => overlay.classList.add('sticker-takeover-out'), reduced ? 1200 : 3600);
+        setTimeout(() => {
+          overlay.remove();
+          activeTakeover = false;
+          const next = takeoverQueue.shift();
+          if (next) playStickerAnimation(next);
+        }, reduced ? 1800 : 4200);
+      }
+    }
+
+    function fireSticker(sticker, opts) {
+      opts = opts || {};
+      playStickerAnimation({
+        ...sticker,
+        userName: opts.userName || SAMPLE_USER.name,
+        userTier: opts.userTier || SAMPLE_USER.tier,
+        message: opts.message || ''
+      });
+    }
+
+    // --- Render preview controls ---
+    const controls = document.getElementById('previewControls');
+    controls.innerHTML = SAMPLE_STICKERS.map(s => `
+      <button type="button" class="preview-btn" data-id="${escapeHtml(s.id)}">
+        <strong>${escapeHtml(s.emoji)} ${escapeHtml(s.name)}</strong>
+        <span>${escapeHtml(s.animation)} &middot; ${Number(s.cost).toLocaleString()} credits</span>
+      </button>
+    `).join('');
+    controls.querySelectorAll('.preview-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const s = SAMPLE_STICKERS.find(x => x.id === btn.dataset.id);
+        if (s) fireSticker(s);
+      });
+    });
+
+    // --- Render the same sticker-grid UI the livestream sidebar uses ---
+    const grid = document.getElementById('previewGrid');
+    grid.innerHTML = SAMPLE_STICKERS.map(s => `
+      <button type="button" class="sticker-card sticker-card--${s.animation}" data-id="${escapeHtml(s.id)}">
+        <span class="sticker-card-emoji">${escapeHtml(s.emoji)}</span>
+        <span class="sticker-card-name">${escapeHtml(s.name)}</span>
+        <span class="sticker-card-cost">${Number(s.cost).toLocaleString()}</span>
+      </button>
+    `).join('');
+    grid.querySelectorAll('.sticker-card').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const s = SAMPLE_STICKERS.find(x => x.id === btn.dataset.id);
+        if (s) fireSticker(s);
+      });
+    });
+
+    // --- Render sender chips by tier ---
+    const chipsWrap = document.getElementById('previewChips');
+    chipsWrap.innerHTML = TIERS.map(tier => buildSenderChip({
+      userName: tier + ' fan',
+      userTier: tier,
+      name: 'Slam Dunk',
+      message: ''
+    })).join('');
+  </script>
+</body>
+</html>

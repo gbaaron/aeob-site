@@ -832,12 +832,6 @@ function stickerAffordable(cost) {
   return STICKER_STATE.userBalance >= cost;
 }
 
-function stickerUserMeetsTier(requiredTier) {
-  const u = stickerRequestingUser();
-  const userRank = u ? tierRank(u.tier || 'Rookie') : -1;
-  return userRank >= tierRank(requiredTier);
-}
-
 async function fetchStickerCatalog() {
   try {
     const res = await fetch('/.netlify/functions/stickers-list');
@@ -905,22 +899,18 @@ function renderStickerGrid() {
 
   const user = stickerRequestingUser();
   grid.innerHTML = list.map(s => {
-    const tierOk = user ? stickerUserMeetsTier(s.tier) : false;
     const affordable = user ? stickerAffordable(s.cost) : false;
-    const locked = !user || !tierOk;
-    const poor = user && tierOk && !affordable;
+    const poor = user && !affordable;
     const classes = [
       'sticker-card',
       `sticker-card--${s.animation || 'float'}`,
-      locked ? 'is-locked' : '',
+      !user ? 'is-locked' : '',
       poor ? 'is-insufficient' : ''
     ].filter(Boolean).join(' ');
 
     let lockNote = '';
     if (!user) {
       lockNote = '<span class="sticker-lock-note">Sign in</span>';
-    } else if (!tierOk) {
-      lockNote = `<span class="sticker-lock-note">Unlocks at ${escapeHtml(s.tier)}</span>`;
     } else if (!affordable) {
       const need = s.cost - (STICKER_STATE.userBalance || 0);
       lockNote = `<span class="sticker-lock-note">Need ${need} more</span>`;
@@ -931,7 +921,6 @@ function renderStickerGrid() {
       : `<span class="sticker-card-emoji">${escapeHtml(s.emoji || '\uD83C\uDFC0')}</span>`;
 
     return `<button type="button" class="${classes}" data-sticker-id="${escapeHtml(s.id)}">
-      <span class="sticker-tier-badge ${tierClass(s.tier)}">${escapeHtml(s.tier)}</span>
       ${visual}
       <span class="sticker-card-name">${escapeHtml(s.name)}</span>
       <span class="sticker-card-cost">${Number(s.cost).toLocaleString()}</span>
@@ -955,10 +944,6 @@ function handleStickerCardClick(sticker) {
     liveToast('Sign in to send stickers');
     const loginBtn = document.getElementById('loginBtn');
     if (loginBtn) loginBtn.click();
-    return;
-  }
-  if (!stickerUserMeetsTier(sticker.tier)) {
-    liveToast(`Reach ${sticker.tier} to send this sticker`);
     return;
   }
   if (!stickerAffordable(sticker.cost)) {
@@ -1337,7 +1322,7 @@ function renderAdminStickerList() {
       <span class="admin-sticker-emoji">${escapeHtml(s.emoji || '\uD83C\uDFC0')}</span>
       <span class="admin-sticker-name">${escapeHtml(s.name)}</span>
       <span class="admin-sticker-cost">${Number(s.cost).toLocaleString()}</span>
-      <span class="admin-sticker-meta muted-sm">${escapeHtml(s.animation)} \u00b7 ${escapeHtml(s.tier)}</span>
+      <span class="admin-sticker-meta muted-sm">${escapeHtml(s.animation)}</span>
       <div class="admin-sticker-actions">
         <button type="button" class="btn-chip" data-action="edit">Edit</button>
         <button type="button" class="btn-chip btn-chip-danger" data-action="delete">${s.isActive ? 'Hide' : 'Hidden'}</button>
@@ -1383,7 +1368,6 @@ function loadStickerIntoForm(s) {
   document.getElementById('adminStickerCost').value = s.cost || 0;
   document.getElementById('adminStickerSort').value = s.sortOrder || 100;
   document.getElementById('adminStickerAnim').value = s.animation || 'float';
-  document.getElementById('adminStickerTier').value = s.tier || 'Rookie';
   document.getElementById('adminStickerImg').value = s.imageUrl || '';
   document.getElementById('adminStickerDesc').value = s.description || '';
   document.getElementById('adminStickerActive').checked = s.isActive !== false;
@@ -1417,7 +1401,6 @@ function resetAdminStickerForm() {
       cost: Number(document.getElementById('adminStickerCost').value),
       sortOrder: Number(document.getElementById('adminStickerSort').value),
       animationType: document.getElementById('adminStickerAnim').value,
-      requiredTier: document.getElementById('adminStickerTier').value,
       imageUrl: document.getElementById('adminStickerImg').value.trim(),
       description: document.getElementById('adminStickerDesc').value.trim(),
       isActive: document.getElementById('adminStickerActive').checked

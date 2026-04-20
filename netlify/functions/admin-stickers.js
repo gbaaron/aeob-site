@@ -11,7 +11,6 @@ const SENDS_TABLE = 'LiveStickerSends';
 const SESSIONS_TABLE = 'LiveSessions';
 
 const VALID_ANIM = new Set(['float', 'rain', 'burst', 'takeover']);
-const VALID_TIERS = new Set(['Rookie', 'Veteran', 'All-Star', 'Legend']);
 
 function pickFields(input) {
   const out = {};
@@ -21,9 +20,6 @@ function pickFields(input) {
   if (input.cost !== undefined) out.Cost = Math.max(0, Number(input.cost) || 0);
   if (input.animationType !== undefined && VALID_ANIM.has(String(input.animationType).toLowerCase())) {
     out.AnimationType = String(input.animationType).toLowerCase();
-  }
-  if (input.requiredTier !== undefined && VALID_TIERS.has(input.requiredTier)) {
-    out.RequiredTier = input.requiredTier;
   }
   if (input.sortOrder !== undefined) out.SortOrder = Number(input.sortOrder) || 0;
   if (input.description !== undefined) out.Description = String(input.description).slice(0, 500);
@@ -63,7 +59,6 @@ exports.handler = async (event) => {
         imageUrl: r.fields.ImageUrl || '',
         cost: Number(r.fields.Cost) || 0,
         animation: (r.fields.AnimationType || 'float').toLowerCase(),
-        tier: r.fields.RequiredTier || 'Rookie',
         description: r.fields.Description || '',
         sortOrder: Number(r.fields.SortOrder) || 0,
         isActive: !!r.fields.IsActive
@@ -76,7 +71,6 @@ exports.handler = async (event) => {
       if (!fields.Name) return jsonResponse(400, { error: 'Name required' });
       if (fields.IsActive === undefined) fields.IsActive = true;
       if (!fields.AnimationType) fields.AnimationType = 'float';
-      if (!fields.RequiredTier) fields.RequiredTier = 'Rookie';
       const rec = await base(STICKERS_TABLE).create(fields);
       return jsonResponse(200, { success: true, id: rec.id });
     }
