@@ -64,9 +64,38 @@ const FALLBACK_CARDS = [
 
 /* ------- State ------- */
 let ALL_CARDS = [];
+let OWNED_CARDS = [];      // hydrated ownership rows from /cards-my-collection
+let USER_BALANCE = 0;
+let USER_TIER = 'Rookie';
+let CURRENT_VIEW = 'gallery';  // 'gallery' | 'owned'
 let filterRarity = 'all';
 let filterAdvantage = 'all';
 let searchTerm = '';
+
+/* ------- Pack catalog (must mirror cards-pack-buy.js) ------- */
+const PACKS = [
+  {
+    id: 'rookie', name: 'Rookie Pack', price: 50, cards: 3, guaranteed: 'Rare',
+    icon: '\u{1F3C0}', color1: '#8b92a0', color2: '#5e636e',
+    tagline: 'Starter pull. 3 cards, at least one Rare.'
+  },
+  {
+    id: 'veteran', name: 'Veteran Pack', price: 150, cards: 5, guaranteed: 'Epic',
+    icon: '\u{1F525}', color1: '#1a1f5e', color2: '#3a3f8e',
+    tagline: '5 cards — an Epic guaranteed in every box.'
+  },
+  {
+    id: 'all-star', name: 'All-Star Pack', price: 400, cards: 7, guaranteed: 'Legendary',
+    icon: '\u2B50', color1: '#cc2030', color2: '#e8772b',
+    tagline: '7 cards. A Legendary is locked in.'
+  },
+  {
+    id: 'legendary', name: 'Legendary Box', price: 1000, cards: 10, guaranteed: 'Legendary',
+    icon: '\u{1F451}', color1: '#e8772b', color2: '#ffd700',
+    tagline: '10 cards. Two guaranteed Legendaries.',
+    isLegendary: true
+  }
+];
 
 /* ------- Helpers ------- */
 function escapeHtml(s) {
@@ -373,16 +402,466 @@ async function fetchCards() {
   }
 }
 
+/* ------- Auth helper ------- */
+function getToken() {
+  return localStorage.getItem('aeob-token') || localStorage.getItem('aeob_token') || '';
+}
+function isSignedIn() { return !!getToken(); }
+
+/* ------- Collection fetch ------- */
+async function fetchCollection() {
+  if (!isSignedIn()) return null;
+  try {
+    const res = await fetch('/.netlify/functions/cards-my-collection', {
+      headers: { Authorization: 'Bearer ' + getToken() }
+    });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch (e) {
+    console.error('collection fetch failed:', e);
+    return null;
+  }
+}
+
+async function refreshCollection() {
+  const data = await fetchCollection();
+  if (!data) {
+    OWNED_CARDS = [];
+    USER_BALANCE = 0;
+    return;
+  }
+  OWNED_CARDS = Array.isArray(data.owned) ? data.owned : [];
+  USER_BALANCE = Number(data.balance || 0);
+  USER_TIER = data.tier || 'Rookie';
+  updateBalanceChip();
+  updateOwnedBadge();
+  updatePackButtons();
+}
+
+function updateBalanceChip() {
+  const chip = document.getElementById('packBalanceChip');
+  const amt = document.getElementById('packBalanceAmount');
+  const msg = document.getElementById('packSignedOutMsg');
+  if (isSignedIn()) {
+    if (chip) chip.style.display = '';
+    if (amt) amt.textContent = USER_BALANCE.toLocaleString();
+    if (msg) msg.style.display = 'none';
+  } else {
+    if (chip) chip.style.display = 'none';
+    if (msg) msg.style.display = 'block';
+  }
+}
+
+function updateOwnedBadge() {
+  const badge = document.getElementById('ownedCountBadge');
+  if (badge) badge.textContent = OWNED_CARDS.length;
+}
+
+function updatePackButtons() {
+  document.querySelectorAll('.pack-buy-btn').forEach(btn => {
+    const price = Number(btn.dataset.price || 0);
+    const signedIn = isSignedIn();
+    if (!signedIn) {
+      btn.textContent = 'Sign In to Buy';
+      btn.disabled = false;
+    } else if (USER_BALANCE < price) {
+      btn.textContent = 'Not Enough Credits';
+      btn.disabled = true;
+    } else {
+      btn.textContent = 'Open Pack';
+      btn.disabled = false;
+    }
+  });
+}
+
+/* ------- Pack store rendering ------- */
+function renderPackStore() {
+  const grid = document.getElementById('packGrid');
+  if (!grid) return;
+  grid.innerHTML = PACKS.map(p => `
+    <div class="pack-card${p.isLegendary ? ' legendary-pack' : ''}" style="--pack-c1:${p.color1};--pack-c2:${p.color2};">
+      <div class="pack-icon">${p.icon}</div>
+      <div class="pack-name">${escapeHtml(p.name)}</div>
+      <div class="pack-tagline">${escapeHtml(p.tagline)}</div>
+      <div class="pack-meta">
+        <span><strong>${p.cards}</strong> cards</span>
+        <span>+<strong>${p.guaranteed}</strong></span>
+      </div>
+      <div class="pack-price">${p.price}<span class="currency">credits</span></div>
+      <button class="pack-buy-btn" data-pack="${p.id}" data-price="${p.price}">Open Pack</button>
+    </div>
+  `).join('');
+
+  grid.querySelectorAll('.pack-buy-btn').forEach(btn => {
+    btn.addEventListener('click', () => handleBuyPack(btn.dataset.pack));
+  });
+
+  updatePackButtons();
+}
+
+async function handleBuyPack(packId) {
+  if (!isSignedIn()) {
+    if (window.showAuthModal) window.showAuthModal();
+    else if (document.getElementById('loginBtn')) document.getElementById('loginBtn').click();
+    return;
+  }
+  const pack = PACKS.find(p => p.id === packId);
+  if (!pack) return;
+  if (USER_BALANCE < pack.price) {
+    showInsufficientModal(pack);
+    return;
+  }
+
+  const btn = document.querySelector(`.pack-buy-btn[data-pack="${packId}"]`);
+  if (btn) { btn.disabled = true; btn.textContent = 'Opening...'; }
+
+  try {
+    const res = await fetch('/.netlify/functions/cards-pack-buy', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + getToken()
+      },
+      body: JSON.stringify({ packId })
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      if (window.showToast) window.showToast(data.error || 'Pack purchase failed', 'error');
+      else alert(data.error || 'Pack purchase failed');
+      updatePackButtons();
+      return;
+    }
+    USER_BALANCE = Number(data.newBalance || 0);
+    USER_TIER = data.newTier || USER_TIER;
+    updateBalanceChip();
+    await startPackOpening(pack, data.cards || []);
+    await refreshCollection();
+  } catch (e) {
+    console.error('buy pack failed:', e);
+    if (window.showToast) window.showToast('Pack purchase failed', 'error');
+    updatePackButtons();
+  }
+}
+
+function showInsufficientModal(pack) {
+  const modal = document.getElementById('packOpeningModal');
+  const stage = document.getElementById('packOpeningStage');
+  if (!modal || !stage) return;
+  stage.innerHTML = `
+    <div class="pack-insufficient-modal">
+      <h3>Not Enough Credits</h3>
+      <p>The ${escapeHtml(pack.name)} costs <strong>${pack.price}</strong> credits, but you only have <strong>${USER_BALANCE}</strong>.</p>
+      <p style="font-size:0.88rem;">Earn more by watching live, making predictions, and crushing trivia.</p>
+      <a href="/rewards.html" class="btn btn-primary">See Ways to Earn</a>
+      <button class="btn" style="margin-left:10px;background:rgba(255,255,255,0.1);color:#fff;" onclick="window.AEOBCards.closePackOpening()">Close</button>
+    </div>
+  `;
+  modal.classList.add('active');
+  modal.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+}
+
+/* ------- Pack opening animation ------- */
+async function startPackOpening(pack, pulledCards) {
+  const modal = document.getElementById('packOpeningModal');
+  const stage = document.getElementById('packOpeningStage');
+  if (!modal || !stage) return;
+
+  // Stage 1: 3D pack spin
+  stage.innerHTML = `
+    <div class="pack-3d-wrap" style="--pack-c1:${pack.color1};--pack-c2:${pack.color2};">
+      <div class="pack-3d">
+        <div class="pack-3d-face front">
+          <div class="big-icon">${pack.icon}</div>
+          <div class="name">${escapeHtml(pack.name)}</div>
+        </div>
+        <div class="pack-3d-face back">
+          <div class="big-icon">${pack.icon}</div>
+          <div class="name">AEOB</div>
+        </div>
+      </div>
+    </div>
+    <div class="pack-opening-status">Opening ${escapeHtml(pack.name)}...</div>
+  `;
+  modal.classList.add('active');
+  modal.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+
+  // Wait for spin animation
+  await wait(1800);
+
+  // Rip particles
+  triggerRipBurst(pack);
+  await wait(600);
+
+  // Stage 2: revealed cards (face down)
+  const hasLegendary = pulledCards.some(c => normalizeRarity(c.rarity) === 'Legendary');
+  stage.innerHTML = `
+    <div style="width:100%;display:flex;flex-direction:column;align-items:center;gap:24px;">
+      <div class="pack-opening-status">Tap cards to reveal</div>
+      <div class="pack-reveal-grid" id="packRevealGrid">
+        ${pulledCards.map((c, i) => `
+          <div class="reveal-card" data-idx="${i}" style="animation-delay:${i * 70}ms;">
+            <div class="reveal-card-inner">
+              <div class="reveal-face back"></div>
+              <div class="reveal-face front">${cardThumbHtml(c)}</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+      <div class="pack-opening-footer" style="position:static;">
+        <button class="btn" id="revealAllBtn">Reveal All</button>
+        <button class="btn" id="closePackBtn" style="margin-left:10px;background:rgba(255,255,255,0.1);color:#fff;">Done</button>
+      </div>
+    </div>
+  `;
+
+  // Wire reveal clicks
+  const revealEls = Array.from(stage.querySelectorAll('.reveal-card'));
+  revealEls.forEach(el => {
+    el.addEventListener('click', () => flipReveal(el, pulledCards, hasLegendary), { once: true });
+  });
+
+  document.getElementById('revealAllBtn')?.addEventListener('click', () => {
+    revealEls.forEach((el, i) => {
+      if (!el.classList.contains('flipped')) {
+        setTimeout(() => flipReveal(el, pulledCards, hasLegendary), i * 120);
+      }
+    });
+  });
+  document.getElementById('closePackBtn')?.addEventListener('click', closePackOpening);
+}
+
+function flipReveal(el, pulledCards, hasLegendary) {
+  if (el.classList.contains('flipped')) return;
+  const idx = Number(el.dataset.idx);
+  const card = pulledCards[idx];
+  const rarity = normalizeRarity(card?.rarity);
+  if (rarity === 'Legendary') el.classList.add('legendary-shine');
+  else if (rarity === 'Epic') el.classList.add('epic-shine');
+  el.classList.add('flipped');
+
+  if (rarity === 'Legendary') {
+    triggerLegendaryExplosion();
+  }
+}
+
+function triggerRipBurst(pack) {
+  const stage = document.getElementById('packOpeningStage');
+  if (!stage) return;
+  const rect = stage.getBoundingClientRect();
+  const cx = rect.width / 2;
+  const cy = rect.height / 2;
+  for (let i = 0; i < 20; i++) {
+    const p = document.createElement('div');
+    p.className = 'rip-particle';
+    p.style.setProperty('--pack-c1', pack.color1);
+    p.style.setProperty('--pack-c2', pack.color2);
+    p.style.left = cx + 'px';
+    p.style.top = cy + 'px';
+    const angle = (i / 20) * Math.PI * 2;
+    const dist = 120 + Math.random() * 80;
+    p.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
+    p.style.setProperty('--dy', Math.sin(angle) * dist + 'px');
+    stage.appendChild(p);
+    setTimeout(() => p.remove(), 1000);
+  }
+}
+
+function triggerLegendaryExplosion() {
+  const flash = document.createElement('div');
+  flash.className = 'legendary-flash';
+  document.body.appendChild(flash);
+  setTimeout(() => flash.remove(), 1700);
+
+  const colors = ['#ffd700', '#e8772b', '#cc2030', '#1a1f5e', '#fff'];
+  for (let i = 0; i < 40; i++) {
+    const c = document.createElement('div');
+    c.className = 'confetti-particle';
+    c.style.background = colors[i % colors.length];
+    const angle = Math.random() * Math.PI * 2;
+    const dist = 200 + Math.random() * 400;
+    c.style.setProperty('--cx', Math.cos(angle) * dist + 'px');
+    c.style.setProperty('--cy', (Math.sin(angle) * dist + 300) + 'px');
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 1900);
+  }
+}
+
+function closePackOpening() {
+  const modal = document.getElementById('packOpeningModal');
+  if (!modal) return;
+  modal.classList.remove('active');
+  modal.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+  const stage = document.getElementById('packOpeningStage');
+  if (stage) stage.innerHTML = '';
+
+  // If user is viewing My Collection, refresh the grid
+  if (CURRENT_VIEW === 'owned') renderGrid();
+}
+
+function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+/* ------- View toggle (Gallery vs My Collection) ------- */
+function wireViewToggle() {
+  document.querySelectorAll('[data-view]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('[data-view]').forEach(b => {
+        b.classList.toggle('active', b === btn);
+        b.setAttribute('aria-selected', b === btn ? 'true' : 'false');
+      });
+      CURRENT_VIEW = btn.dataset.view;
+      renderGrid();
+    });
+  });
+}
+
+/* Override filteredCards based on current view */
+const _origFilteredCards = filteredCards;
+filteredCards = function() {
+  let source;
+  if (CURRENT_VIEW === 'owned') {
+    // Dedupe owned cards by card id, attach acquisition count
+    const counts = {};
+    OWNED_CARDS.forEach(o => {
+      const cid = o.card.id;
+      counts[cid] = (counts[cid] || 0) + 1;
+    });
+    const seen = new Set();
+    source = OWNED_CARDS.filter(o => {
+      if (seen.has(o.card.id)) return false;
+      seen.add(o.card.id);
+      return true;
+    }).map(o => ({ ...o.card, _ownedCount: counts[o.card.id] }));
+  } else {
+    source = ALL_CARDS;
+  }
+
+  const q = searchTerm.trim().toLowerCase();
+  return source.filter(c => {
+    if (filterRarity !== 'all' && normalizeRarity(c.rarity) !== filterRarity) return false;
+    if (filterAdvantage !== 'all' && String(c.advantage || '').toUpperCase() !== filterAdvantage) return false;
+    if (q) {
+      const hay = [c.subjectName, c.title, c.team, c.era, c.position, c.bio, c.specialAbility, c.reward, c.advantageDetail].join(' ').toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+};
+
+/* Patch renderGrid meta for owned view + empty state */
+const _origRenderGrid = renderGrid;
+renderGrid = function() {
+  const meta = document.getElementById('resultsMeta');
+  const empty = document.getElementById('cardsEmpty');
+  const grid = document.getElementById('cardsGrid');
+  if (!grid) return;
+
+  const items = filteredCards();
+
+  if (meta) {
+    if (CURRENT_VIEW === 'owned') {
+      if (!isSignedIn()) {
+        meta.textContent = 'Sign in to see your collection.';
+      } else {
+        const total = OWNED_CARDS.length;
+        const unique = new Set(OWNED_CARDS.map(o => o.card.id)).size;
+        meta.textContent = total
+          ? `${unique} unique · ${total} total pull${total === 1 ? '' : 's'}`
+          : 'No cards yet — open a pack above.';
+      }
+    } else {
+      meta.textContent = ALL_CARDS.length
+        ? `Showing ${items.length} of ${ALL_CARDS.length} card${ALL_CARDS.length === 1 ? '' : 's'}`
+        : 'No cards available yet.';
+    }
+  }
+
+  if (!items.length) {
+    grid.style.display = 'none';
+    if (empty) {
+      empty.style.display = 'block';
+      if (CURRENT_VIEW === 'owned') {
+        const titleEl = empty.querySelector('h3');
+        const pEl = empty.querySelector('p');
+        if (!isSignedIn()) {
+          if (titleEl) titleEl.textContent = 'Sign in to view your collection';
+          if (pEl) pEl.textContent = 'Your pulled cards will live here.';
+        } else if (OWNED_CARDS.length === 0) {
+          if (titleEl) titleEl.textContent = 'No cards yet';
+          if (pEl) pEl.textContent = 'Open a pack above to start your collection.';
+        } else {
+          if (titleEl) titleEl.textContent = 'No cards match those filters';
+          if (pEl) pEl.textContent = 'Try resetting the filters or clearing your search.';
+        }
+      } else {
+        const titleEl = empty.querySelector('h3');
+        const pEl = empty.querySelector('p');
+        if (titleEl) titleEl.textContent = 'No cards match those filters';
+        if (pEl) pEl.textContent = 'Try resetting the filters or clearing your search.';
+      }
+    }
+    return;
+  }
+
+  grid.style.display = '';
+  if (empty) empty.style.display = 'none';
+  grid.innerHTML = items.map(cardThumbHtml).join('');
+
+  grid.querySelectorAll('.trading-card').forEach(el => {
+    el.addEventListener('click', () => openDetail(el.dataset.cardId));
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openDetail(el.dataset.cardId);
+      }
+    });
+  });
+};
+
 /* ------- Init ------- */
 async function init() {
   wireFilters();
   wireModal();
+  wireViewToggle();
+
+  // Sign-in link in pack store signed-out message
+  document.getElementById('packSignInLink')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    const loginBtn = document.getElementById('loginBtn');
+    if (loginBtn) loginBtn.click();
+  });
+
+  // Close pack modal on backdrop click / escape
+  document.getElementById('packOpeningModal')?.addEventListener('click', (e) => {
+    if (e.target.id === 'packOpeningModal') closePackOpening();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      const m = document.getElementById('packOpeningModal');
+      if (m && m.classList.contains('active')) closePackOpening();
+    }
+  });
 
   const live = await fetchCards();
   ALL_CARDS = live || FALLBACK_CARDS.slice();
 
+  renderPackStore();
+  updateBalanceChip();
   updateHeroStats();
   renderGrid();
+
+  // Fetch collection in background if signed in
+  if (isSignedIn()) refreshCollection();
+
+  // React to auth state changes
+  window.addEventListener('authStateChanged', () => {
+    updateBalanceChip();
+    updatePackButtons();
+    if (isSignedIn()) refreshCollection();
+    else { OWNED_CARDS = []; USER_BALANCE = 0; updateOwnedBadge(); renderGrid(); }
+  });
 }
 
 if (document.readyState === 'loading') {
@@ -394,7 +873,12 @@ if (document.readyState === 'loading') {
 // Expose for debugging / extensions
 window.AEOBCards = {
   get all() { return ALL_CARDS; },
+  get owned() { return OWNED_CARDS; },
+  get balance() { return USER_BALANCE; },
   openDetail,
   closeDetail,
-  refresh: init
+  closePackOpening,
+  buyPack: handleBuyPack,
+  refresh: init,
+  refreshCollection
 };
