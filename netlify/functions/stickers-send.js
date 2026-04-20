@@ -133,10 +133,14 @@ exports.handler = async (event) => {
       Tier: newTier
     });
 
-    // 7. Log the spend as a negative RewardsLog entry
+    // 7. Log the spend as a negative RewardsLog entry.
+    // Action must be one of the existing singleSelect values; `redeem` is the
+    // semantic match for "user spent credits on something." Sticker name goes
+    // in the Details field so the audit log stays human-readable.
     await base(REWARDS_TABLE).create({
       UserId: user.userId,
-      Action: `Sticker: ${stickerName}`,
+      Action: 'redeem',
+      Details: `Sticker: ${stickerName}`,
       Points: -cost,
       CreatedAt: new Date().toISOString()
     }).catch(err => console.warn('RewardsLog write failed (non-fatal):', err.message));
