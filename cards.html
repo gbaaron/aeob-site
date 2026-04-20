@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digital Trading Cards | An Eternity of Basketball</title>
+  <meta name="description" content="Collect official AEOB digital trading cards. PBA legends, championship moments, and exclusive perks redeemable with AEOB credits.">
+  <meta name="keywords" content="AEOB, digital trading cards, PBA cards, Crispa, Toyota, basketball collectibles">
+  <meta property="og:title" content="Digital Trading Cards | AEOB">
+  <meta property="og:description" content="Collect official AEOB digital trading cards. PBA legends, championship moments, and exclusive perks.">
+  <meta property="og:type" content="website">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Oswald:wght@500;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+
+  <style>
+    /* ============================================
+       CARDS PAGE — scoped styles
+       ============================================ */
+
+    .cards-hero {
+      padding: 140px 0 60px;
+      background:
+        radial-gradient(ellipse 900px 500px at 15% 10%, rgba(232, 119, 43, 0.25), transparent 55%),
+        radial-gradient(ellipse 800px 550px at 90% 20%, rgba(204, 32, 48, 0.22), transparent 55%),
+        linear-gradient(135deg, #0d102a 0%, #1a1f5e 60%, #991825 100%);
+      color: var(--white);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .cards-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle, rgba(255,255,255,0.1) 1.5px, transparent 1.5px),
+        repeating-linear-gradient(135deg, transparent 0, transparent 120px, rgba(255,215,0,0.03) 120px, rgba(255,215,0,0.03) 121px);
+      background-size: 28px 28px, auto;
+      pointer-events: none;
+    }
+    .cards-hero::after {
+      content: 'AEOB';
+      position: absolute;
+      top: 50%; right: -2%;
+      transform: translateY(-50%);
+      font-family: 'Oswald', sans-serif;
+      font-size: clamp(14rem, 26vw, 26rem);
+      font-weight: 700;
+      color: transparent;
+      -webkit-text-stroke: 2px rgba(255,255,255,0.05);
+      pointer-events: none;
+    }
+    .cards-hero .container { position: relative; z-index: 2; }
+    .cards-hero .badge {
+      background: rgba(255,215,0,0.2);
+      color: #ffd26a;
+      border: 1px solid rgba(255,215,0,0.35);
+      margin-bottom: 16px;
+    }
+    .cards-hero h1 {
+      color: var(--white);
+      font-family: 'Oswald', sans-serif;
+      font-size: clamp(2.4rem, 6vw, 4rem);
+      letter-spacing: -0.01em;
+      margin-bottom: 16px;
+    }
+    .cards-hero h1 .accent {
+      background: linear-gradient(90deg, var(--orange-accent), var(--orange-light), var(--red-light));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .cards-hero p {
+      max-width: 640px;
+      margin: 0 auto 32px;
+      color: rgba(255,255,255,0.82);
+      font-size: 1.1rem;
+      line-height: 1.6;
+    }
+    .hero-stats-row {
+      display: flex;
+      gap: 40px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 28px;
+    }
+    .hero-stat-box {
+      text-align: center;
+    }
+    .hero-stat-box .num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.6rem;
+      color: var(--orange-light);
+      line-height: 1;
+      letter-spacing: 1px;
+    }
+    .hero-stat-box .lbl {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: rgba(255,255,255,0.55);
+      margin-top: 6px;
+    }
+
+    /* ---------- Rarity pack teaser row ---------- */
+    .rarity-rail {
+      padding: 48px 0;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+    }
+    .rarity-pack-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 18px;
+      margin-top: 24px;
+    }
+    .rarity-pack {
+      position: relative;
+      padding: 24px 20px 22px;
+      border-radius: var(--radius-md);
+      background: var(--bg-card);
+      border: 2px solid var(--border-color);
+      text-align: center;
+      transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+      overflow: hidden;
+    }
+    .rarity-pack::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: var(--rarity-glow);
+      opacity: 0.9;
+    }
+    .rarity-pack:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 30px var(--rarity-shadow, rgba(0,0,0,0.12));
+      border-color: var(--rarity-border);
+    }
+    .rarity-pack-icon {
+      font-size: 2.2rem;
+      margin-bottom: 8px;
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,0.15));
+    }
+    .rarity-pack-name {
+      font-family: 'Oswald', sans-serif;
+      font-weight: 700;
+      font-size: 1.15rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--rarity-border);
+      margin-bottom: 4px;
+    }
+    .rarity-pack-count {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+    .rarity-pack.common    { --rarity-glow: linear-gradient(90deg, #94a3b8, #cbd5e1); --rarity-border: #64748b; --rarity-shadow: rgba(100,116,139,0.25); }
+    .rarity-pack.rare      { --rarity-glow: linear-gradient(90deg, #3b82f6, #60a5fa); --rarity-border: #2563eb; --rarity-shadow: rgba(37,99,235,0.28); }
+    .rarity-pack.epic      { --rarity-glow: linear-gradient(90deg, #a855f7, #c084fc); --rarity-border: #7c3aed; --rarity-shadow: rgba(124,58,237,0.3);  }
+    .rarity-pack.legendary { --rarity-glow: linear-gradient(90deg, #f59e0b, #fbbf24, #ef4444); --rarity-border: #d97706; --rarity-shadow: rgba(217,119,6,0.35); }
+
+    /* ---------- Filter toolbar ---------- */
+    .cards-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+      padding: 16px 18px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      position: sticky;
+      top: calc(var(--header-height) + 8px);
+      z-index: 10;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .filter-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    .filter-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-secondary);
+      font-weight: 700;
+      margin-right: 6px;
+    }
+    .filter-chip {
+      padding: 7px 14px;
+      border-radius: 20px;
+      border: 1.5px solid var(--border-color);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .filter-chip:hover { border-color: var(--orange-accent); color: var(--orange-accent); }
+    .filter-chip.active {
+      background: var(--orange-accent);
+      border-color: var(--orange-accent);
+      color: var(--white);
+    }
+    .filter-chip.active.rarity-legendary { background: linear-gradient(135deg, #f59e0b, #ef4444); border-color: #d97706; }
+    .filter-chip.active.rarity-epic { background: #7c3aed; border-color: #6d28d9; }
+    .filter-chip.active.rarity-rare { background: #2563eb; border-color: #1d4ed8; }
+    .filter-chip.active.rarity-common { background: #64748b; border-color: #475569; }
+
+    .search-wrap { position: relative; min-width: 220px; }
+    .search-wrap input {
+      width: 100%;
+      padding: 9px 14px 9px 36px;
+      border: 1.5px solid var(--border-color);
+      border-radius: 20px;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      font-size: 0.9rem;
+    }
+    .search-wrap::before {
+      content: '\1F50D';
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      opacity: 0.5;
+      font-size: 0.95rem;
+    }
+
+    .results-meta {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+    }
+
+    /* ---------- Card grid ---------- */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 24px;
+    }
+
+    .trading-card {
+      position: relative;
+      aspect-ratio: 3/4;
+      border-radius: 16px;
+      overflow: hidden;
+      cursor: pointer;
+      background: #0d102a;
+      border: 3px solid var(--rarity-border, #94a3b8);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15), 0 0 0 1px rgba(255,255,255,0.05) inset;
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease, border-color 0.25s ease;
+      isolation: isolate;
+    }
+    .trading-card:hover {
+      transform: translateY(-10px) scale(1.015);
+      box-shadow: 0 20px 40px var(--rarity-shadow, rgba(0,0,0,0.25));
+    }
+    .trading-card.common     { --rarity-border: #94a3b8; --rarity-shadow: rgba(100,116,139,0.35); --rarity-accent: #cbd5e1; }
+    .trading-card.rare       { --rarity-border: #3b82f6; --rarity-shadow: rgba(37,99,235,0.45);   --rarity-accent: #60a5fa; }
+    .trading-card.epic       { --rarity-border: #a855f7; --rarity-shadow: rgba(124,58,237,0.55); --rarity-accent: #c084fc; }
+    .trading-card.legendary  { --rarity-border: #f59e0b; --rarity-shadow: rgba(245,158,11,0.6);  --rarity-accent: #fbbf24; }
+    .trading-card.legendary::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #f59e0b, #fbbf24, #ef4444, #f59e0b);
+      background-size: 300% 300%;
+      animation: legendaryShine 5s linear infinite;
+      z-index: -1;
+    }
+    @keyframes legendaryShine {
+      0%,100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+    .trading-card.holographic::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(125deg,
+        transparent 0%, transparent 38%,
+        rgba(255,255,255,0.22) 48%,
+        rgba(255,255,255,0.08) 54%,
+        transparent 62%, transparent 100%);
+      pointer-events: none;
+      mix-blend-mode: overlay;
+      animation: holoShine 4s ease-in-out infinite;
+    }
+    @keyframes holoShine {
+      0%, 100% { transform: translateX(-20%); }
+      50% { transform: translateX(20%); }
+    }
+
+    .card-image {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+    }
+    .card-image-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,0.4);
+      font-family: 'Oswald', sans-serif;
+      font-size: 4rem;
+      background: linear-gradient(135deg, #1a1f5e 0%, #0d102a 100%);
+    }
+    .card-top-strip {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      padding: 10px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent);
+      z-index: 2;
+    }
+    .card-rarity-pill {
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: var(--rarity-border);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    .trading-card.legendary .card-rarity-pill {
+      background: linear-gradient(135deg, #f59e0b, #ef4444);
+    }
+    .card-number {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.85rem;
+      color: var(--rarity-accent);
+      letter-spacing: 1px;
+      background: rgba(0,0,0,0.6);
+      padding: 3px 9px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+    .card-bottom-panel {
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      padding: 44px 14px 14px;
+      background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.85) 60%, transparent);
+      z-index: 2;
+      color: #fff;
+    }
+    .card-subject {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: 0.02em;
+      margin-bottom: 4px;
+    }
+    .card-title {
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.75);
+      font-style: italic;
+      margin-bottom: 8px;
+    }
+    .card-foot-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.55);
+    }
+    .card-foot-row .team { color: var(--rarity-accent); font-weight: 700; }
+    .card-adv-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: rgba(232,119,43,0.2);
+      border: 1px solid rgba(232,119,43,0.4);
+      color: var(--orange-light);
+      font-weight: 700;
+    }
+
+    /* ---------- Empty / Loading states ---------- */
+    .cards-status {
+      padding: 80px 20px;
+      text-align: center;
+      color: var(--text-secondary);
+    }
+    .cards-status .big-icon {
+      font-size: 3.5rem;
+      opacity: 0.45;
+      margin-bottom: 12px;
+    }
+    .card-skeleton {
+      aspect-ratio: 3/4;
+      border-radius: 16px;
+      background: linear-gradient(90deg, var(--gray-100) 0%, var(--gray-200) 50%, var(--gray-100) 100%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s ease infinite;
+      border: 2px solid var(--border-color);
+    }
+    [data-theme="dark"] .card-skeleton {
+      background: linear-gradient(90deg, #1c2038 0%, #2a2e48 50%, #1c2038 100%);
+      background-size: 200% 100%;
+    }
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* ---------- Card Detail Modal ---------- */
+    .card-detail-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 7, 18, 0.88);
+      z-index: 10000;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      overflow-y: auto;
+      padding: 40px 20px;
+    }
+    .card-detail-modal.active {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      animation: modalFade 0.25s ease;
+    }
+    @keyframes modalFade {
+      from { opacity: 0; } to { opacity: 1; }
+    }
+    .card-detail-inner {
+      width: 100%;
+      max-width: 920px;
+      background: var(--bg-card);
+      border-radius: 22px;
+      padding: 32px;
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(260px, 360px) 1fr;
+      gap: 32px;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+      animation: modalPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes modalPop {
+      from { transform: translateY(30px) scale(0.96); opacity: 0; }
+      to { transform: translateY(0) scale(1); opacity: 1; }
+    }
+    .card-detail-close {
+      position: absolute;
+      top: 12px; right: 14px;
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(0,0,0,0.1);
+      color: var(--text-primary);
+      font-size: 1.25rem;
+      cursor: pointer;
+      z-index: 3;
+      transition: background var(--transition);
+    }
+    .card-detail-close:hover { background: var(--red-primary); color: #fff; }
+
+    .detail-card-preview {
+      position: sticky;
+      top: 32px;
+      align-self: start;
+    }
+    .detail-card-preview .trading-card {
+      aspect-ratio: 3/4;
+      cursor: default;
+    }
+    .detail-card-preview .trading-card:hover { transform: none; }
+
+    .detail-body h2 {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.9rem;
+      margin-bottom: 4px;
+    }
+    .detail-subject-line {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      margin-bottom: 20px;
+    }
+    .detail-rarity-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+    .detail-pill {
+      display: inline-block;
+      padding: 5px 12px;
+      border-radius: 14px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .detail-pill.rarity-common { background: #64748b; color: #fff; }
+    .detail-pill.rarity-rare { background: #2563eb; color: #fff; }
+    .detail-pill.rarity-epic { background: #7c3aed; color: #fff; }
+    .detail-pill.rarity-legendary { background: linear-gradient(135deg, #f59e0b, #ef4444); color: #fff; }
+    .detail-pill.advantage {
+      background: rgba(232,119,43,0.15);
+      border: 1px solid rgba(232,119,43,0.4);
+      color: var(--orange-accent);
+    }
+    .detail-pill.era, .detail-pill.team, .detail-pill.position {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+    }
+
+    .detail-bio {
+      color: var(--text-primary);
+      line-height: 1.65;
+      margin-bottom: 24px;
+    }
+
+    .detail-section-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--blue-deep);
+      margin-bottom: 12px;
+    }
+    [data-theme="dark"] .detail-section-title { color: var(--blue-light); }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+    .stat-cell {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 10px 12px;
+      text-align: center;
+    }
+    .stat-cell .stat-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+    .stat-cell .stat-value {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.6rem;
+      color: var(--orange-accent);
+      line-height: 1;
+    }
+    .stat-cell.zero .stat-value { color: var(--text-secondary); opacity: 0.4; }
+
+    .reward-box {
+      padding: 18px 20px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(232,119,43,0.08), rgba(204,32,48,0.06));
+      border: 1.5px solid rgba(232,119,43,0.25);
+      margin-bottom: 16px;
+    }
+    .reward-box .reward-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .reward-box .reward-icon {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--orange-accent), var(--red-primary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      color: #fff;
+    }
+    .reward-box .reward-title {
+      font-weight: 800;
+      font-size: 0.95rem;
+      color: var(--text-heading);
+    }
+    .reward-box .reward-desc {
+      color: var(--text-primary);
+      line-height: 1.55;
+      font-size: 0.95rem;
+    }
+    .credits-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(245,158,11,0.15);
+      border: 1px solid rgba(245,158,11,0.35);
+      color: #b45309;
+      padding: 6px 12px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+    [data-theme="dark"] .credits-chip { color: #fcd34d; }
+
+    /* ---------- Info / CTA block ---------- */
+    .info-cta {
+      background: linear-gradient(135deg, var(--blue-deep) 0%, var(--red-dark) 100%);
+      color: var(--white);
+      padding: 48px 32px;
+      border-radius: var(--radius-lg);
+      text-align: center;
+      margin-top: 48px;
+      position: relative;
+      overflow: hidden;
+    }
+    .info-cta::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px);
+      background-size: 20px 20px;
+      pointer-events: none;
+    }
+    .info-cta h2 {
+      color: var(--white);
+      font-family: 'Oswald', sans-serif;
+      margin-bottom: 10px;
+      position: relative;
+    }
+    .info-cta p {
+      max-width: 560px;
+      margin: 0 auto 24px;
+      color: rgba(255,255,255,0.8);
+      position: relative;
+    }
+    .info-cta .btn-primary {
+      background: var(--orange-accent);
+      color: var(--white);
+    }
+    .info-cta .btn-primary:hover {
+      background: var(--orange-light);
+    }
+
+    @media (max-width: 860px) {
+      .card-detail-inner {
+        grid-template-columns: 1fr;
+        padding: 24px 20px 28px;
+      }
+      .detail-card-preview {
+        position: static;
+        max-width: 300px;
+        margin: 0 auto;
+      }
+    }
+    @media (max-width: 640px) {
+      .cards-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+      .card-subject { font-size: 1rem; }
+      .card-title { font-size: 0.75rem; }
+      .cards-toolbar { position: static; }
+      .hero-stats-row { gap: 24px; }
+      .hero-stat-box .num { font-size: 2rem; }
+    }
+    @media (max-width: 420px) {
+      .cards-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Preloader -->
+  <div class="preloader" id="preloader"><div class="preloader-ball"></div></div>
+
+  <!-- Header -->
+  <header class="header" id="header">
+    <div class="header-inner">
+      <a href="/" class="header-logo">
+        <img src="https://res.cloudinary.com/djngpyv15/image/upload/v1776447309/274701765_319754193505498_1268754374260370953_n-removebg-preview_k6uyha.png" alt="AEOB Logo">
+        <span>AEOB</span>
+      </a>
+      <nav class="nav" id="nav">
+        <a href="/">Home</a>
+        <a href="/live.html">Live</a>
+        <a href="/episodes.html">Episodes</a>
+        <a href="/cards.html" class="active">Cards</a>
+        <a href="/predictions.html">Predictions</a>
+        <a href="/trivia.html">Trivia</a>
+        <a href="/submissions.html">Fan Zone</a>
+        <a href="/shop.html">Shop</a>
+        <a href="/rewards.html">Rewards</a>
+        <a href="/schedule.html">Schedule</a>
+        <a href="/about.html">About</a>
+        <a href="/admin.html" data-admin style="display:none;">Admin</a>
+      </nav>
+      <div class="header-actions">
+        <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode">&#9790;</button>
+        <button class="btn-login" id="loginBtn">Sign In</button>
+        <div class="user-avatar" id="userAvatar"></div>
+        <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- Hero -->
+    <section class="cards-hero">
+      <div class="container">
+        <span class="badge">Official Digital Collectibles</span>
+        <h1>Trading Cards <span class="accent">Reborn</span></h1>
+        <p>PBA legends, championship moments, and era-defining games — reimagined as digital cards.
+           Each one unlocks real-world perks inside the AEOB universe.</p>
+        <div class="hero-stats-row">
+          <div class="hero-stat-box">
+            <div class="num" id="heroStatTotal">—</div>
+            <div class="lbl">Cards in Set</div>
+          </div>
+          <div class="hero-stat-box">
+            <div class="num" id="heroStatLegendary">—</div>
+            <div class="lbl">Legendary</div>
+          </div>
+          <div class="hero-stat-box">
+            <div class="num">4</div>
+            <div class="lbl">Rarity Tiers</div>
+          </div>
+          <div class="hero-stat-box">
+            <div class="num">6</div>
+            <div class="lbl">Advantage Types</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Rarity rail -->
+    <section class="rarity-rail">
+      <div class="container">
+        <div class="section-header" style="text-align:left;margin-bottom:8px;">
+          <h2 style="font-size:clamp(1.4rem, 3vw, 1.9rem);margin-bottom:4px;">Rarity Tiers</h2>
+          <p style="color:var(--text-secondary);max-width:720px;margin:0;">Every card is minted in one of four rarity tiers. The rarer the card, the bigger the perk — and the smaller the print run.</p>
+        </div>
+        <div class="rarity-pack-grid">
+          <div class="rarity-pack common">
+            <div class="rarity-pack-icon">&#127936;</div>
+            <div class="rarity-pack-name">Common</div>
+            <div class="rarity-pack-count" data-rarity-count="Common">— cards</div>
+          </div>
+          <div class="rarity-pack rare">
+            <div class="rarity-pack-icon">&#128142;</div>
+            <div class="rarity-pack-name">Rare</div>
+            <div class="rarity-pack-count" data-rarity-count="Rare">— cards</div>
+          </div>
+          <div class="rarity-pack epic">
+            <div class="rarity-pack-icon">&#127775;</div>
+            <div class="rarity-pack-name">Epic</div>
+            <div class="rarity-pack-count" data-rarity-count="Epic">— cards</div>
+          </div>
+          <div class="rarity-pack legendary">
+            <div class="rarity-pack-icon">&#128081;</div>
+            <div class="rarity-pack-name">Legendary</div>
+            <div class="rarity-pack-count" data-rarity-count="Legendary">— cards</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Collection -->
+    <section class="section" id="cardsCollection">
+      <div class="container">
+
+        <div class="section-header" style="text-align:left;margin-bottom:24px;">
+          <h2>The Collection</h2>
+          <p style="color:var(--text-secondary);max-width:720px;margin:4px 0 0;">Tap any card to flip it and reveal its backstory, stats, and the advantage it unlocks.</p>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="cards-toolbar">
+          <div class="filter-group">
+            <span class="filter-label">Rarity</span>
+            <button class="filter-chip active" data-rarity-filter="all">All</button>
+            <button class="filter-chip rarity-common" data-rarity-filter="Common">Common</button>
+            <button class="filter-chip rarity-rare" data-rarity-filter="Rare">Rare</button>
+            <button class="filter-chip rarity-epic" data-rarity-filter="Epic">Epic</button>
+            <button class="filter-chip rarity-legendary" data-rarity-filter="Legendary">Legendary</button>
+          </div>
+          <div class="filter-group">
+            <span class="filter-label">Advantage</span>
+            <button class="filter-chip active" data-adv-filter="all">All</button>
+            <button class="filter-chip" data-adv-filter="DISCOUNT">Discount</button>
+            <button class="filter-chip" data-adv-filter="MERCH">Merch</button>
+            <button class="filter-chip" data-adv-filter="ACCESS">Access</button>
+            <button class="filter-chip" data-adv-filter="ENTRY">Entry</button>
+            <button class="filter-chip" data-adv-filter="VOTE">Vote</button>
+            <button class="filter-chip" data-adv-filter="BONUS">Bonus</button>
+          </div>
+          <div class="search-wrap">
+            <input type="search" id="cardsSearch" placeholder="Search cards…" aria-label="Search cards">
+          </div>
+        </div>
+
+        <div class="results-meta" id="resultsMeta">Loading cards…</div>
+
+        <!-- Skeleton placeholders -->
+        <div class="cards-grid" id="cardsGrid">
+          <div class="card-skeleton"></div>
+          <div class="card-skeleton"></div>
+          <div class="card-skeleton"></div>
+          <div class="card-skeleton"></div>
+          <div class="card-skeleton"></div>
+          <div class="card-skeleton"></div>
+        </div>
+
+        <!-- Empty state -->
+        <div class="cards-status" id="cardsEmpty" style="display:none;">
+          <div class="big-icon">&#127912;</div>
+          <h3>No cards match those filters</h3>
+          <p>Try resetting the filters or clearing your search.</p>
+          <button class="btn btn-outline" style="margin-top:14px;" id="clearFiltersBtn">Clear Filters</button>
+        </div>
+
+        <!-- Info CTA -->
+        <div class="info-cta">
+          <h2>How AEOB Cards Work</h2>
+          <p>Earn cards by tuning in live, completing trivia, making predictions, and spending rewards points.
+             Every card lives in your profile — and the perks are redeemable for merch, episode access, shoutouts, and more.</p>
+          <a href="/rewards.html" class="btn btn-primary">See How to Earn Cards</a>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="/" class="header-logo" style="margin-bottom:8px;">
+            <img src="https://res.cloudinary.com/djngpyv15/image/upload/v1776447309/274701765_319754193505498_1268754374260370953_n-removebg-preview_k6uyha.png" alt="AEOB" style="height:40px;">
+            <span style="color:#fff;">An Eternity of Basketball</span>
+          </a>
+          <p>Reliving the golden eras of PBA basketball since day one. 300+ episodes and counting.</p>
+        </div>
+        <div>
+          <h4>Browse</h4>
+          <ul>
+            <li><a href="/episodes.html">Episodes</a></li>
+            <li><a href="/cards.html">Cards</a></li>
+            <li><a href="/predictions.html">Predictions</a></li>
+            <li><a href="/submissions.html">Fan Zone</a></li>
+            <li><a href="/rewards.html">Rewards</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>More</h4>
+          <ul>
+            <li><a href="/schedule.html">Schedule</a></li>
+            <li><a href="/about.html">About</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Listen On</h4>
+          <ul>
+            <li><a href="#">YouTube</a></li>
+            <li><a href="#">Spotify</a></li>
+            <li><a href="#">Apple Podcasts</a></li>
+            <li><a href="#">Facebook</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2024 An Eternity of Basketball. All rights reserved.</span>
+        <span class="network">Part of the Globally Ballin Network</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Card Detail Modal -->
+  <div class="card-detail-modal" id="cardDetailModal" aria-hidden="true">
+    <div class="card-detail-inner" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+      <button class="card-detail-close" id="cardDetailClose" aria-label="Close">&times;</button>
+      <div class="detail-card-preview" id="detailCardPreview"></div>
+      <div class="detail-body" id="detailBody"></div>
+    </div>
+  </div>
+
+  <!-- Auth Modal -->
+  <div class="auth-modal" id="authModal">
+    <div class="auth-box">
+      <button class="close-auth" id="closeAuth">&times;</button>
+      <h2>Welcome to AEOB</h2>
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-tab="login">Sign In</button>
+        <button class="auth-tab" data-tab="signup">Create Account</button>
+      </div>
+      <form class="auth-form active" id="loginForm">
+        <div class="form-group">
+          <label for="loginEmail">Email</label>
+          <input type="email" id="loginEmail" placeholder="you@example.com" required>
+        </div>
+        <div class="form-group">
+          <label for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" placeholder="Your password" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;">Sign In</button>
+      </form>
+      <form class="auth-form" id="signupForm">
+        <div class="form-group">
+          <label for="signupName">Display Name</label>
+          <input type="text" id="signupName" placeholder="Your name" required>
+        </div>
+        <div class="form-group">
+          <label for="signupEmail">Email</label>
+          <input type="email" id="signupEmail" placeholder="you@example.com" required>
+        </div>
+        <div class="form-group">
+          <label for="signupPassword">Password</label>
+          <input type="password" id="signupPassword" placeholder="Create a password (8+ characters)" required minlength="8">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;margin-top:16px;">Create Account</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast & Back to Top -->
+  <div class="toast" id="toast"></div>
+  <button class="back-to-top" id="backToTop" aria-label="Back to top">&#8593;</button>
+
+  <!-- Scripts -->
+  <script src="/js/main.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/cards.js"></script>
+  <script src="/js/aeob-extensions.js"></script>
+
+</body>
+</html>
