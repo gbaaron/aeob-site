@@ -6067,3 +6067,651 @@ body .audio-launcher.visible ~ .back-to-top { bottom: 88px; }
     padding: 20px 16px;
   }
 }
+
+/* =========================================================================
+   PAID STICKERS (Kumu-style) — live stream sticker catalog + animations
+   ========================================================================= */
+
+/* Animation stage overlay — sits on top of the video wrapper */
+.sticker-stage {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 10;
+}
+.video-wrap { position: relative; }
+
+/* Mute toggle — top-right of video */
+.sticker-mute {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 12;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.25);
+  background: rgba(13,15,26,0.65);
+  color: #fff;
+  font-size: 1.1rem;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, transform 0.15s;
+}
+.sticker-mute:hover { background: rgba(232,119,43,0.75); transform: scale(1.06); }
+.sticker-mute.is-muted { opacity: 0.65; }
+
+/* Balance row in the Stickers panel */
+.sticker-balance {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 0 0;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  flex-wrap: wrap;
+}
+.sticker-balance-icon { font-size: 1.15rem; }
+.sticker-balance-num {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-weight: 700;
+  color: var(--orange-accent);
+  font-size: 1.05rem;
+}
+.sticker-balance-label { color: var(--text-secondary, #6b7280); font-size: 0.85rem; }
+.sticker-balance-earn {
+  margin-left: auto;
+  font-size: 0.8rem;
+  color: var(--orange-accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+.sticker-balance-earn:hover { text-decoration: underline; }
+.sticker-signin-hint { margin: 10px 0 0; }
+
+/* Sticker catalog grid */
+.sticker-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  padding: 14px;
+}
+@media (min-width: 640px) { .sticker-grid { grid-template-columns: repeat(2, 1fr); } }
+
+.sticker-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 10px 12px;
+  border-radius: 14px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s;
+  min-height: 130px;
+}
+.sticker-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--orange-accent);
+  box-shadow: 0 10px 28px rgba(232,119,43,0.18);
+}
+.sticker-card-emoji {
+  font-size: 2.4rem;
+  line-height: 1;
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.15));
+}
+.sticker-card-img {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.15));
+}
+.sticker-card-name {
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.15;
+}
+.sticker-card-cost {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--orange-accent);
+  font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+}
+.sticker-card-cost::before { content: '\1F3C0'; margin-right: 4px; font-size: 0.85em; }
+
+.sticker-tier-badge {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  font-size: 0.62rem;
+  padding: 2px 7px;
+  border-radius: 999px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.sticker-lock-note {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 4px 6px;
+  background: rgba(13,15,26,0.82);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-align: center;
+  backdrop-filter: blur(4px);
+}
+
+.sticker-card.is-locked { opacity: 0.72; }
+.sticker-card.is-locked:hover { transform: none; box-shadow: none; }
+.sticker-card.is-insufficient { opacity: 0.78; }
+.sticker-card.is-insufficient .sticker-card-cost { color: #ef4444; }
+
+/* Premium animations get a signature gradient outline */
+.sticker-card--takeover {
+  border-color: transparent;
+  background:
+    linear-gradient(var(--bg-primary), var(--bg-primary)) padding-box,
+    linear-gradient(135deg, #f59e0b, #ef4444, #a855f7) border-box;
+  border: 2px solid transparent;
+}
+.sticker-card--burst { border-color: #f59e0b; }
+.sticker-card--rain  { border-color: #3b82f6; }
+
+/* Leaderboard */
+.sticker-leaderboard {
+  padding: 14px 14px 16px;
+  border-top: 1px solid var(--border-color);
+  margin-top: 8px;
+}
+.sticker-leaderboard h4 {
+  margin: 0 0 10px;
+  font-size: 0.88rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary, #6b7280);
+}
+.sticker-leaderboard ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.sticker-leaderboard li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: var(--bg-secondary, rgba(0,0,0,0.03));
+  font-size: 0.88rem;
+}
+.sticker-leaderboard .rank {
+  font-weight: 700;
+  color: var(--orange-accent);
+  min-width: 22px;
+  font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+}
+.sticker-leaderboard .name { flex: 1; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sticker-leaderboard .spent {
+  font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+  font-weight: 700;
+  color: var(--orange-accent);
+  font-size: 0.82rem;
+}
+.sticker-leaderboard li:first-child { background: linear-gradient(135deg, rgba(245,158,11,0.18), rgba(239,68,68,0.08)); }
+
+/* ---------- Send confirmation modal ---------- */
+.sticker-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(13,15,26,0.72);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: stickerModalFade 0.2s ease;
+}
+@keyframes stickerModalFade { from { opacity: 0; } to { opacity: 1; } }
+.sticker-modal {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  border-radius: 18px;
+  border: 1px solid var(--border-color);
+  padding: 28px 22px 22px;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.45);
+  animation: stickerModalIn 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes stickerModalIn {
+  from { transform: translateY(20px) scale(0.96); opacity: 0; }
+  to   { transform: translateY(0) scale(1); opacity: 1; }
+}
+.sticker-modal-close {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  font-size: 1.8rem;
+  cursor: pointer;
+  line-height: 1;
+  opacity: 0.6;
+}
+.sticker-modal-close:hover { opacity: 1; }
+.sticker-modal h3 {
+  margin: 6px 0 4px;
+  text-align: center;
+  font-size: 1.25rem;
+}
+.sticker-modal-desc {
+  margin: 0 0 12px;
+  text-align: center;
+  color: var(--text-secondary, #6b7280);
+  font-size: 0.9rem;
+}
+.sticker-modal-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 120px;
+  margin-bottom: 8px;
+}
+.sticker-modal-preview-emoji {
+  font-size: 4.5rem;
+  line-height: 1;
+  filter: drop-shadow(0 8px 20px rgba(232,119,43,0.3));
+  display: inline-block;
+}
+.sticker-modal-preview--float .sticker-modal-preview-emoji { animation: stickerPreviewBob 2s ease-in-out infinite; }
+.sticker-modal-preview--rain  .sticker-modal-preview-emoji { animation: stickerPreviewDrop 1.6s ease-in-out infinite; }
+.sticker-modal-preview--burst .sticker-modal-preview-emoji { animation: stickerPreviewPulse 1.2s ease-in-out infinite; }
+.sticker-modal-preview--takeover .sticker-modal-preview-emoji { animation: stickerPreviewSpin 2.2s linear infinite; }
+
+@keyframes stickerPreviewBob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-12px); }
+}
+@keyframes stickerPreviewDrop {
+  0%   { transform: translateY(-18px); opacity: 0.3; }
+  40%  { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(18px); opacity: 0.3; }
+}
+@keyframes stickerPreviewPulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.22); }
+}
+@keyframes stickerPreviewSpin {
+  from { transform: rotate(0deg) scale(1); }
+  50%  { transform: rotate(180deg) scale(1.15); }
+  to   { transform: rotate(360deg) scale(1); }
+}
+
+.sticker-modal-meta {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 8px 0 14px;
+  flex-wrap: wrap;
+}
+.sticker-cost-badge,
+.sticker-anim-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+.sticker-cost-badge {
+  background: rgba(232,119,43,0.15);
+  color: var(--orange-accent);
+  border: 1px solid rgba(232,119,43,0.3);
+}
+.sticker-anim-badge {
+  background: rgba(59,130,246,0.15);
+  color: #3b82f6;
+  border: 1px solid rgba(59,130,246,0.3);
+  text-transform: capitalize;
+}
+.sticker-modal-msg-label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin: 6px 0 4px;
+  color: var(--text-secondary, #6b7280);
+}
+#stickerModalMsg {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  box-sizing: border-box;
+}
+.sticker-modal-balance {
+  margin: 10px 0 14px;
+  text-align: center;
+}
+.sticker-modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+.sticker-modal-actions .btn { min-width: 100px; }
+
+/* ---------- On-stream animations ---------- */
+.sticker-el {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  will-change: transform, opacity;
+  filter: drop-shadow(0 4px 18px rgba(0,0,0,0.6));
+}
+.sticker-el-emoji { font-size: inherit; line-height: 1; }
+.sticker-el-img { width: 100%; height: 100%; object-fit: contain; }
+
+.sticker-el--sm { font-size: 3rem; width: 48px; height: 48px; }
+.sticker-el--md { font-size: 4.5rem; width: 72px; height: 72px; }
+.sticker-el--lg { font-size: 6rem; width: 96px; height: 96px; }
+.sticker-el--xl { font-size: 8rem; width: 140px; height: 140px; }
+
+/* Float: rises from bottom, drifts sideways, fades */
+.sticker-el--float {
+  bottom: -80px;
+  animation: stickerFloat 4.5s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+@keyframes stickerFloat {
+  0%   { transform: translate(0, 0) rotate(0deg); opacity: 0; }
+  15%  { opacity: 1; }
+  50%  { transform: translate(var(--drift, 20px), -45vh) rotate(var(--spin, 8deg)); }
+  100% { transform: translate(var(--drift, 20px), -90vh) rotate(var(--spin, 8deg)); opacity: 0; }
+}
+
+/* Rain: falls from top, slight sway */
+.sticker-el--rain {
+  top: -80px;
+  animation: stickerRain 3.5s cubic-bezier(0.55, 0, 0.1, 1) forwards;
+}
+@keyframes stickerRain {
+  0%   { transform: translate(0, 0) rotate(0deg); opacity: 0; }
+  10%  { opacity: 1; }
+  100% { transform: translate(var(--drift, 8px), 110vh) rotate(var(--spin, 20deg)); opacity: 0.8; }
+}
+
+/* Burst: large center stamp with shockwave rings, then shrink + fade */
+.sticker-el--burst {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  animation: stickerBurst 2.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+@keyframes stickerBurst {
+  0%   { transform: translate(-50%, -50%) scale(0) rotate(0deg); opacity: 0; }
+  20%  { transform: translate(-50%, -50%) scale(1.3) rotate(10deg); opacity: 1; }
+  40%  { transform: translate(-50%, -50%) scale(1) rotate(-4deg); }
+  80%  { opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1.5) rotate(0deg); opacity: 0; }
+}
+
+/* Burst radial petals (JS creates these with --angle custom prop) */
+.sticker-el--burst-petal {
+  top: 50%;
+  left: 50%;
+  animation: stickerBurstPetal 1.6s ease-out forwards;
+}
+@keyframes stickerBurstPetal {
+  0%   { transform: translate(-50%, -50%) rotate(var(--angle, 0deg)) translateY(0) scale(0.5); opacity: 0; }
+  30%  { opacity: 1; }
+  100% { transform: translate(-50%, -50%) rotate(var(--angle, 0deg)) translateY(-220px) scale(1); opacity: 0; }
+}
+
+/* Takeover overlay — full-video moment */
+.sticker-takeover-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 11;
+  animation: stickerTakeoverIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.sticker-takeover-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at center, rgba(232,119,43,0.55) 0%, rgba(168,85,247,0.4) 40%, rgba(13,15,26,0.2) 75%, transparent 100%);
+  animation: stickerTakeoverBg 4.2s ease-out;
+}
+.sticker-takeover-center {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  z-index: 2;
+  animation: stickerPulse 1.4s ease-in-out 0.4s 2;
+}
+.sticker-takeover-sticker {
+  font-size: 9rem;
+  line-height: 1;
+  filter: drop-shadow(0 12px 36px rgba(0,0,0,0.6));
+}
+.sticker-takeover-sticker .sticker-el-emoji { font-size: 9rem; }
+.sticker-takeover-sticker .sticker-el-img { width: 160px; height: 160px; }
+.sticker-takeover-name {
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 0 4px 18px rgba(0,0,0,0.8);
+}
+.sticker-takeover-sender {
+  margin-top: 8px;
+}
+@keyframes stickerTakeoverIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes stickerTakeoverBg {
+  0%   { opacity: 0; }
+  20%  { opacity: 1; }
+  85%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes stickerPulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.08); }
+}
+
+/* Sender chip — "Aaron sent Slam Dunk" */
+.sticker-chip-wrap {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 11;
+  animation: senderChipIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: opacity 0.4s;
+}
+.sticker-chip-wrap--bottom { bottom: 18px; }
+.sticker-chip-wrap--top { top: 18px; }
+.sticker-chip-out { opacity: 0; }
+@keyframes senderChipIn {
+  from { transform: translateX(-50%) translateY(20px); opacity: 0; }
+  to   { transform: translateX(-50%) translateY(0); opacity: 1; }
+}
+
+.sticker-sender-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(13,15,26,0.82);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #fff;
+  font-size: 0.9rem;
+  max-width: min(90%, 520px);
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+}
+.sticker-sender-chip.tier-legend {
+  background: linear-gradient(135deg, rgba(245,158,11,0.95), rgba(239,68,68,0.95));
+  border-color: rgba(255,255,255,0.3);
+}
+.sticker-sender-chip.tier-allstar { border-color: rgba(232,119,43,0.6); }
+.sticker-sender-chip.tier-veteran { border-color: rgba(59,130,246,0.6); }
+
+.sticker-chip-tier {
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+.sticker-chip-name { font-weight: 700; }
+.sticker-chip-action { opacity: 0.85; }
+.sticker-chip-action strong { color: var(--orange-accent); font-weight: 800; }
+.sticker-sender-chip.tier-legend .sticker-chip-action strong { color: #fff3c4; }
+.sticker-chip-msg {
+  font-style: italic;
+  opacity: 0.9;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 220px;
+}
+
+/* ---------- Admin sticker management ---------- */
+.admin-sticker-tools { margin-top: 12px; }
+.admin-sticker-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 12px;
+  max-height: 260px;
+  overflow-y: auto;
+}
+.admin-sticker-row {
+  display: grid;
+  grid-template-columns: 30px 1fr auto auto;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: var(--bg-secondary, rgba(0,0,0,0.03));
+  border: 1px solid var(--border-color);
+  font-size: 0.82rem;
+}
+.admin-sticker-row.is-inactive { opacity: 0.5; }
+.admin-sticker-emoji { font-size: 1.3rem; line-height: 1; }
+.admin-sticker-name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.admin-sticker-cost {
+  font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+  color: var(--orange-accent);
+  font-weight: 700;
+  font-size: 0.78rem;
+}
+.admin-sticker-meta {
+  grid-column: 1 / -1;
+  font-size: 0.7rem;
+  padding-left: 38px;
+}
+.admin-sticker-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 6px;
+  padding-left: 38px;
+}
+.admin-sticker-actions .btn {
+  padding: 4px 10px;
+  font-size: 0.72rem;
+}
+
+/* ---------- prefers-reduced-motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .sticker-el--float,
+  .sticker-el--rain,
+  .sticker-el--burst,
+  .sticker-el--burst-petal,
+  .sticker-takeover-overlay,
+  .sticker-takeover-bg,
+  .sticker-takeover-center,
+  .sticker-modal-preview--float .sticker-modal-preview-emoji,
+  .sticker-modal-preview--rain .sticker-modal-preview-emoji,
+  .sticker-modal-preview--burst .sticker-modal-preview-emoji,
+  .sticker-modal-preview--takeover .sticker-modal-preview-emoji,
+  .sticker-chip-wrap {
+    animation-duration: 0.4s !important;
+    animation-iteration-count: 1 !important;
+  }
+  .sticker-el--float { animation: stickerReducedFade 3s ease forwards; }
+  .sticker-el--rain  { animation: stickerReducedFade 3s ease forwards; }
+  .sticker-el--burst { animation: stickerReducedFade 2.5s ease forwards; transform: translate(-50%, -50%); }
+  @keyframes stickerReducedFade {
+    0% { opacity: 0; }
+    20% { opacity: 1; }
+    80% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+}
+
+/* ---------- Mobile tweaks ---------- */
+@media (max-width: 640px) {
+  .sticker-grid { grid-template-columns: repeat(2, 1fr); padding: 10px; }
+  .sticker-card { min-height: 110px; padding: 12px 8px 10px; }
+  .sticker-card-emoji { font-size: 2rem; }
+  .sticker-takeover-sticker { font-size: 6rem; }
+  .sticker-takeover-sticker .sticker-el-emoji { font-size: 6rem; }
+  .sticker-takeover-name { font-size: 1.4rem; letter-spacing: 1px; }
+  .sticker-el--xl { font-size: 5.5rem; width: 100px; height: 100px; }
+  .sticker-el--lg { font-size: 4.2rem; width: 72px; height: 72px; }
+  .sticker-modal { padding: 24px 18px 18px; }
+  .sticker-modal-preview { height: 100px; }
+  .sticker-modal-preview-emoji { font-size: 3.6rem; }
+  .sticker-mute { width: 32px; height: 32px; font-size: 0.9rem; top: 8px; right: 8px; }
+}
+
+/* Dark-theme contrast boost */
+[data-theme="dark"] .sticker-card {
+  background: rgba(255,255,255,0.02);
+  border-color: rgba(255,255,255,0.08);
+}
+[data-theme="dark"] .sticker-card:hover {
+  background: rgba(232,119,43,0.06);
+}
+[data-theme="dark"] .sticker-leaderboard li {
+  background: rgba(255,255,255,0.03);
+}
+[data-theme="dark"] .admin-sticker-row {
+  background: rgba(255,255,255,0.03);
+  border-color: rgba(255,255,255,0.08);
+}

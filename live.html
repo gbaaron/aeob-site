@@ -112,6 +112,11 @@
             <div class="live-player" id="livePlayer" style="display:none;">
               <div class="video-wrap" id="liveVideoWrap">
                 <!-- Iframe injected by JS based on selected platform -->
+                <!-- Sticker animation stage (rendered on top of the video) -->
+                <div class="sticker-stage" id="stickerStage" aria-hidden="true"></div>
+                <!-- Per-viewer mute toggle for sticker animations -->
+                <button class="sticker-mute" id="stickerMuteBtn" type="button"
+                        aria-label="Mute sticker animations" title="Mute sticker animations">&#128276;</button>
               </div>
             </div>
           </div>
@@ -151,6 +156,7 @@
             <button class="sidebar-tab active" data-sidebar="chat">&#128172; Chat</button>
             <button class="sidebar-tab" data-sidebar="questions">&#10067; Q&amp;A</button>
             <button class="sidebar-tab" data-sidebar="polls">&#128200; Polls</button>
+            <button class="sidebar-tab" data-sidebar="stickers">&#127873; Stickers</button>
             <button class="sidebar-tab" data-sidebar="viewers">&#128100; <span id="viewerCount">0</span></button>
           </div>
 
@@ -262,6 +268,88 @@
             </div>
           </div>
 
+          <!-- Stickers Panel -->
+          <div class="sidebar-panel" id="stickersPanel">
+            <div class="live-polls-header">
+              <h3>Send a Sticker</h3>
+              <p class="muted-sm">Animated on the stream for everyone. The crew thanks supporters on-air.</p>
+              <p class="sticker-balance" id="stickerBalanceRow">
+                <span class="sticker-balance-icon">&#127959;&#65039;</span>
+                <span class="sticker-balance-num" id="stickerBalance">&mdash;</span>
+                <span class="sticker-balance-label">credits</span>
+                <a href="/rewards.html" class="sticker-balance-earn">Earn more &rsaquo;</a>
+              </p>
+              <p class="sticker-signin-hint" id="stickerSignInHint" style="display:none;">
+                <button class="btn btn-outline btn-sm" type="button" id="stickerSignInBtn">Sign in to send stickers</button>
+              </p>
+            </div>
+
+            <!-- Admin-only: sticker management -->
+            <div class="admin-sticker-tools" data-admin style="display:none;">
+              <details class="admin-tool-card">
+                <summary>&#127873; Sticker catalog</summary>
+                <div class="admin-stream-setup">
+                  <p class="muted-sm">Manage the stickers fans can send. Soft-delete hides them but keeps history.</p>
+                  <form id="adminStickerForm" class="admin-poll-form">
+                    <input type="hidden" id="adminStickerId">
+                    <input type="text" id="adminStickerName" placeholder="Name (e.g. Slam Dunk)" maxlength="80" required>
+                    <div style="display:flex;gap:8px;">
+                      <input type="text" id="adminStickerEmoji" placeholder="&#x1F3C0;" maxlength="8" style="width:90px;" required>
+                      <input type="number" id="adminStickerCost" placeholder="Cost" min="0" required>
+                      <input type="number" id="adminStickerSort" placeholder="Sort" min="0" value="100">
+                    </div>
+                    <div style="display:flex;gap:8px;">
+                      <select id="adminStickerAnim">
+                        <option value="float">Float (cheap)</option>
+                        <option value="rain">Rain</option>
+                        <option value="burst">Burst</option>
+                        <option value="takeover">Takeover (premium)</option>
+                      </select>
+                      <select id="adminStickerTier">
+                        <option value="Rookie">Rookie+</option>
+                        <option value="Veteran">Veteran+</option>
+                        <option value="All-Star">All-Star+</option>
+                        <option value="Legend">Legend only</option>
+                      </select>
+                    </div>
+                    <input type="url" id="adminStickerImg" placeholder="Image URL (optional)" maxlength="500">
+                    <input type="text" id="adminStickerDesc" placeholder="Short description" maxlength="200">
+                    <div class="admin-poll-form-foot">
+                      <label class="admin-poll-check"><input type="checkbox" id="adminStickerActive" checked> Active</label>
+                      <button type="submit" class="btn btn-primary btn-sm" id="adminStickerSubmit">Add sticker</button>
+                      <button type="button" class="btn btn-sm" id="adminStickerReset" style="display:none;">Cancel</button>
+                    </div>
+                  </form>
+                  <div class="admin-sticker-list" id="adminStickerList"></div>
+                </div>
+              </details>
+              <details class="admin-tool-card">
+                <summary>&#128226; Broadcast a sticker (free)</summary>
+                <div class="admin-stream-setup">
+                  <p class="muted-sm">Fire a sticker animation on the stream for a show bumper or sponsor moment. Costs nothing.</p>
+                  <form id="adminBroadcastForm" class="admin-poll-form">
+                    <select id="adminBroadcastSticker" required></select>
+                    <input type="text" id="adminBroadcastMsg" placeholder="Optional on-screen message (80 chars)" maxlength="80">
+                    <div class="admin-poll-form-foot">
+                      <button type="submit" class="btn btn-primary btn-sm">Broadcast now</button>
+                    </div>
+                  </form>
+                </div>
+              </details>
+            </div>
+
+            <div class="sticker-grid" id="stickerGrid">
+              <p class="muted-sm" style="text-align:center;padding:16px;grid-column:1/-1;">Loading stickers...</p>
+            </div>
+
+            <div class="sticker-leaderboard" id="stickerLeaderboard">
+              <h4>Top Supporters This Show</h4>
+              <ol id="topSupportersList">
+                <li class="muted-sm">Be the first to send one.</li>
+              </ol>
+            </div>
+          </div>
+
           <!-- Viewers Panel -->
           <div class="sidebar-panel" id="viewersPanel">
             <div class="viewers-list" id="viewersList">
@@ -304,6 +392,29 @@
       </div>
     </div>
   </footer>
+
+  <!-- Sticker Send Confirmation Modal -->
+  <div class="sticker-modal-overlay" id="stickerModalOverlay" style="display:none;" aria-hidden="true">
+    <div class="sticker-modal" role="dialog" aria-labelledby="stickerModalTitle">
+      <button class="sticker-modal-close" id="stickerModalClose" aria-label="Close">&times;</button>
+      <div class="sticker-modal-preview" id="stickerModalPreview"></div>
+      <h3 id="stickerModalTitle">Send sticker</h3>
+      <p class="sticker-modal-desc" id="stickerModalDesc"></p>
+      <div class="sticker-modal-meta">
+        <span class="sticker-cost-badge" id="stickerModalCost">&mdash; credits</span>
+        <span class="sticker-anim-badge" id="stickerModalAnim">&mdash;</span>
+      </div>
+      <label class="sticker-modal-msg-label" for="stickerModalMsg">Message (optional, 80 chars)</label>
+      <input type="text" id="stickerModalMsg" maxlength="80" placeholder="Shout out the crew...">
+      <p class="sticker-modal-balance muted-sm">
+        Your balance: <strong id="stickerModalBalance">0</strong> credits
+      </p>
+      <div class="sticker-modal-actions">
+        <button class="btn btn-outline btn-sm" id="stickerModalCancel">Cancel</button>
+        <button class="btn btn-primary" id="stickerModalSend">Send for &mdash; credits</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Toast -->
   <div class="toast" id="toast"></div>

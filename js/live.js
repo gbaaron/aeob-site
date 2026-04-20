@@ -795,5 +795,694 @@ startPolling();
 window.addEventListener('authStateChanged', () => {
   applyReactionTierGates();
   updateQuestionsCompose();
+  updateStickerPanelAuthState();
+  fetchUserBalance();
   fetchLiveState();
 });
+
+/* ============================================================
+   Paid Stickers — store, animations, leaderboard, admin tools
+   ============================================================ */
+
+const STICKER_STATE = {
+  catalog: [],            // [{ id, name, emoji, imageUrl, cost, animation, tier, description, sortOrder }]
+  adminCatalog: [],       // includes inactive
+  displayedSendIds: new Set(),  // sends already animated (so polling doesn't re-play)
+  topSupporters: [],
+  userBalance: null,      // null until fetched
+  balanceLoaded: false,
+  muted: (function(){ try { return localStorage.getItem('aeob-stickers-muted') === '1'; } catch { return false; }})(),
+  activeTakeover: null,
+  takeoverQueue: []
+};
+
+const STICKER_ANIM_LABELS = {
+  float: 'Float',
+  rain: 'Rain',
+  burst: 'Burst',
+  takeover: 'Takeover'
+};
+
+function stickerRequestingUser() {
+  return (window.Auth && Auth.getUser && Auth.getUser()) || null;
+}
+
+function stickerAffordable(cost) {
+  if (STICKER_STATE.userBalance === null) return false;
+  return STICKER_STATE.userBalance >= cost;
+}
+
+function stickerUserMeetsTier(requiredTier) {
+  const u = stickerRequestingUser();
+  const userRank = u ? tierRank(u.tier || 'Rookie') : -1;
+  return userRank >= tierRank(requiredTier);
+}
+
+async function fetchStickerCatalog() {
+  try {
+    const res = await fetch('/.netlify/functions/stickers-list');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    STICKER_STATE.catalog = Array.isArray(data.stickers) ? data.stickers : [];
+    renderStickerGrid();
+    renderAdminBroadcastOptions();
+  } catch (err) {
+    console.warn('[stickers-list]', err && err.message);
+    const grid = document.getElementById('stickerGrid');
+    if (grid) grid.innerHTML = '<p class="muted-sm" style="text-align:center;padding:16px;grid-column:1/-1;">Stickers unavailable right now.</p>';
+  }
+}
+
+async function fetchUserBalance() {
+  const user = stickerRequestingUser();
+  if (!user) {
+    STICKER_STATE.userBalance = null;
+    STICKER_STATE.balanceLoaded = false;
+    renderStickerBalance();
+    renderStickerGrid();
+    return;
+  }
+  try {
+    const res = await fetch('/.netlify/functions/rewards-balance', { headers: authHeaders() });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    STICKER_STATE.userBalance = Number(data.points) || 0;
+    STICKER_STATE.balanceLoaded = true;
+    renderStickerBalance();
+    renderStickerGrid();
+  } catch (err) {
+    console.warn('[rewards-balance]', err && err.message);
+  }
+}
+
+function renderStickerBalance() {
+  const num = document.getElementById('stickerBalance');
+  if (!num) return;
+  if (STICKER_STATE.userBalance === null) {
+    num.textContent = '\u2014';
+  } else {
+    num.textContent = STICKER_STATE.userBalance.toLocaleString();
+  }
+}
+
+function updateStickerPanelAuthState() {
+  const hint = document.getElementById('stickerSignInHint');
+  const row = document.getElementById('stickerBalanceRow');
+  const user = stickerRequestingUser();
+  if (hint) hint.style.display = user ? 'none' : 'flex';
+  if (row) row.style.display = user ? 'flex' : 'none';
+}
+
+function renderStickerGrid() {
+  const grid = document.getElementById('stickerGrid');
+  if (!grid) return;
+
+  const list = STICKER_STATE.catalog;
+  if (!list.length) {
+    grid.innerHTML = '<p class="muted-sm" style="text-align:center;padding:16px;grid-column:1/-1;">No stickers yet.</p>';
+    return;
+  }
+
+  const user = stickerRequestingUser();
+  grid.innerHTML = list.map(s => {
+    const tierOk = user ? stickerUserMeetsTier(s.tier) : false;
+    const affordable = user ? stickerAffordable(s.cost) : false;
+    const locked = !user || !tierOk;
+    const poor = user && tierOk && !affordable;
+    const classes = [
+      'sticker-card',
+      `sticker-card--${s.animation || 'float'}`,
+      locked ? 'is-locked' : '',
+      poor ? 'is-insufficient' : ''
+    ].filter(Boolean).join(' ');
+
+    let lockNote = '';
+    if (!user) {
+      lockNote = '<span class="sticker-lock-note">Sign in</span>';
+    } else if (!tierOk) {
+      lockNote = `<span class="sticker-lock-note">Unlocks at ${escapeHtml(s.tier)}</span>`;
+    } else if (!affordable) {
+      const need = s.cost - (STICKER_STATE.userBalance || 0);
+      lockNote = `<span class="sticker-lock-note">Need ${need} more</span>`;
+    }
+
+    const visual = s.imageUrl
+      ? `<img class="sticker-card-img" src="${escapeHtml(s.imageUrl)}" alt="${escapeHtml(s.name)}" loading="lazy">`
+      : `<span class="sticker-card-emoji">${escapeHtml(s.emoji || '\uD83C\uDFC0')}</span>`;
+
+    return `<button type="button" class="${classes}" data-sticker-id="${escapeHtml(s.id)}">
+      <span class="sticker-tier-badge ${tierClass(s.tier)}">${escapeHtml(s.tier)}</span>
+      ${visual}
+      <span class="sticker-card-name">${escapeHtml(s.name)}</span>
+      <span class="sticker-card-cost">${Number(s.cost).toLocaleString()}</span>
+      ${lockNote}
+    </button>`;
+  }).join('');
+
+  grid.querySelectorAll('.sticker-card').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.stickerId;
+      const sticker = STICKER_STATE.catalog.find(s => s.id === id);
+      if (!sticker) return;
+      handleStickerCardClick(sticker);
+    });
+  });
+}
+
+function handleStickerCardClick(sticker) {
+  const user = stickerRequestingUser();
+  if (!user) {
+    liveToast('Sign in to send stickers');
+    const loginBtn = document.getElementById('loginBtn');
+    if (loginBtn) loginBtn.click();
+    return;
+  }
+  if (!stickerUserMeetsTier(sticker.tier)) {
+    liveToast(`Reach ${sticker.tier} to send this sticker`);
+    return;
+  }
+  if (!stickerAffordable(sticker.cost)) {
+    const need = sticker.cost - (STICKER_STATE.userBalance || 0);
+    liveToast(`Need ${need} more credits`);
+    return;
+  }
+  openStickerModal(sticker);
+}
+
+/* ---- Send-confirmation modal ---- */
+
+let pendingStickerSend = null;
+
+function openStickerModal(sticker) {
+  pendingStickerSend = sticker;
+  const overlay = document.getElementById('stickerModalOverlay');
+  const preview = document.getElementById('stickerModalPreview');
+  const title = document.getElementById('stickerModalTitle');
+  const desc = document.getElementById('stickerModalDesc');
+  const cost = document.getElementById('stickerModalCost');
+  const anim = document.getElementById('stickerModalAnim');
+  const bal = document.getElementById('stickerModalBalance');
+  const send = document.getElementById('stickerModalSend');
+  const msg = document.getElementById('stickerModalMsg');
+  if (!overlay) return;
+
+  title.textContent = sticker.name;
+  desc.textContent = sticker.description || '';
+  cost.textContent = `${Number(sticker.cost).toLocaleString()} credits`;
+  anim.textContent = STICKER_ANIM_LABELS[sticker.animation] || sticker.animation;
+  bal.textContent = (STICKER_STATE.userBalance || 0).toLocaleString();
+  send.textContent = `Send for ${Number(sticker.cost).toLocaleString()} credits`;
+  msg.value = '';
+
+  preview.innerHTML = '';
+  if (sticker.imageUrl) {
+    const img = document.createElement('img');
+    img.src = sticker.imageUrl;
+    img.alt = sticker.name;
+    preview.appendChild(img);
+  } else {
+    const span = document.createElement('span');
+    span.className = 'sticker-modal-preview-emoji';
+    span.textContent = sticker.emoji || '\uD83C\uDFC0';
+    preview.appendChild(span);
+  }
+  preview.classList.remove('sticker-modal-preview--float', 'sticker-modal-preview--rain', 'sticker-modal-preview--burst', 'sticker-modal-preview--takeover');
+  preview.classList.add(`sticker-modal-preview--${sticker.animation || 'float'}`);
+
+  overlay.style.display = 'flex';
+  overlay.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => msg.focus(), 50);
+}
+
+function closeStickerModal() {
+  pendingStickerSend = null;
+  const overlay = document.getElementById('stickerModalOverlay');
+  if (!overlay) return;
+  overlay.style.display = 'none';
+  overlay.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+}
+
+(function wireStickerModal() {
+  const overlay = document.getElementById('stickerModalOverlay');
+  const close = document.getElementById('stickerModalClose');
+  const cancel = document.getElementById('stickerModalCancel');
+  const send = document.getElementById('stickerModalSend');
+  if (!overlay) return;
+
+  if (close) close.addEventListener('click', closeStickerModal);
+  if (cancel) cancel.addEventListener('click', closeStickerModal);
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) closeStickerModal();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && overlay.style.display !== 'none') closeStickerModal();
+  });
+  if (send) {
+    send.addEventListener('click', async () => {
+      if (!pendingStickerSend) return;
+      const sticker = pendingStickerSend;
+      const msgEl = document.getElementById('stickerModalMsg');
+      const message = (msgEl && msgEl.value || '').trim();
+      send.disabled = true;
+      const prevBalance = STICKER_STATE.userBalance;
+      // Optimistic: decrement balance immediately
+      if (typeof prevBalance === 'number') {
+        STICKER_STATE.userBalance = Math.max(0, prevBalance - sticker.cost);
+        renderStickerBalance();
+        renderStickerGrid();
+      }
+      try {
+        const data = await postJson('stickers-send', { stickerId: sticker.id, message });
+        if (typeof data.newBalance === 'number') STICKER_STATE.userBalance = data.newBalance;
+        renderStickerBalance();
+        renderStickerGrid();
+        closeStickerModal();
+        liveToast('Sticker sent! \u{1F680}');
+        // Preview the animation locally right away — the polling loop will also play it once for
+        // everyone else; we mark the sendId as displayed so we don't double-play.
+        if (data.sendId) STICKER_STATE.displayedSendIds.add(data.sendId);
+        playStickerAnimation({
+          id: data.sendId || ('local-' + Date.now()),
+          name: sticker.name,
+          emoji: sticker.emoji,
+          imageUrl: sticker.imageUrl,
+          animation: sticker.animation,
+          cost: sticker.cost,
+          userName: (stickerRequestingUser() || {}).name || 'You',
+          userTier: (stickerRequestingUser() || {}).tier || 'Rookie',
+          message
+        }, { local: true });
+      } catch (err) {
+        // Rollback
+        if (typeof prevBalance === 'number') {
+          STICKER_STATE.userBalance = prevBalance;
+          renderStickerBalance();
+          renderStickerGrid();
+        }
+        liveToast(err.message || 'Failed to send sticker');
+      } finally {
+        send.disabled = false;
+      }
+    });
+  }
+})();
+
+/* ---- Sticker animation stage ---- */
+
+const STAGE_BOUNDS = () => {
+  const stage = document.getElementById('stickerStage');
+  if (!stage) return { width: 0, height: 0 };
+  const rect = stage.getBoundingClientRect();
+  return { width: rect.width, height: rect.height };
+};
+
+function prefersReducedMotion() {
+  try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch { return false; }
+}
+
+function visualHtml(send) {
+  if (send.imageUrl) {
+    return `<img class="sticker-el-img" src="${escapeHtml(send.imageUrl)}" alt="">`;
+  }
+  return `<span class="sticker-el-emoji">${escapeHtml(send.emoji || '\uD83C\uDFC0')}</span>`;
+}
+
+function buildSenderChip(send) {
+  const tierBadge = `<span class="sticker-chip-tier ${tierClass(send.userTier)}">${escapeHtml(send.userTier || 'Rookie')}</span>`;
+  const msg = send.message ? `<span class="sticker-chip-msg">&ldquo;${escapeHtml(send.message)}&rdquo;</span>` : '';
+  return `<div class="sticker-sender-chip ${tierClass(send.userTier)}">
+    ${tierBadge}
+    <span class="sticker-chip-name">${escapeHtml(send.userName || 'Fan')}</span>
+    <span class="sticker-chip-action">sent <strong>${escapeHtml(send.name || 'a sticker')}</strong></span>
+    ${msg}
+  </div>`;
+}
+
+function spawnStickerEl(stage, send, opts) {
+  const el = document.createElement('div');
+  el.className = `sticker-el sticker-el--${send.animation || 'float'} sticker-el--${opts.size || 'md'}`;
+  el.innerHTML = visualHtml(send);
+  if (opts.x !== undefined) el.style.left = opts.x + 'px';
+  if (opts.y !== undefined) el.style.top = opts.y + 'px';
+  if (opts.delay) el.style.animationDelay = opts.delay + 'ms';
+  if (opts.duration) el.style.animationDuration = opts.duration + 'ms';
+  stage.appendChild(el);
+  const lifetime = (opts.duration || 2500) + (opts.delay || 0) + 200;
+  setTimeout(() => el.remove(), lifetime);
+  return el;
+}
+
+function spawnSenderChip(stage, send, position, lifetimeMs) {
+  const chip = document.createElement('div');
+  chip.className = 'sticker-chip-wrap sticker-chip-wrap--' + (position || 'bottom');
+  chip.innerHTML = buildSenderChip(send);
+  stage.appendChild(chip);
+  setTimeout(() => chip.classList.add('sticker-chip-out'), Math.max(300, lifetimeMs - 400));
+  setTimeout(() => chip.remove(), lifetimeMs);
+  return chip;
+}
+
+function playStickerAnimation(send, flags) {
+  if (STICKER_STATE.muted) return;
+  const stage = document.getElementById('stickerStage');
+  if (!stage) return;
+  const bounds = STAGE_BOUNDS();
+  if (!bounds.width || !bounds.height) return;
+
+  const reduced = prefersReducedMotion();
+  const kind = send.animation || 'float';
+
+  if (kind === 'float') {
+    const x = 40 + Math.random() * (bounds.width - 120);
+    spawnStickerEl(stage, send, { x, y: bounds.height - 90, size: 'md', duration: reduced ? 1400 : 2600 });
+    spawnSenderChip(stage, send, 'bottom', 2600);
+    return;
+  }
+
+  if (kind === 'rain') {
+    const count = reduced ? 3 : 10;
+    for (let i = 0; i < count; i++) {
+      const x = Math.random() * (bounds.width - 60);
+      spawnStickerEl(stage, send, {
+        x,
+        y: -60,
+        size: 'sm',
+        delay: i * 120,
+        duration: reduced ? 1600 : 2800 + Math.random() * 700
+      });
+    }
+    spawnSenderChip(stage, send, 'top', 3000);
+    return;
+  }
+
+  if (kind === 'burst') {
+    const cx = bounds.width / 2;
+    const cy = bounds.height / 2;
+    spawnStickerEl(stage, send, { x: cx - 70, y: cy - 70, size: 'xl', duration: reduced ? 1400 : 2200 });
+    if (!reduced) {
+      const petals = 6;
+      for (let i = 0; i < petals; i++) {
+        const angle = (i / petals) * Math.PI * 2;
+        const rx = cx + Math.cos(angle) * 130 - 30;
+        const ry = cy + Math.sin(angle) * 130 - 30;
+        spawnStickerEl(stage, send, { x: rx, y: ry, size: 'md', delay: 180, duration: 1700 });
+      }
+    }
+    spawnSenderChip(stage, send, 'center', 3200);
+    return;
+  }
+
+  if (kind === 'takeover') {
+    // Queue if one is already playing so they don't stomp each other
+    if (STICKER_STATE.activeTakeover && !flags?.local) {
+      STICKER_STATE.takeoverQueue.push(send);
+      return;
+    }
+    STICKER_STATE.activeTakeover = true;
+    const overlay = document.createElement('div');
+    overlay.className = 'sticker-takeover-overlay';
+    overlay.innerHTML = `
+      <div class="sticker-takeover-bg"></div>
+      <div class="sticker-takeover-center">
+        <div class="sticker-takeover-sticker">${visualHtml(send)}</div>
+        <div class="sticker-takeover-name">${escapeHtml(send.name || '')}</div>
+      </div>
+      <div class="sticker-takeover-sender">
+        ${buildSenderChip(send)}
+      </div>
+    `;
+    stage.appendChild(overlay);
+    const holdMs = reduced ? 2200 : 5500;
+    setTimeout(() => overlay.classList.add('is-leaving'), holdMs - 500);
+    setTimeout(() => {
+      overlay.remove();
+      STICKER_STATE.activeTakeover = false;
+      const next = STICKER_STATE.takeoverQueue.shift();
+      if (next) playStickerAnimation(next);
+    }, holdMs);
+    return;
+  }
+
+  // Unknown animation → default float
+  spawnStickerEl(stage, send, { x: 40, y: bounds.height - 90, size: 'md', duration: 2200 });
+  spawnSenderChip(stage, send, 'bottom', 2400);
+}
+
+function processStickerSends() {
+  const sends = Array.isArray(LIVE_STATE.stickers) ? LIVE_STATE.stickers : [];
+  // Sort oldest first so queued takeovers replay in order
+  const ordered = sends.slice().sort((a, b) => {
+    const ta = new Date(a.createdAt || 0).getTime();
+    const tb = new Date(b.createdAt || 0).getTime();
+    return ta - tb;
+  });
+  for (const send of ordered) {
+    if (!send.id || STICKER_STATE.displayedSendIds.has(send.id)) continue;
+    STICKER_STATE.displayedSendIds.add(send.id);
+    playStickerAnimation(send);
+  }
+  // Cap the set size so it doesn't grow forever across a long show
+  if (STICKER_STATE.displayedSendIds.size > 400) {
+    const arr = Array.from(STICKER_STATE.displayedSendIds);
+    STICKER_STATE.displayedSendIds = new Set(arr.slice(arr.length - 200));
+  }
+}
+
+/* ---- Top supporters leaderboard ---- */
+
+function renderTopSupporters() {
+  const list = document.getElementById('topSupportersList');
+  if (!list) return;
+  const top = Array.isArray(LIVE_STATE.topSupporters) ? LIVE_STATE.topSupporters : [];
+  STICKER_STATE.topSupporters = top;
+  if (!top.length) {
+    list.innerHTML = '<li class="muted-sm">Be the first to send one.</li>';
+    return;
+  }
+  list.innerHTML = top.map((s, i) => {
+    const rank = i + 1;
+    const rankClass = rank === 1 ? 'rank-1' : rank === 2 ? 'rank-2' : rank === 3 ? 'rank-3' : '';
+    return `<li class="supporter-item ${rankClass}">
+      <span class="supporter-rank">${rank}</span>
+      <span class="supporter-name">${escapeHtml(s.userName || 'Fan')}</span>
+      <span class="supporter-tier ${tierClass(s.userTier)}">${escapeHtml(s.userTier || 'Rookie')}</span>
+      <span class="supporter-total">${Number(s.totalSpent || 0).toLocaleString()}</span>
+    </li>`;
+  }).join('');
+}
+
+/* ---- Mute toggle ---- */
+
+(function wireStickerMute() {
+  const btn = document.getElementById('stickerMuteBtn');
+  if (!btn) return;
+  const syncLabel = () => {
+    btn.innerHTML = STICKER_STATE.muted ? '&#128263;' : '&#128276;';
+    btn.title = STICKER_STATE.muted ? 'Unmute sticker animations' : 'Mute sticker animations';
+    btn.setAttribute('aria-pressed', STICKER_STATE.muted ? 'true' : 'false');
+  };
+  syncLabel();
+  btn.addEventListener('click', () => {
+    STICKER_STATE.muted = !STICKER_STATE.muted;
+    try { localStorage.setItem('aeob-stickers-muted', STICKER_STATE.muted ? '1' : '0'); } catch {}
+    syncLabel();
+    if (STICKER_STATE.muted) {
+      // Also clear any in-progress stage
+      const stage = document.getElementById('stickerStage');
+      if (stage) stage.innerHTML = '';
+      STICKER_STATE.activeTakeover = false;
+      STICKER_STATE.takeoverQueue = [];
+    }
+    liveToast(STICKER_STATE.muted ? 'Stickers muted' : 'Stickers on');
+  });
+})();
+
+/* ---- Sign-in button inside stickers panel ---- */
+
+(function wireStickerSignIn() {
+  const btn = document.getElementById('stickerSignInBtn');
+  if (!btn) return;
+  btn.addEventListener('click', () => {
+    const loginBtn = document.getElementById('loginBtn');
+    if (loginBtn) loginBtn.click();
+  });
+})();
+
+/* ---- Admin: sticker catalog management ---- */
+
+async function fetchAdminStickers() {
+  if (!(window.Auth && Auth.isAdmin && Auth.isAdmin())) return;
+  try {
+    const data = await postJson('admin-stickers', { action: 'list' });
+    STICKER_STATE.adminCatalog = Array.isArray(data.stickers) ? data.stickers : [];
+    renderAdminStickerList();
+    renderAdminBroadcastOptions();
+  } catch (err) {
+    console.warn('admin-stickers list failed:', err.message);
+  }
+}
+
+function renderAdminStickerList() {
+  const container = document.getElementById('adminStickerList');
+  if (!container) return;
+  const list = STICKER_STATE.adminCatalog;
+  if (!list.length) {
+    container.innerHTML = '<p class="muted-sm">No stickers yet. Add one above.</p>';
+    return;
+  }
+  container.innerHTML = list.map(s => `
+    <div class="admin-sticker-row ${s.isActive ? '' : 'is-inactive'}" data-id="${escapeHtml(s.id)}">
+      <span class="admin-sticker-emoji">${escapeHtml(s.emoji || '\uD83C\uDFC0')}</span>
+      <span class="admin-sticker-name">${escapeHtml(s.name)}</span>
+      <span class="admin-sticker-cost">${Number(s.cost).toLocaleString()}</span>
+      <span class="admin-sticker-meta muted-sm">${escapeHtml(s.animation)} \u00b7 ${escapeHtml(s.tier)}</span>
+      <div class="admin-sticker-actions">
+        <button type="button" class="btn-chip" data-action="edit">Edit</button>
+        <button type="button" class="btn-chip btn-chip-danger" data-action="delete">${s.isActive ? 'Hide' : 'Hidden'}</button>
+      </div>
+    </div>
+  `).join('');
+
+  container.querySelectorAll('.admin-sticker-row').forEach(row => {
+    const id = row.dataset.id;
+    row.querySelector('[data-action="edit"]').addEventListener('click', () => {
+      const s = STICKER_STATE.adminCatalog.find(x => x.id === id);
+      if (s) loadStickerIntoForm(s);
+    });
+    row.querySelector('[data-action="delete"]').addEventListener('click', async () => {
+      const s = STICKER_STATE.adminCatalog.find(x => x.id === id);
+      if (!s || !s.isActive) return;
+      if (!confirm(`Hide "${s.name}"? Fans will no longer see it. History is kept.`)) return;
+      try {
+        await postJson('admin-stickers', { action: 'delete', id });
+        liveToast('Sticker hidden');
+        fetchAdminStickers();
+        fetchStickerCatalog();
+      } catch (err) {
+        liveToast(err.message || 'Failed');
+      }
+    });
+  });
+}
+
+function renderAdminBroadcastOptions() {
+  const select = document.getElementById('adminBroadcastSticker');
+  if (!select) return;
+  const list = (STICKER_STATE.adminCatalog.length ? STICKER_STATE.adminCatalog : STICKER_STATE.catalog)
+    .filter(s => s.isActive !== false);
+  select.innerHTML = '<option value="">-- choose a sticker --</option>' +
+    list.map(s => `<option value="${escapeHtml(s.id)}">${escapeHtml(s.emoji || '')} ${escapeHtml(s.name)} (${escapeHtml(s.animation)})</option>`).join('');
+}
+
+function loadStickerIntoForm(s) {
+  document.getElementById('adminStickerId').value = s.id || '';
+  document.getElementById('adminStickerName').value = s.name || '';
+  document.getElementById('adminStickerEmoji').value = s.emoji || '';
+  document.getElementById('adminStickerCost').value = s.cost || 0;
+  document.getElementById('adminStickerSort').value = s.sortOrder || 100;
+  document.getElementById('adminStickerAnim').value = s.animation || 'float';
+  document.getElementById('adminStickerTier').value = s.tier || 'Rookie';
+  document.getElementById('adminStickerImg').value = s.imageUrl || '';
+  document.getElementById('adminStickerDesc').value = s.description || '';
+  document.getElementById('adminStickerActive').checked = s.isActive !== false;
+  document.getElementById('adminStickerSubmit').textContent = 'Save changes';
+  document.getElementById('adminStickerReset').style.display = 'inline-flex';
+}
+
+function resetAdminStickerForm() {
+  const form = document.getElementById('adminStickerForm');
+  if (!form) return;
+  form.reset();
+  document.getElementById('adminStickerId').value = '';
+  document.getElementById('adminStickerActive').checked = true;
+  document.getElementById('adminStickerSort').value = 100;
+  document.getElementById('adminStickerSubmit').textContent = 'Add sticker';
+  document.getElementById('adminStickerReset').style.display = 'none';
+}
+
+(function wireAdminStickerForm() {
+  const form = document.getElementById('adminStickerForm');
+  if (!form) return;
+  const resetBtn = document.getElementById('adminStickerReset');
+  if (resetBtn) resetBtn.addEventListener('click', (e) => { e.preventDefault(); resetAdminStickerForm(); });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!(window.Auth && Auth.isAdmin && Auth.isAdmin())) { liveToast('Admin only'); return; }
+    const payload = {
+      name: document.getElementById('adminStickerName').value.trim(),
+      emoji: document.getElementById('adminStickerEmoji').value.trim(),
+      cost: Number(document.getElementById('adminStickerCost').value),
+      sortOrder: Number(document.getElementById('adminStickerSort').value),
+      animationType: document.getElementById('adminStickerAnim').value,
+      requiredTier: document.getElementById('adminStickerTier').value,
+      imageUrl: document.getElementById('adminStickerImg').value.trim(),
+      description: document.getElementById('adminStickerDesc').value.trim(),
+      isActive: document.getElementById('adminStickerActive').checked
+    };
+    const id = document.getElementById('adminStickerId').value.trim();
+    if (!payload.name) { liveToast('Name required'); return; }
+    try {
+      if (id) {
+        await postJson('admin-stickers', Object.assign({ action: 'update', id }, payload));
+        liveToast('Sticker updated');
+      } else {
+        await postJson('admin-stickers', Object.assign({ action: 'create' }, payload));
+        liveToast('Sticker added');
+      }
+      resetAdminStickerForm();
+      fetchAdminStickers();
+      fetchStickerCatalog();
+    } catch (err) {
+      liveToast(err.message || 'Failed to save');
+    }
+  });
+})();
+
+(function wireAdminBroadcastForm() {
+  const form = document.getElementById('adminBroadcastForm');
+  if (!form) return;
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!(window.Auth && Auth.isAdmin && Auth.isAdmin())) { liveToast('Admin only'); return; }
+    const stickerId = document.getElementById('adminBroadcastSticker').value;
+    const message = document.getElementById('adminBroadcastMsg').value.trim();
+    if (!stickerId) { liveToast('Pick a sticker'); return; }
+    try {
+      await postJson('admin-stickers', { action: 'broadcast', stickerId, message });
+      liveToast('Broadcast sent');
+      fetchLiveState();
+    } catch (err) {
+      liveToast(err.message || 'Broadcast failed');
+    }
+  });
+})();
+
+/* ---- Hook sticker rendering into the existing server-state pipeline ---- */
+
+const _originalApplyServerState = applyServerState;
+applyServerState = function patchedApplyServerState() {
+  _originalApplyServerState.apply(this, arguments);
+  processStickerSends();
+  renderTopSupporters();
+  // Re-render grid when balance might have shifted (e.g., admin earned points elsewhere)
+  renderStickerGrid();
+};
+
+/* ---- Admin tools reveal when auth state flips to admin ---- */
+
+function maybeLoadAdminSticker() {
+  if (window.Auth && Auth.isAdmin && Auth.isAdmin()) {
+    fetchAdminStickers();
+  }
+}
+window.addEventListener('authStateChanged', maybeLoadAdminSticker);
+
+/* ---- Initialize sticker subsystem ---- */
+
+updateStickerPanelAuthState();
+fetchStickerCatalog();
+fetchUserBalance();
+maybeLoadAdminSticker();
