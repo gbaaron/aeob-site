@@ -348,9 +348,10 @@ window.escAttr = function(str) {
 
 window.coverUrl = function(src, w) {
   if (!src) return '';
+  if (!/^https:\/\/d3t3ozftmdmh3i\.cloudfront\.net\//.test(src)) return src;
+  // A local preview has no image service of its own, so borrow the live site's.
   const local = /^(localhost|127\.|\[::1\])/.test(location.hostname) || location.protocol === 'file:';
-  if (local || !/^https:\/\/d3t3ozftmdmh3i\.cloudfront\.net\//.test(src)) return src;
-  return `/.netlify/images?url=${encodeURIComponent(src)}&w=${w || 480}&q=72`;
+  return `${local ? 'https://aeob.netlify.app' : ''}/.netlify/images?url=${encodeURIComponent(src)}&w=${w || 480}&q=72`;
 };
 
 // Best available art for an episode: its cover, then its YouTube frame.
@@ -380,6 +381,17 @@ window.epParts = function(ep) {
   return i > 0 ? { guest: t.slice(0, i).trim(), line: t.slice(i + 1).trim() } : { guest: t.trim(), line: '' };
 };
 
+// Show notes end in the same boilerplate every week; keep the part about the guest.
+window.epBlurb = function(ep, max) {
+  const text = String(ep.description || '').replace(/<[^>]+>/g, ' ')
+    .split(/Hosted by|Watch this episode|Follow the show|Support the show/i)[0]
+    .replace(/\s+/g, ' ').trim();
+  max = max || 200;
+  if (text.length <= max) return text;
+  const cut = text.slice(0, max);
+  return cut.slice(0, cut.lastIndexOf(' ')) + '…';
+};
+
 // One shared promise so every module reads the same episode list.
 window.getEpisodes = function() {
   if (!window._aeobEpisodes) {
@@ -394,6 +406,24 @@ function hideSection(el) {
   const sec = el && el.closest('section');
   if (sec) sec.style.display = 'none';
 }
+
+// ---------- Inner-page heroes wear the cover art too ----------
+(function pageHeroArt() {
+  const hero = document.querySelector('.page-hero, .live-hero, .cards-hero, .predict-hero, .shop-hero, .trivia-hero');
+  if (!hero) return;
+  window.getEpisodes().then(eps => {
+    if (eps.length < 12) return;
+    // Start at a different point per page so no two heroes show the same faces.
+    const start = (location.pathname.length * 7) % Math.max(1, eps.length - 30);
+    const art = document.createElement('div');
+    art.className = 'page-hero__art';
+    art.setAttribute('aria-hidden', 'true');
+    art.innerHTML = eps.slice(start, start + 24).map(ep =>
+      `<img src="${window.escAttr(window.epArt(ep, 220))}" data-raw="${window.escAttr(ep.image || '')}" alt="" decoding="async" onload="this.classList.add('is-in')" onerror="coverFallback(this)">`
+    ).join('');
+    hero.prepend(art);
+  });
+})();
 
 // ---------- Icons (Lucide) ----------
 // Pages build markup at runtime, so icons are drawn whenever an <i data-lucide>

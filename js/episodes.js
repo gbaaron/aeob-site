@@ -43,27 +43,27 @@ const Episodes = (() => {
   }
 
   // ---------- Render Episode Card ----------
-  function renderEpisodeCard(ep) {
+  function renderEpisodeCard(ep, i, list, feature) {
     const isFav = favorites.has(ep.id);
     const durationStr = window.formatDuration ? window.formatDuration(ep.duration) : '';
-    const dateStr = ep.publishedAt && window.formatDate ? window.formatDate(ep.publishedAt) : '';
+    const parts = window.epParts(ep);
+    const meta = [feature ? '<b class="ep-new">Newest</b>' : '', ep.episodeNumber ? `Episode ${ep.episodeNumber}` : '', durationStr].filter(Boolean).join(' &middot; ');
 
     return `
-      <div class="card episode-card" data-id="${ep.id}">
+      <div class="card episode-card ${feature ? 'episode-card--feature' : ''}" data-id="${ep.id}">
         <div class="thumb-wrap">
-          ${window.coverImg(ep, 520, 'cover', `onclick="Episodes.playInBar('${ep.id}')" style="cursor:pointer;"`)}
-          ${durationStr ? `<span class="duration">${durationStr}</span>` : ''}
+          ${window.coverImg(ep, feature ? 900 : 520, 'cover', `onclick="Episodes.playInBar('${ep.id}')" style="cursor:pointer;"`)}
           <div class="play-overlay" onclick="Episodes.playInBar('${ep.id}')" aria-label="Play episode" title="Play"><i data-lucide="play"></i></div>
           <button class="fav-btn ${isFav ? 'active' : ''}" onclick="Episodes.toggleFav('${ep.id}', event)" aria-label="Favorite">
             ${isFav ? '&#9829;' : '&#9825;'}
           </button>
         </div>
         <div class="card-body" onclick="Episodes.openPlayer('${ep.id}')" style="cursor:pointer;">
-          <h3>${ep.title}</h3>
-          <div class="episode-meta">
-            ${dateStr ? `<span>${dateStr}</span>` : ''}
-            ${ep.era ? `<span>${ep.era}</span>` : ''}
-          </div>
+          <div class="ep-num">${meta}</div>
+          <h3>${window.escAttr(parts.guest)}</h3>
+          ${parts.line ? `<p class="ep-line">${window.escAttr(parts.line)}</p>` : ''}
+          ${feature ? `<p class="ep-blurb">${window.escAttr(window.epBlurb(ep, 190))}</p>
+          <span class="btn btn-primary btn-sm ep-play" onclick="event.stopPropagation();Episodes.playInBar('${ep.id}')"><i data-lucide="play"></i> Play</span>` : ''}
           ${ep.hosts && ep.hosts.length ? `
           <div class="episode-tags">
             ${ep.hosts.map(h => `<span class="episode-tag">${h}</span>`).join('')}
@@ -89,7 +89,8 @@ const Episodes = (() => {
       return;
     }
 
-    container.innerHTML = episodes.map(renderEpisodeCard).join('');
+    const feature = container.classList.contains('episodes-grid--home');
+    container.innerHTML = episodes.map((ep, i, list) => renderEpisodeCard(ep, i, list, feature && i === 0)).join('');
   }
 
   // ---------- Filter & Search ----------
@@ -388,7 +389,7 @@ const Episodes = (() => {
     }
 
     if (isHomePage) {
-      renderGrid(allEpisodes.slice(0, 8));
+      renderGrid(allEpisodes.slice(0, 5));
       loadRecommendations();
     } else if (isEpisodesPage) {
       // Era, team and host only filter once episodes carry that data in Airtable.

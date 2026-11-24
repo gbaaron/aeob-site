@@ -10,8 +10,9 @@ const LIVE_CONFIG = {
   facebookPageId: 'aneternityofbasketball',
   isLive: false,
   nextEpisode: getNextSaturday8PM(),
-  nextEpisodeTitle: 'Ep 301: The Toyota Dynasty Revisited',
-  nextEpisodeDesc: 'The crew rewinds to 1979 and the height of Toyota\'s PBA dominance.'
+  // Set these when the next guest is confirmed; nothing is invented when they are blank.
+  nextEpisodeTitle: '',
+  nextEpisodeDesc: ''
 };
 
 function getNextSaturday8PM() {
@@ -192,9 +193,9 @@ function applyLiveState() {
   const descEl = document.getElementById('liveEpisodeDesc');
   const nextTitle = document.getElementById('nextEpisodeTitle');
   const sessionTitle = LIVE_STATE.session && LIVE_STATE.session.title;
-  if (titleEl) titleEl.textContent = sessionTitle || LIVE_CONFIG.nextEpisodeTitle;
+  if (titleEl) titleEl.textContent = sessionTitle || LIVE_CONFIG.nextEpisodeTitle || 'New episode every Saturday';
   if (descEl) descEl.textContent = LIVE_CONFIG.nextEpisodeDesc;
-  if (nextTitle) nextTitle.textContent = 'Next: ' + LIVE_CONFIG.nextEpisodeTitle;
+  if (nextTitle) nextTitle.textContent = LIVE_CONFIG.nextEpisodeTitle ? 'Next: ' + LIVE_CONFIG.nextEpisodeTitle : 'New episode every Saturday';
 }
 
 // ---------- Countdown ----------
@@ -697,14 +698,12 @@ if (questionSubmit) {
 
 // ---------- Viewer Count (cosmetic) ----------
 function simulateViewers() {
+  // A real count needs the stream provider's API. Until that is wired the
+  // tab shows a dash instead of a made-up number.
   const el = document.getElementById('viewerCount');
-  if (!el) return;
-  const base = LIVE_CONFIG.isLive ? 340 : 12;
-  const jitter = Math.floor(Math.random() * 30);
-  el.textContent = base + jitter;
+  if (el) el.textContent = '–';
 }
 simulateViewers();
-setInterval(simulateViewers, 8000);
 
 // ---------- Upcoming Streams ----------
 function renderUpcomingStreams() {
@@ -716,8 +715,8 @@ function renderUpcomingStreams() {
     d.setDate(d.getDate() + i * 7);
     upcoming.push({
       date: d,
-      title: i === 0 ? LIVE_CONFIG.nextEpisodeTitle : `Episode ${301 + i}`,
-      topic: ['1979 Toyota Dynasty', '1985 MVP Debate', '1991 Ginebra Run', 'Fan Q&A Special'][i]
+      title: (i === 0 && LIVE_CONFIG.nextEpisodeTitle) || 'New episode',
+      topic: 'Guest to be announced'
     });
   }
   container.innerHTML = upcoming.map((ep, i) => `

@@ -22,7 +22,7 @@
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Bebas+Neue&display=swap" rel="stylesheet">
 
   <!-- Styles -->
   <link rel="stylesheet" href="/css/styles.css">
@@ -80,7 +80,7 @@
       <div class="hero-home__grid">
         <div>
           <span class="badge hero-anim hero-anim-1">PBA history podcast</span>
-          <h1 class="hero-anim hero-anim-2">An Eternity <em>of Basketball</em></h1>
+          <h1 class="hero-anim hero-anim-2"><span>An Eternity</span> <em>of Basketball</em></h1>
           <p class="tagline hero-anim hero-anim-3">The players, coaches and imports who built the PBA, in their own words.</p>
 
           <div class="scorebug hero-anim hero-anim-4">
@@ -94,7 +94,7 @@
             <a href="/live.html" class="btn btn-ghost">Watch live</a>
           </div>
         </div>
-        <img class="hero-home__logo hero-logo-float hero-anim hero-anim-6" src="https://res.cloudinary.com/djngpyv15/image/upload/v1776447309/274701765_319754193505498_1268754374260370953_n-removebg-preview_k6uyha.png" alt="An Eternity of Basketball logo">
+        <div class="stack hero-anim hero-anim-6" id="heroStack"></div>
       </div>
     </div>
   </section>
@@ -116,6 +116,12 @@
     </a>
   </div>
 
+  <!-- Guest names, off the episode titles -->
+  <div class="ticker" id="tickerBand">
+    <span class="ticker__tab">On the show</span>
+    <div class="ticker__view"><div class="ticker__track" id="tickerTrack"></div></div>
+  </div>
+
   <!-- Latest episodes -->
   <section class="flow-section" id="latest-episodes">
     <div class="container">
@@ -131,6 +137,7 @@
   <section class="wall" id="wallSection">
     <h2 class="wall__title reveal"><span id="wallCount">272</span> conversations. <em>Every one a PBA name.</em></h2>
     <div class="wall__track" id="wallTrack"></div>
+    <div class="wall__track wall__track--back" id="wallTrack2"></div>
   </section>
 
   <!-- Archive spotlight -->
@@ -166,6 +173,7 @@
 
   <!-- Join -->
   <section class="join">
+    <div class="artwall artwall--join" aria-hidden="true"><div class="artwall__grid" id="joinWall"></div></div>
     <div class="container reveal">
       <h2>Play along every Saturday</h2>
       <p>Save episodes, call the crew&rsquo;s predictions, collect cards. Free.</p>
