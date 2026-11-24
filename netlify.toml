@@ -5,7 +5,7 @@
 # Episode covers arrive from the podcast host at 3000x3000 (~2.6MB each).
 # js/main.js coverUrl() asks /.netlify/images for a sized copy instead.
 [images]
-  remote_images = ["https://d3t3ozftmdmh3i\\.cloudfront\\.net/.*"]
+  remote_images = ["https://d3t3ozftmdmh3i.cloudfront.net/.*"]
 
 [functions]
   node_bundler = "esbuild"
