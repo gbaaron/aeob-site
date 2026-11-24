@@ -160,8 +160,8 @@ function quickview(id) {
         <button class="btn btn-primary btn-block" onclick="window.Shop.addToCart('${p.id}');window.Shop.closeQuickview();">Add to Cart &middot; ${PESO(p.price)}</button>
       </div>
       <div class="qv-meta">
-        <span>&#9989; Free PH shipping over ₱2,000</span>
-        <span>&#128230; 14-day returns</span>
+        <span><i data-lucide="check-circle"></i> Free PH shipping over ₱2,000</span>
+        <span><i data-lucide="package"></i> 14-day returns</span>
       </div>
     </div>
   `;
@@ -233,7 +233,7 @@ function renderCartDrawer() {
   if (!items) return;
   const cart = getCart();
   if (!cart.length) {
-    items.innerHTML = `<div class="cart-empty"><div class="cart-empty-icon">&#128722;</div><p>Your cart is empty.</p></div>`;
+    items.innerHTML = `<div class="cart-empty"><div class="cart-empty-icon"><i data-lucide="shopping-cart"></i></div><p>Your cart is empty.</p></div>`;
     if (footer) footer.style.display = 'none';
     return;
   }

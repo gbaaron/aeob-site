@@ -48,6 +48,13 @@ function stripHtml(s) {
   return String(s || '').replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
 }
 
+// Show notes carry "Watch this episode on YouTube: https://youtu.be/<id>" with the
+// line breaks stripped, so take exactly the 11-character id and nothing after it.
+function youtubeFromNotes(text) {
+  const m = String(text || '').match(/(?:youtu\.be\/|youtube\.com\/watch\?v=)([A-Za-z0-9_-]{11})/);
+  return m ? `https://youtu.be/${m[1]}` : '';
+}
+
 function parseRss(xml) {
   const items = [];
   const itemRe = /<item\b[\s\S]*?<\/item>/gi;
@@ -66,7 +73,7 @@ function parseRss(xml) {
       episodeNumber: parseEpisodeNumber(title),
       title,
       audioUrl,
-      youtubeUrl: '',
+      youtubeUrl: youtubeFromNotes(description),
       image,
       featured: false,
       era: '',
@@ -159,7 +166,7 @@ exports.handler = async (event) => {
         ...ep,
         id: meta.airtableId || ep.id,
         audioUrl: ep.audioUrl || meta.audioUrl,
-        youtubeUrl: meta.youtubeUrl || '',
+        youtubeUrl: meta.youtubeUrl || ep.youtubeUrl || '',
         featured: meta.featured,
         era: meta.era,
         teams: meta.teams,

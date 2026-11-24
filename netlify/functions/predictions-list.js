@@ -59,7 +59,7 @@ function getPlaceholderPredictions() {
   return [
     {
       id: 'pred-1',
-      question: 'PLACEHOLDER: Which team had the most dominant dynasty in PBA history?',
+      question: 'Which team had the most dominant dynasty in PBA history?',
       status: 'active',
       picks: [
         { host: 'Charlie Cuna', pick: 'Crispa Redmanizers' },
@@ -72,20 +72,20 @@ function getPlaceholderPredictions() {
     },
     {
       id: 'pred-2',
-      question: 'PLACEHOLDER: Who was the greatest import in PBA history?',
+      question: 'Who was the greatest import in PBA history?',
       status: 'active',
       picks: [
-        { host: 'Charlie Cuna', pick: 'PLACEHOLDER: Import A' },
-        { host: 'Sid Ventura', pick: 'PLACEHOLDER: Import B' },
-        { host: 'Noel Zarate', pick: 'PLACEHOLDER: Import A' },
-        { host: 'Jay Mercado', pick: 'PLACEHOLDER: Import C' }
+        { host: 'Charlie Cuna', pick: 'Import A' },
+        { host: 'Sid Ventura', pick: 'Import B' },
+        { host: 'Noel Zarate', pick: 'Import A' },
+        { host: 'Jay Mercado', pick: 'Import C' }
       ],
       agreeCount: 62,
       disagreeCount: 31
     },
     {
       id: 'pred-3',
-      question: 'PLACEHOLDER: Would the 1983 Crispa team beat the 1989 San Miguel team?',
+      question: 'Would the 1983 Crispa team beat the 1989 San Miguel team?',
       status: 'active',
       picks: [
         { host: 'Charlie Cuna', pick: 'Crispa in 6' },

@@ -45,7 +45,7 @@
         id: ep.id || ('ep-' + ep.episodeNumber),
         title: ep.episodeNumber ? ('Ep ' + ep.episodeNumber + ': ' + ep.title) : ep.title,
         host: Array.isArray(ep.hosts) && ep.hosts.length ? ep.hosts.join(', ') : 'AEOB',
-        cover: DEFAULT_COVER,
+        cover: (window.coverUrl && window.coverUrl(ep.image, 160)) || DEFAULT_COVER,
         src: ep.audioUrl || '',
         youtubeUrl: ep.youtubeUrl || '',
         youtubeId: extractYouTubeId(ep.youtubeUrl)
@@ -89,9 +89,9 @@
           <div class="audio-sub" id="audioSub">AEOB Podcast</div>
         </div>
         <div class="audio-controls">
-          <button class="audio-btn" id="audioPrev" aria-label="Previous">&#9198;</button>
-          <button class="audio-btn audio-play" id="audioPlay" aria-label="Play">&#9654;</button>
-          <button class="audio-btn" id="audioNext" aria-label="Next">&#9197;</button>
+          <button class="audio-btn" id="audioPrev" aria-label="Previous"><i data-lucide="skip-back"></i></button>
+          <button class="audio-btn audio-play" id="audioPlay" aria-label="Play"><i data-lucide="play"></i></button>
+          <button class="audio-btn" id="audioNext" aria-label="Next"><i data-lucide="skip-forward"></i></button>
         </div>
         <div class="audio-progress-wrap">
           <span class="audio-time" id="audioCurrent">0:00</span>
@@ -100,7 +100,7 @@
         </div>
         <div class="audio-extras">
           <button class="audio-btn" id="audioSpeed" aria-label="Playback speed">1x</button>
-          <button class="audio-btn" id="audioMute" aria-label="Mute">&#128266;</button>
+          <button class="audio-btn" id="audioMute" aria-label="Mute"><i data-lucide="volume-2"></i></button>
           <button class="audio-btn audio-close" id="audioClose" aria-label="Close player">&times;</button>
         </div>
       </div>
@@ -114,7 +114,7 @@
     launcher.className = 'audio-launcher';
     launcher.id = 'aeobAudioLauncher';
     launcher.setAttribute('aria-label', 'Open podcast player');
-    launcher.innerHTML = '<span>&#127911;</span>';
+    launcher.innerHTML = '<span><i data-lucide="headphones"></i></span>';
     document.body.appendChild(launcher);
   }
 
@@ -181,7 +181,7 @@
     }
 
     function setPlayIcon(playing) {
-      playBtn.innerHTML = playing ? '&#10073;&#10073;' : '&#9654;';
+      playBtn.innerHTML = playing ? '<i data-lucide="pause"></i>' : '<i data-lucide="play"></i>';
       playBtn.setAttribute('aria-label', playing ? 'Pause' : 'Play');
     }
 
@@ -323,10 +323,10 @@
     muteBtn.addEventListener('click', () => {
       if (mode === 'audio') {
         audio.muted = !audio.muted;
-        muteBtn.innerHTML = audio.muted ? '&#128263;' : '&#128266;';
+        muteBtn.innerHTML = audio.muted ? '<i data-lucide="volume-x"></i>' : '<i data-lucide="volume-2"></i>';
       } else if (mode === 'yt' && ytPlayer && ytReady) {
-        if (ytPlayer.isMuted()) { ytPlayer.unMute(); muteBtn.innerHTML = '&#128266;'; }
-        else { ytPlayer.mute(); muteBtn.innerHTML = '&#128263;'; }
+        if (ytPlayer.isMuted()) { ytPlayer.unMute(); muteBtn.innerHTML = '<i data-lucide="volume-2"></i>'; }
+        else { ytPlayer.mute(); muteBtn.innerHTML = '<i data-lucide="volume-x"></i>'; }
       }
     });
 
@@ -353,7 +353,7 @@
         host: Array.isArray(raw.hosts) && raw.hosts.length
           ? raw.hosts.join(', ')
           : (raw.host || 'AEOB'),
-        cover: raw.cover || DEFAULT_COVER,
+        cover: raw.cover || (window.coverUrl && window.coverUrl(raw.image, 160)) || DEFAULT_COVER,
         src: raw.src || raw.audioUrl || '',
         youtubeUrl: raw.youtubeUrl || '',
         youtubeId: raw.youtubeId || extractYouTubeId(raw.youtubeUrl || '')
@@ -459,7 +459,7 @@
             <div class="ep-comment-text">${escapeHTML(c.text)}</div>
             <div class="ep-comment-actions">
               <button class="ep-like" data-id="${c.id}">
-                &#128077; <span>${c.likes || 0}</span>
+                <i data-lucide="thumbs-up"></i> <span>${c.likes || 0}</span>
               </button>
             </div>
           </div>

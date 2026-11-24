@@ -19,6 +19,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="/css/arena.css">
+  <link rel="stylesheet" href="/css/flow.css">
 </head>
 <body data-design="arena-hype">
 
@@ -44,7 +45,7 @@
           <a href="/admin.html" data-admin style="display:none;">Admin</a>
         </nav>
         <div class="header-actions">
-          <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode">&#9790;</button>
+          <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode"><i data-lucide="moon"></i></button>
           <button class="btn-login" id="loginBtn">Sign In</button>
           <div class="user-avatar" id="userAvatar"></div>
           <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
@@ -59,7 +60,7 @@
         <section class="page-hero">
             <div class="container">
                 <h1 class="page-hero-title">Fan Zone</h1>
-                <p class="page-hero-subtitle">Submit your questions, stats challenges, and what-if scenarios for a chance to be featured on the show. Your voice shapes the conversation.</p>
+                <p class="page-hero-subtitle">Send the crew a question, a stat challenge or a what-if. The top-voted ones get read on the show.</p>
             </div>
         </section>
 
@@ -115,78 +116,7 @@
                         <p>The most popular fan submissions, ranked by community votes.</p>
                     </div>
 
-                    <div class="submissions-list">
-
-                        <!-- Submission Item 1 -->
-                        <div class="submission-item card">
-                            <div class="submission-votes">
-                                <button class="upvote-btn" aria-label="Upvote this submission">
-                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M8 3L14 10H2L8 3Z" fill="currentColor"/>
-                                    </svg>
-                                </button>
-                                <span class="vote-count">42</span>
-                            </div>
-                            <div class="submission-content">
-                                <div class="submission-meta">
-                                    <span class="type-badge type-badge--what-if">What If Scenario</span>
-                                </div>
-                                <h3 class="submission-title">PLACEHOLDER: What if the Crispa Redmanizers played in today's PBA?</h3>
-                                <p class="submission-description">PLACEHOLDER: Imagine transporting the legendary Crispa Redmanizers roster from their dynasty years into the modern PBA. How would their physical style of play match up against today's more perimeter-oriented game? Would they still dominate?</p>
-                                <div class="submission-author">
-                                    <span class="author-name">PLACEHOLDER_USER_1</span>
-                                    <span class="submission-date">March 28, 2026</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Submission Item 2 -->
-                        <div class="submission-item card">
-                            <div class="submission-votes">
-                                <button class="upvote-btn" aria-label="Upvote this submission">
-                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M8 3L14 10H2L8 3Z" fill="currentColor"/>
-                                    </svg>
-                                </button>
-                                <span class="vote-count">35</span>
-                            </div>
-                            <div class="submission-content">
-                                <div class="submission-meta">
-                                    <span class="type-badge type-badge--stats-challenge">Stats Challenge</span>
-                                </div>
-                                <h3 class="submission-title">PLACEHOLDER: Most consecutive conference finals appearances by a single franchise</h3>
-                                <p class="submission-description">PLACEHOLDER: Can you figure out which PBA franchise holds the record for the most consecutive conference finals appearances? Bonus points if you can name the full roster for each of those appearances.</p>
-                                <div class="submission-author">
-                                    <span class="author-name">PLACEHOLDER_USER_2</span>
-                                    <span class="submission-date">March 25, 2026</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Submission Item 3 -->
-                        <div class="submission-item card">
-                            <div class="submission-votes">
-                                <button class="upvote-btn" aria-label="Upvote this submission">
-                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M8 3L14 10H2L8 3Z" fill="currentColor"/>
-                                    </svg>
-                                </button>
-                                <span class="vote-count">28</span>
-                            </div>
-                            <div class="submission-content">
-                                <div class="submission-meta">
-                                    <span class="type-badge type-badge--question">Question</span>
-                                </div>
-                                <h3 class="submission-title">PLACEHOLDER: Who is the most underrated PBA import of all time?</h3>
-                                <p class="submission-description">PLACEHOLDER: We always talk about the greatest imports like Bobby Parks and Justin Brownlee, but who are the imports that flew under the radar and deserve more recognition? Would love to hear the hosts debate this one.</p>
-                                <div class="submission-author">
-                                    <span class="author-name">PLACEHOLDER_USER_3</span>
-                                    <span class="submission-date">March 20, 2026</span>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
+                    <div class="submissions-list" id="topSubmissions"></div>
                 </div>
 
                 <!-- Featured on Show Tab Panel -->
@@ -196,84 +126,7 @@
                         <p>These fan submissions were discussed on an episode of AEOB. Congrats to the contributors!</p>
                     </div>
 
-                    <div class="submissions-list">
-
-                        <!-- Featured Submission 1 -->
-                        <div class="submission-item submission-item--featured card">
-                            <div class="submission-votes">
-                                <button class="upvote-btn" aria-label="Upvote this submission">
-                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M8 3L14 10H2L8 3Z" fill="currentColor"/>
-                                    </svg>
-                                </button>
-                                <span class="vote-count">87</span>
-                            </div>
-                            <div class="submission-content">
-                                <div class="submission-meta">
-                                    <span class="featured-badge">Featured on Show</span>
-                                    <span class="type-badge type-badge--what-if">What If Scenario</span>
-                                </div>
-                                <h3 class="submission-title">PLACEHOLDER: What if the PBA never introduced the import rule?</h3>
-                                <p class="submission-description">PLACEHOLDER: The import rule changed PBA basketball forever. But what if it had never been introduced? How would the league have evolved differently? Would Filipino players have developed faster without relying on imports?</p>
-                                <div class="submission-author">
-                                    <span class="author-name">PLACEHOLDER_USER_4</span>
-                                    <span class="submission-date">March 10, 2026</span>
-                                    <span class="featured-episode">Ep. 45 - The Import Debate</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Featured Submission 2 -->
-                        <div class="submission-item submission-item--featured card">
-                            <div class="submission-votes">
-                                <button class="upvote-btn" aria-label="Upvote this submission">
-                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M8 3L14 10H2L8 3Z" fill="currentColor"/>
-                                    </svg>
-                                </button>
-                                <span class="vote-count">64</span>
-                            </div>
-                            <div class="submission-content">
-                                <div class="submission-meta">
-                                    <span class="featured-badge">Featured on Show</span>
-                                    <span class="type-badge type-badge--question">Question</span>
-                                </div>
-                                <h3 class="submission-title">PLACEHOLDER: Which PBA era had the toughest competition overall?</h3>
-                                <p class="submission-description">PLACEHOLDER: Looking across all eras of the PBA, which period had the deepest talent pool and most competitive balance? Was it the golden age of the 80s, the rivalry-driven 90s, or the modern era with better training and scouting?</p>
-                                <div class="submission-author">
-                                    <span class="author-name">PLACEHOLDER_USER_5</span>
-                                    <span class="submission-date">February 28, 2026</span>
-                                    <span class="featured-episode">Ep. 42 - Eras of Greatness</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Featured Submission 3 -->
-                        <div class="submission-item submission-item--featured card">
-                            <div class="submission-votes">
-                                <button class="upvote-btn" aria-label="Upvote this submission">
-                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M8 3L14 10H2L8 3Z" fill="currentColor"/>
-                                    </svg>
-                                </button>
-                                <span class="vote-count">51</span>
-                            </div>
-                            <div class="submission-content">
-                                <div class="submission-meta">
-                                    <span class="featured-badge">Featured on Show</span>
-                                    <span class="type-badge type-badge--stats-challenge">Stats Challenge</span>
-                                </div>
-                                <h3 class="submission-title">PLACEHOLDER: Name every PBA MVP who also won a Finals MVP in the same season</h3>
-                                <p class="submission-description">PLACEHOLDER: This is a deep cut stats challenge. Can you name every player in PBA history who won both the season MVP and the Finals MVP in the same conference year? Harder than it sounds!</p>
-                                <div class="submission-author">
-                                    <span class="author-name">PLACEHOLDER_USER_6</span>
-                                    <span class="submission-date">February 15, 2026</span>
-                                    <span class="featured-episode">Ep. 39 - The Double Crown</span>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
+                    <div class="submissions-list" id="featuredSubmissions"></div>
                 </div>
 
             </div>
@@ -287,14 +140,19 @@
         <div class="footer-grid">
           <div class="footer-brand">
             <a href="/" class="header-logo" style="margin-bottom:8px;"><img src="https://res.cloudinary.com/djngpyv15/image/upload/v1776447309/274701765_319754193505498_1268754374260370953_n-removebg-preview_k6uyha.png" alt="AEOB" style="height:40px;"><span style="color:#fff;">An Eternity of Basketball</span></a>
-            <p>Reliving the golden eras of PBA basketball since day one. 300+ episodes and counting.</p>
+            <p>The players, coaches and imports who built the PBA, in their own words.</p>
           </div>
           <div><h4>Browse</h4><ul><li><a href="/episodes.html">Episodes</a></li><li><a href="/predictions.html">Predictions</a></li><li><a href="/submissions.html">Fan Zone</a></li><li><a href="/rewards.html">Rewards</a></li></ul></div>
-          <div><h4>More</h4><ul><li><a href="/schedule.html">Schedule</a></li><li><a href="/about.html">About</a></li><li><a href="#">Contact</a></li></ul></div>
-          <div><h4>Listen On</h4><ul><li><a href="#">YouTube</a></li><li><a href="#">Spotify</a></li><li><a href="#">Apple Podcasts</a></li><li><a href="#">Facebook</a></li></ul></div>
+          <div><h4>More</h4><ul><li><a href="/schedule.html">Schedule</a></li><li><a href="/about.html">About</a></li></ul></div>
+          <div><h4>Follow</h4>
+          <ul>
+            <li><a href="https://www.youtube.com/@globallyballin5579" target="_blank" rel="noopener">YouTube</a></li>
+            <li><a href="https://instagram.com/aneternityofbasketball" target="_blank" rel="noopener">Instagram</a></li>
+            <li><a href="https://www.patreon.com/globallyballin" target="_blank" rel="noopener">Patreon</a></li>
+          </ul></div>
         </div>
         <div class="footer-bottom">
-          <span>&copy; 2024 An Eternity of Basketball. All rights reserved.</span>
+          <span>&copy; 2026 An Eternity of Basketball. All rights reserved.</span>
           <span class="network">Part of the Globally Ballin Network</span>
         </div>
       </div>

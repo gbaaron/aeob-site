@@ -330,7 +330,7 @@ function renderLadder() {
       <div class="ladder-row${isCurrent ? ' current' : ''}${isPassed ? ' passed' : ''}${isSafe ? ' safe' : ''}${isTop ? ' top' : ''}">
         <span class="ladder-num">${level}</span>
         <span class="ladder-credits">${CREDIT_LADDER[i].toLocaleString()}</span>
-        ${isSafe ? '<span class="ladder-safe" title="Safe level">🔒</span>' : ''}
+        ${isSafe ? '<span class="ladder-safe" title="Safe level"><i data-lucide="lock"></i></span>' : ''}
       </div>
     `);
   }
@@ -451,27 +451,27 @@ function endGame(reason) {
   let banked = 0;
   let outcome = '—';
   let title = 'Game Over';
-  let icon = '&#128284;'; // no-entry sign
+  let icon = '<i data-lucide="ban"></i>'; // no-entry sign
   let sub = '';
 
   if (reason === 'won') {
     banked = CREDIT_LADDER[TOTAL_Q - 1]; // max prize
     outcome = 'Perfect Run';
     title = 'PBA Millionaire!';
-    icon = '&#127942;';
+    icon = '<i data-lucide="trophy"></i>';
     sub = `You answered all ${TOTAL_Q} correct. Legendary.`;
   } else if (reason === 'walk') {
     // Walk away keeps the credits of the LAST CORRECTLY ANSWERED question.
     banked = qIdx > 0 ? CREDIT_LADDER[qIdx - 1] : 0;
     outcome = 'Walked Away';
     title = 'Smart Exit';
-    icon = '&#128176;';
+    icon = '<i data-lucide="coins"></i>';
     sub = `You cashed out at Q${qIdx} with ${banked.toLocaleString()} credits.`;
   } else if (reason === 'lost') {
     banked = lastSafeCredits(qIdx);
     outcome = 'Wrong Answer';
     title = banked > 0 ? 'Dropped to Safe Level' : 'No Safety Net';
-    icon = banked > 0 ? '&#128274;' : '&#128165;';
+    icon = banked > 0 ? '<i data-lucide="lock"></i>' : '<i data-lucide="x-circle"></i>';
     sub = banked > 0
       ? `You missed Q${qIdx + 1}, but the safe level guarantees ${banked.toLocaleString()} credits.`
       : `Missed before reaching a safe level. No credits banked.`;
@@ -479,7 +479,7 @@ function endGame(reason) {
     banked = 0;
     outcome = 'Anti-Cheat Triggered';
     title = 'Game Forfeited';
-    icon = '&#128683;';
+    icon = '<i data-lucide="ban"></i>';
     sub = 'Tab switch, fullscreen exit, or window blur detected. Keep your eyes on the court.';
   }
 

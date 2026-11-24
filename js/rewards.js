@@ -122,7 +122,7 @@ const Rewards = (() => {
     if (activities.length === 0) {
       container.innerHTML = `
         <div class="empty-state">
-          <div class="empty-icon">&#128200;</div>
+          <div class="empty-icon"><i data-lucide="trending-up"></i></div>
           <h3>No activity yet</h3>
           <p>Start watching episodes, making predictions, and submitting questions to earn points!</p>
         </div>
@@ -131,12 +131,12 @@ const Rewards = (() => {
     }
 
     const icons = {
-      watch: '&#127909;',
-      prediction_vote: '&#127942;',
-      submission: '&#128172;',
-      featured: '&#11088;',
-      streak_7: '&#128293;',
-      referral: '&#129309;',
+      watch: '<i data-lucide="clapperboard"></i>',
+      prediction_vote: '<i data-lucide="trophy"></i>',
+      submission: '<i data-lucide="message-circle"></i>',
+      featured: '<i data-lucide="star"></i>',
+      streak_7: '<i data-lucide="flame"></i>',
+      referral: '<i data-lucide="handshake"></i>',
       favorite: '&#10084;'
     };
 
@@ -152,7 +152,7 @@ const Rewards = (() => {
 
     container.innerHTML = activities.slice(0, 10).map(act => `
       <div class="activity-item">
-        <div class="activity-icon">${icons[act.action] || '&#128310;'}</div>
+        <div class="activity-icon">${icons[act.action] || '<i data-lucide="circle-dot"></i>'}</div>
         <div class="activity-info">
           <div class="desc">${labels[act.action] || act.action}</div>
           <div class="time">${window.formatDate ? window.formatDate(act.timestamp) : ''}</div>

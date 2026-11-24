@@ -19,6 +19,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="/css/arena.css">
+  <link rel="stylesheet" href="/css/flow.css">
 </head>
 <body data-design="arena-hype">
 
@@ -44,7 +45,7 @@
           <a href="/admin.html" data-admin style="display:none;">Admin</a>
         </nav>
         <div class="header-actions">
-          <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode">&#9790;</button>
+          <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode"><i data-lucide="moon"></i></button>
           <button class="btn-login" id="loginBtn">Sign In</button>
           <div class="user-avatar" id="userAvatar"></div>
           <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
@@ -57,186 +58,57 @@
         <div class="container">
             <div class="page-hero-content reveal">
                 <h1 class="page-hero-title">Our Story</h1>
-                <p class="page-hero-subtitle">How three passionate PBA fans turned late-night basketball debates into the Philippines' longest-running basketball history podcast — and found a fourth voice along the way.</p>
+                <p class="page-hero-subtitle">Four PBA lifers, one guest a week, and the league&rsquo;s history told by the people who made it.</p>
             </div>
         </div>
     </section>
 
-    <!-- Founding Story -->
-    <section class="section">
+    <!-- The numbers, from the feed -->
+    <section class="flow-section">
         <div class="container">
-            <div class="section-header reveal">
-                <h2 class="section-title">The Founding of AEOB</h2>
-            </div>
-            <div class="founding-story reveal">
-                <p class="founding-text">
-                    [PLACEHOLDER] An Eternity of Basketball was born out of a shared obsession. Charlie Cuna, Sid Ventura, and Noel Zarate — three lifelong PBA fans — had spent years arguing about the greatest conferences, debating forgotten players, and reliving classic moments that most fans had never seen. In [PLACEHOLDER YEAR], they decided to stop keeping those conversations to themselves and start recording them. What began as a casual experiment quickly became something bigger: a podcast dedicated to preserving and celebrating the rich, often overlooked history of the Philippine Basketball Association.
-                </p>
-                <p class="founding-text">
-                    [PLACEHOLDER] The early days were scrappy. Armed with basic equipment and an encyclopedic knowledge of PBA lore, the trio recorded episodes wherever they could — living rooms, coffee shops, late-night video calls. But the passion was undeniable, and listeners noticed. Word spread through basketball communities, social media groups, and locker-room conversations. Before long, AEOB had carved out a unique space in Philippine sports media.
-                </p>
-                <p class="founding-text">
-                    [PLACEHOLDER] Then came Jay Mercado. A fellow PBA historian with his own deep well of knowledge and a knack for storytelling, Jay joined the crew as the fourth host, bringing fresh perspectives and new energy. With Jay on board, AEOB evolved — the debates got sharper, the research went deeper, and the show found another gear entirely. Together, the four hosts have built something that goes far beyond a podcast: a living archive of Philippine basketball history.
-                </p>
+            <div class="scorebug reveal" style="margin-bottom:0;">
+                <div><b id="statEpisodes">272</b><span>Episodes</span></div>
+                <div><b id="statHours">500+</b><span>Hours on tape</span></div>
+                <div><b>SAT</b><span>Every week</span></div>
             </div>
         </div>
     </section>
 
-    <!-- Timeline -->
-    <section class="section section-alt">
+    <!-- Where it started: the first four episodes, built by js/home.js -->
+    <section class="flow-section" id="firstSection">
         <div class="container">
-            <div class="section-header reveal">
-                <h2 class="section-title">Our Journey</h2>
-                <p class="section-subtitle">Key milestones in the AEOB story</p>
+            <div class="flow-head reveal">
+                <h2>Where it started</h2>
+                <a href="/episodes.html">All episodes <i data-lucide="arrow-right"></i></a>
             </div>
-            <div class="timeline">
-
-                <div class="timeline-item timeline-left reveal">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-card">
-                        <span class="timeline-year">[PLACEHOLDER YEAR]</span>
-                        <h3 class="timeline-title">The Beginning</h3>
-                        <p class="timeline-description">[PLACEHOLDER] Charlie, Sid, and Noel record their very first episode, a freewheeling conversation about the greatest PBA conferences of all time. They release it with zero expectations — and are stunned when listeners start reaching out almost immediately, hungry for exactly this kind of deep-dive basketball content.</p>
-                    </div>
-                </div>
-
-                <div class="timeline-item timeline-right reveal">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-card">
-                        <span class="timeline-year">[PLACEHOLDER YEAR]</span>
-                        <h3 class="timeline-title">Finding Our Voice</h3>
-                        <p class="timeline-description">[PLACEHOLDER] The first dozen episodes help the hosts find their rhythm. They develop signature segments, establish a research process for historical deep-dives, and begin attracting a loyal base of listeners who appreciate the blend of humor, nostalgia, and genuine basketball scholarship that sets AEOB apart.</p>
-                    </div>
-                </div>
-
-                <div class="timeline-item timeline-left reveal">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-card">
-                        <span class="timeline-year">[PLACEHOLDER YEAR]</span>
-                        <h3 class="timeline-title">Jay Joins the Crew</h3>
-                        <p class="timeline-description">[PLACEHOLDER] Jay Mercado, a long-time listener and PBA historian in his own right, officially joins as the fourth host. His addition brings a new dynamic to the show — more debate, more depth, and a fourth perspective that rounds out the panel and gives episodes an even richer texture.</p>
-                    </div>
-                </div>
-
-                <div class="timeline-item timeline-right reveal">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-card">
-                        <span class="timeline-year">[PLACEHOLDER YEAR]</span>
-                        <h3 class="timeline-title">100 Episodes</h3>
-                        <p class="timeline-description">[PLACEHOLDER] AEOB hits the century mark with a special milestone episode looking back at the show's journey so far. The episode features listener messages, behind-the-scenes stories, and a roundtable discussion about the moments that defined the podcast's first hundred episodes.</p>
-                    </div>
-                </div>
-
-                <div class="timeline-item timeline-left reveal">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-card">
-                        <span class="timeline-year">[PLACEHOLDER YEAR]</span>
-                        <h3 class="timeline-title">200 Episodes</h3>
-                        <p class="timeline-description">[PLACEHOLDER] By the 200th episode, AEOB has grown from a passion project into a recognized voice in Philippine sports media. The community expands through social media, live events, and collaborations with other basketball content creators across the Globally Ballin Network.</p>
-                    </div>
-                </div>
-
-                <div class="timeline-item timeline-right reveal">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-card">
-                        <span class="timeline-year">[PLACEHOLDER YEAR]</span>
-                        <h3 class="timeline-title">300+ Episodes</h3>
-                        <p class="timeline-description">[PLACEHOLDER] With over 300 episodes in the archive, AEOB stands as one of the most comprehensive audio histories of the PBA ever produced. The show continues to grow, tackling new eras, interviewing legends, and welcoming a new generation of listeners who are discovering PBA history for the first time.</p>
-                    </div>
-                </div>
-
-            </div>
+            <div class="episodes-grid episodes-grid--home" id="firstEpisodes"></div>
         </div>
     </section>
 
-    <!-- Meet the Hosts -->
-    <section class="section">
+    <!-- Guests -->
+    <section class="wall" id="wallSection">
+        <h2 class="wall__title reveal"><span id="wallCount">272</span> conversations. <em>Every one a PBA name.</em></h2>
+        <div class="wall__track" id="wallTrack"></div>
+    </section>
+
+    <!-- Hosts. Add data-photo="https://…" + style="background-image:url(…)" to an avatar when a headshot exists. -->
+    <section class="flow-section">
         <div class="container">
-            <div class="section-header reveal">
-                <h2 class="section-title">Meet the Hosts</h2>
-                <p class="section-subtitle">The voices behind An Eternity of Basketball</p>
-            </div>
+            <div class="flow-head reveal"><h2>The crew</h2></div>
             <div class="hosts-grid">
-
-                <div class="host-card card reveal">
-                    <div class="host-avatar">CC</div>
-                    <h3 class="host-name">Charlie Cuna</h3>
-                    <span class="host-role">Co-Founder & Host</span>
-                    <p class="host-bio">[PLACEHOLDER] Charlie is the driving force behind AEOB's creation. A lifelong PBA fan with an almost photographic memory for stats, lineups, and game details stretching back decades, Charlie brings an unmatched depth of knowledge to every episode. When he's not recording, he's usually deep in a rabbit hole researching some forgotten conference from the 1980s.</p>
-                </div>
-
-                <div class="host-card card reveal">
-                    <div class="host-avatar">SV</div>
-                    <h3 class="host-name">Sid Ventura</h3>
-                    <span class="host-role">Co-Founder & Host</span>
-                    <p class="host-bio">[PLACEHOLDER] Sid is the storyteller of the group. He has a gift for weaving PBA history into compelling narratives that make listeners feel like they were courtside for every pivotal moment. His passion for the human side of basketball — the rivalries, the comebacks, the heartbreaks — gives AEOB its emotional core.</p>
-                </div>
-
-                <div class="host-card card reveal">
-                    <div class="host-avatar">NZ</div>
-                    <h3 class="host-name">Noel Zarate</h3>
-                    <span class="host-role">Co-Founder & Host</span>
-                    <p class="host-bio">[PLACEHOLDER] Noel is the analyst. He approaches PBA history with a meticulous eye, breaking down game strategies, coaching philosophies, and roster constructions that defined different eras. His ability to connect the dots between past and present basketball makes him an essential voice in every discussion.</p>
-                </div>
-
-                <div class="host-card card reveal">
-                    <div class="host-avatar">JM</div>
-                    <h3 class="host-name">Jay Mercado</h3>
-                    <span class="host-role">Host</span>
-                    <p class="host-bio">[PLACEHOLDER] Jay joined the AEOB crew after being a dedicated listener from the early days. His deep knowledge of PBA history, sharp debating skills, and infectious enthusiasm made him a natural fit. Jay brings a fresh perspective and isn't afraid to challenge the other hosts' takes — which makes for some of the podcast's best moments.</p>
-                </div>
-
+                <div class="host-card card reveal"><div class="host-avatar">CC</div><h3 class="host-name">Charlie Cuna</h3><span class="host-role">Co-Founder &amp; Host</span></div>
+                <div class="host-card card reveal"><div class="host-avatar">SV</div><h3 class="host-name">Sid Ventura</h3><span class="host-role">Co-Founder &amp; Host</span></div>
+                <div class="host-card card reveal"><div class="host-avatar">NZ</div><h3 class="host-name">Noel Zarate</h3><span class="host-role">Co-Founder &amp; Host</span></div>
+                <div class="host-card card reveal"><div class="host-avatar">JM</div><h3 class="host-name">Jay Mercado</h3><span class="host-role">Host</span></div>
             </div>
         </div>
     </section>
 
-    <!-- What We Cover -->
-    <section class="section section-alt">
-        <div class="container">
-            <div class="section-header reveal">
-                <h2 class="section-title">What We Cover</h2>
-                <p class="section-subtitle">From the league's founding to today's modern era, we leave no era unexplored</p>
-            </div>
-            <div class="topics-grid reveal">
-                <div class="topic-card card">
-                    <h3 class="topic-title">The Pioneer Era</h3>
-                    <p class="topic-description">The founding years of the PBA, the original franchises, and the players who laid the foundation for professional basketball in the Philippines.</p>
-                </div>
-                <div class="topic-card card">
-                    <h3 class="topic-title">The Golden Age</h3>
-                    <p class="topic-description">The explosive growth of the league, the rise of legendary dynasties, fierce rivalries, and the era that cemented the PBA as the country's most beloved sports league.</p>
-                </div>
-                <div class="topic-card card">
-                    <h3 class="topic-title">The Import Era</h3>
-                    <p class="topic-description">How foreign reinforcements changed the game, unforgettable import-local tandems, and the wild stories from the era of towering guest players.</p>
-                </div>
-                <div class="topic-card card">
-                    <h3 class="topic-title">Rivalries & Controversies</h3>
-                    <p class="topic-description">The heated matchups, buzzer-beaters, bench-clearing incidents, and off-court dramas that defined generations of PBA basketball.</p>
-                </div>
-                <div class="topic-card card">
-                    <h3 class="topic-title">Legendary Players & Coaches</h3>
-                    <p class="topic-description">Deep-dive profiles on the greatest figures in PBA history — from the all-time greats to the unsung heroes who deserve their place in the spotlight.</p>
-                </div>
-                <div class="topic-card card">
-                    <h3 class="topic-title">The Modern PBA</h3>
-                    <p class="topic-description">How the league has evolved, the new generation of stars, and what today's PBA owes to the decades of history that came before.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="section cta-section">
-        <div class="container">
-            <div class="cta-content reveal">
-                <h2 class="cta-title">Join the AEOB Community</h2>
-                <p class="cta-description">Whether you're a die-hard PBA historian or just discovering the league's incredible past, there's a place for you in the AEOB family. Subscribe, follow, and join the conversation.</p>
-                <div class="cta-actions">
-                    <a href="/episodes" class="btn btn-primary">Listen Now</a>
-                    <a href="/contact" class="btn btn-outline">Get in Touch</a>
-                </div>
-            </div>
+    <section class="join">
+        <div class="container reveal">
+            <h2>Start anywhere</h2>
+            <p>Pick a name you grew up watching and press play.</p>
+            <a href="/episodes.html" class="btn btn-primary" style="font-size:1.05rem;padding:14px 36px;">Browse episodes</a>
         </div>
     </section>
 
@@ -246,14 +118,19 @@
         <div class="footer-grid">
           <div class="footer-brand">
             <a href="/" class="header-logo" style="margin-bottom:8px;"><img src="https://res.cloudinary.com/djngpyv15/image/upload/v1776447309/274701765_319754193505498_1268754374260370953_n-removebg-preview_k6uyha.png" alt="AEOB" style="height:40px;"><span style="color:#fff;">An Eternity of Basketball</span></a>
-            <p>Reliving the golden eras of PBA basketball since day one. 300+ episodes and counting.</p>
+            <p>The players, coaches and imports who built the PBA, in their own words.</p>
           </div>
           <div><h4>Browse</h4><ul><li><a href="/episodes.html">Episodes</a></li><li><a href="/predictions.html">Predictions</a></li><li><a href="/submissions.html">Fan Zone</a></li><li><a href="/rewards.html">Rewards</a></li></ul></div>
-          <div><h4>More</h4><ul><li><a href="/schedule.html">Schedule</a></li><li><a href="/about.html">About</a></li><li><a href="#">Contact</a></li></ul></div>
-          <div><h4>Listen On</h4><ul><li><a href="#">YouTube</a></li><li><a href="#">Spotify</a></li><li><a href="#">Apple Podcasts</a></li><li><a href="#">Facebook</a></li></ul></div>
+          <div><h4>More</h4><ul><li><a href="/schedule.html">Schedule</a></li><li><a href="/about.html">About</a></li></ul></div>
+          <div><h4>Follow</h4>
+          <ul>
+            <li><a href="https://www.youtube.com/@globallyballin5579" target="_blank" rel="noopener">YouTube</a></li>
+            <li><a href="https://instagram.com/aneternityofbasketball" target="_blank" rel="noopener">Instagram</a></li>
+            <li><a href="https://www.patreon.com/globallyballin" target="_blank" rel="noopener">Patreon</a></li>
+          </ul></div>
         </div>
         <div class="footer-bottom">
-          <span>&copy; 2024 An Eternity of Basketball. All rights reserved.</span>
+          <span>&copy; 2026 An Eternity of Basketball. All rights reserved.</span>
           <span class="network">Part of the Globally Ballin Network</span>
         </div>
       </div>
@@ -291,6 +168,7 @@
     <!-- Scripts -->
     <script src="/js/main.js"></script>
     <script src="/js/auth.js"></script>
+    <script src="/js/home.js"></script>
     <script src="/js/aeob-extensions.js"></script>
 
 </body>

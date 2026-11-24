@@ -315,14 +315,14 @@ function detailBodyHtml(card) {
   const rewardBlock = (card.reward || card.advantageDetail || card.bonusPerk) ? `
     <div class="reward-box">
       <div class="reward-head">
-        <div class="reward-icon">&#127873;</div>
+        <div class="reward-icon"><i data-lucide="gift"></i></div>
         <div class="reward-title">Card Advantage</div>
       </div>
       <div class="reward-desc">
         ${escapeHtml(card.advantageDetail || card.reward || '')}
         ${card.bonusPerk ? `<div style="margin-top:8px;font-size:0.88rem;color:var(--text-secondary);"><strong>Bonus perk:</strong> ${escapeHtml(card.bonusPerk)}</div>` : ''}
       </div>
-      ${Number(card.credits) > 0 ? `<div style="margin-top:10px;"><span class="credits-chip">&#9889; ${Number(card.credits).toLocaleString()} AEOB credits</span></div>` : ''}
+      ${Number(card.credits) > 0 ? `<div style="margin-top:10px;"><span class="credits-chip"><i data-lucide="zap"></i> ${Number(card.credits).toLocaleString()} AEOB credits</span></div>` : ''}
     </div>
   ` : '';
 

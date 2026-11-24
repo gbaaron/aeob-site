@@ -18,6 +18,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="/css/arena.css">
+  <link rel="stylesheet" href="/css/flow.css">
 </head>
 <body data-design="arena-hype">
 
@@ -43,7 +44,7 @@
           <a href="/admin.html" data-admin style="display:none;">Admin</a>
         </nav>
         <div class="header-actions">
-          <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode">&#9790;</button>
+          <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode"><i data-lucide="moon"></i></button>
           <button class="btn-login" id="loginBtn">Sign In</button>
           <div class="user-avatar" id="userAvatar"></div>
           <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
@@ -55,7 +56,7 @@
     <section class="page-hero">
         <div class="container">
             <h1 class="page-hero-title">Superfan Rewards</h1>
-            <p class="page-hero-subtitle">Earn points by watching episodes, making predictions, and engaging with the show. Level up from Rookie to Legend and unlock exclusive perks along the way.</p>
+            <p class="page-hero-subtitle">Listen, predict, play along. Climb from Rookie to Legend.</p>
         </div>
     </section>
 
@@ -63,7 +64,7 @@
     <section class="section login-required-section" id="loginRequiredSection">
         <div class="container">
             <div class="login-required-message">
-                <div class="login-required-icon">&#128274;</div>
+                <div class="login-required-icon"><i data-lucide="lock"></i></div>
                 <h2>Log In to Access Rewards</h2>
                 <p>Sign in to your AEOB account to start earning points, track your progress, and redeem exclusive rewards.</p>
                 <button class="btn btn-primary" id="loginRequiredBtn">Log In to Get Started</button>
@@ -85,7 +86,7 @@
                         </div>
                     </div>
                     <div class="tier-badge tier-rookie" id="tierBadge">
-                        <span class="tier-badge-icon">&#127936;</span>
+                        <span class="tier-badge-icon"><i data-lucide="dribbble"></i></span>
                         <span class="tier-badge-name" id="tierName">Rookie</span>
                     </div>
                     <div class="tier-progress">
@@ -98,22 +99,22 @@
                         <h4 class="tier-list-title">Tier Levels</h4>
                         <ul class="tier-list-items">
                             <li class="tier-list-item active">
-                                <span class="tier-list-icon">&#127936;</span>
+                                <span class="tier-list-icon"><i data-lucide="dribbble"></i></span>
                                 <span class="tier-list-name">Rookie</span>
                                 <span class="tier-list-range">0 - 249</span>
                             </li>
                             <li class="tier-list-item">
-                                <span class="tier-list-icon">&#11088;</span>
+                                <span class="tier-list-icon"><i data-lucide="star"></i></span>
                                 <span class="tier-list-name">Veteran</span>
                                 <span class="tier-list-range">250 - 749</span>
                             </li>
                             <li class="tier-list-item">
-                                <span class="tier-list-icon">&#127775;</span>
+                                <span class="tier-list-icon"><i data-lucide="sparkles"></i></span>
                                 <span class="tier-list-name">All-Star</span>
                                 <span class="tier-list-range">750 - 1499</span>
                             </li>
                             <li class="tier-list-item">
-                                <span class="tier-list-icon">&#128081;</span>
+                                <span class="tier-list-icon"><i data-lucide="crown"></i></span>
                                 <span class="tier-list-name">Legend</span>
                                 <span class="tier-list-range">1500+</span>
                             </li>
@@ -131,13 +132,13 @@
                         </div>
                         <div class="features-grid">
                             <div class="feature-card card">
-                                <div class="feature-card-icon">&#9654;&#65039;</div>
+                                <div class="feature-card-icon"><i data-lucide="play"></i></div>
                                 <h3 class="feature-card-title">Watch Episode</h3>
                                 <p class="feature-card-desc">Earn points each time you watch or listen to a full episode.</p>
                                 <span class="feature-card-points">+10 pts</span>
                             </div>
                             <div class="feature-card card">
-                                <div class="feature-card-icon">&#127919;</div>
+                                <div class="feature-card-icon"><i data-lucide="target"></i></div>
                                 <h3 class="feature-card-title">Make Prediction</h3>
                                 <p class="feature-card-desc">Submit your predictions for upcoming episode topics and outcomes.</p>
                                 <span class="feature-card-points">+15 pts</span>
@@ -149,19 +150,19 @@
                                 <span class="feature-card-points">+20 pts</span>
                             </div>
                             <div class="feature-card card">
-                                <div class="feature-card-icon">&#127897;&#65039;</div>
+                                <div class="feature-card-icon"><i data-lucide="mic"></i></div>
                                 <h3 class="feature-card-title">Question Featured on Show</h3>
                                 <p class="feature-card-desc">Get a big bonus when your question is read and discussed on an episode.</p>
                                 <span class="feature-card-points">+100 pts</span>
                             </div>
                             <div class="feature-card card">
-                                <div class="feature-card-icon">&#128293;</div>
+                                <div class="feature-card-icon"><i data-lucide="flame"></i></div>
                                 <h3 class="feature-card-title">7-Day Listening Streak</h3>
                                 <p class="feature-card-desc">Listen to at least one episode every day for seven consecutive days.</p>
                                 <span class="feature-card-points">+50 pts</span>
                             </div>
                             <div class="feature-card card">
-                                <div class="feature-card-icon">&#129309;</div>
+                                <div class="feature-card-icon"><i data-lucide="handshake"></i></div>
                                 <h3 class="feature-card-title">Refer a Friend</h3>
                                 <p class="feature-card-desc">Share your referral link and earn points when a friend signs up.</p>
                                 <span class="feature-card-points">+25 pts</span>
@@ -176,7 +177,7 @@
                         </div>
                         <div class="activity-list" id="activityList">
                             <div class="activity-item">
-                                <div class="activity-item-icon">&#9654;&#65039;</div>
+                                <div class="activity-item-icon"><i data-lucide="play"></i></div>
                                 <div class="activity-item-details">
                                     <span class="activity-item-title">Watched Episode 42: The Rise of the Beermen</span>
                                     <span class="activity-item-date">2 hours ago</span>
@@ -184,7 +185,7 @@
                                 <span class="activity-item-points">+10 pts</span>
                             </div>
                             <div class="activity-item">
-                                <div class="activity-item-icon">&#127919;</div>
+                                <div class="activity-item-icon"><i data-lucide="target"></i></div>
                                 <div class="activity-item-details">
                                     <span class="activity-item-title">Made prediction for Episode 43</span>
                                     <span class="activity-item-date">1 day ago</span>
@@ -192,7 +193,7 @@
                                 <span class="activity-item-points">+15 pts</span>
                             </div>
                             <div class="activity-item">
-                                <div class="activity-item-icon">&#128293;</div>
+                                <div class="activity-item-icon"><i data-lucide="flame"></i></div>
                                 <div class="activity-item-details">
                                     <span class="activity-item-title">Completed 7-day listening streak</span>
                                     <span class="activity-item-date">3 days ago</span>
@@ -208,7 +209,7 @@
                                 <span class="activity-item-points">+20 pts</span>
                             </div>
                             <div class="activity-item">
-                                <div class="activity-item-icon">&#129309;</div>
+                                <div class="activity-item-icon"><i data-lucide="handshake"></i></div>
                                 <div class="activity-item-details">
                                     <span class="activity-item-title">Referred a friend who signed up</span>
                                     <span class="activity-item-date">1 week ago</span>
@@ -225,7 +226,7 @@
                         </div>
                         <div class="rewards-catalog">
                             <div class="reward-item card">
-                                <div class="reward-item-icon">&#128226;</div>
+                                <div class="reward-item-icon"><i data-lucide="megaphone"></i></div>
                                 <h3 class="reward-item-title">Show Shoutout</h3>
                                 <p class="reward-item-desc">Get a personalized shoutout from the hosts during an episode. Your name and message read live on the show.</p>
                                 <div class="reward-item-footer">
@@ -234,7 +235,7 @@
                                 </div>
                             </div>
                             <div class="reward-item card">
-                                <div class="reward-item-icon">&#127911;</div>
+                                <div class="reward-item-icon"><i data-lucide="headphones"></i></div>
                                 <h3 class="reward-item-title">Exclusive Bonus Content</h3>
                                 <p class="reward-item-desc">Unlock access to bonus episodes, behind-the-scenes clips, and extended interviews not available to the public.</p>
                                 <div class="reward-item-footer">
@@ -243,7 +244,7 @@
                                 </div>
                             </div>
                             <div class="reward-item card">
-                                <div class="reward-item-icon">&#128085;</div>
+                                <div class="reward-item-icon"><i data-lucide="shirt"></i></div>
                                 <h3 class="reward-item-title">AEOB Merch Discount</h3>
                                 <p class="reward-item-desc">Receive a special discount code for the official An Eternity of Basketball merchandise store.</p>
                                 <div class="reward-item-footer">
@@ -252,7 +253,7 @@
                                 </div>
                             </div>
                             <div class="reward-item card">
-                                <div class="reward-item-icon">&#127991;&#65039;</div>
+                                <div class="reward-item-icon"><i data-lucide="tag"></i></div>
                                 <h3 class="reward-item-title">Custom AEOB Nickname</h3>
                                 <p class="reward-item-desc">Choose a unique nickname that will be displayed alongside your profile across the AEOB community.</p>
                                 <div class="reward-item-footer">
@@ -277,7 +278,7 @@
               <img src="https://res.cloudinary.com/djngpyv15/image/upload/v1776447309/274701765_319754193505498_1268754374260370953_n-removebg-preview_k6uyha.png" alt="AEOB" style="height:40px;">
               <span style="color:#fff;">An Eternity of Basketball</span>
             </a>
-            <p>Reliving the golden eras of PBA basketball since day one. 300+ episodes and counting.</p>
+            <p>The players, coaches and imports who built the PBA, in their own words.</p>
           </div>
           <div>
             <h4>Browse</h4>
@@ -293,21 +294,19 @@
             <ul>
               <li><a href="/schedule.html">Schedule</a></li>
               <li><a href="/about.html">About</a></li>
-              <li><a href="#">Contact</a></li>
             </ul>
           </div>
           <div>
-            <h4>Listen On</h4>
-            <ul>
-              <li><a href="#">YouTube</a></li>
-              <li><a href="#">Spotify</a></li>
-              <li><a href="#">Apple Podcasts</a></li>
-              <li><a href="#">Facebook</a></li>
-            </ul>
+            <h4>Follow</h4>
+          <ul>
+            <li><a href="https://www.youtube.com/@globallyballin5579" target="_blank" rel="noopener">YouTube</a></li>
+            <li><a href="https://instagram.com/aneternityofbasketball" target="_blank" rel="noopener">Instagram</a></li>
+            <li><a href="https://www.patreon.com/globallyballin" target="_blank" rel="noopener">Patreon</a></li>
+          </ul>
           </div>
         </div>
         <div class="footer-bottom">
-          <span>&copy; 2024 An Eternity of Basketball. All rights reserved.</span>
+          <span>&copy; 2026 An Eternity of Basketball. All rights reserved.</span>
           <span class="network">Part of the Globally Ballin Network</span>
         </div>
       </div>

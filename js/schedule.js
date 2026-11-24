@@ -135,7 +135,7 @@ const Schedule = (() => {
           year: 'numeric'
         }),
         time: '10:00 AM PHT',
-        topic: 'PLACEHOLDER: Topic to be announced',
+        topic: 'Topic to be announced',
         status: i === 0 ? 'Next Up' : 'Upcoming'
       });
     }

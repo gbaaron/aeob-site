@@ -36,61 +36,9 @@ const Submissions = (() => {
     }
   }
 
+  // No invented fan posts: when the feed is down the page shows its empty state.
   function getDemoSubmissions() {
-    return [
-      {
-        id: 'sub-1',
-        type: 'what-if',
-        title: 'PLACEHOLDER: What if Crispa never disbanded?',
-        description: 'PLACEHOLDER: Discussion about how PBA history would have changed if the Crispa Redmanizers continued playing into the late 1980s.',
-        author: 'PBAFan1975',
-        votes: 34,
-        featured: false,
-        createdAt: new Date(Date.now() - 86400000 * 2).toISOString()
-      },
-      {
-        id: 'sub-2',
-        type: 'question',
-        title: 'PLACEHOLDER: Who had the best crossover in 1980s PBA?',
-        description: 'PLACEHOLDER: A question about which player from the 1980s era had the most devastating crossover move.',
-        author: 'HoopsHistory',
-        votes: 28,
-        featured: true,
-        featuredEpisode: 'Episode 287',
-        createdAt: new Date(Date.now() - 86400000 * 5).toISOString()
-      },
-      {
-        id: 'sub-3',
-        type: 'stats-challenge',
-        title: 'PLACEHOLDER: Name every PBA Finals MVP from 1975-1985',
-        description: 'PLACEHOLDER: A stats challenge for the hosts to recall every PBA Finals MVP during the first decade of the league.',
-        author: 'StatsMaster',
-        votes: 21,
-        featured: false,
-        createdAt: new Date(Date.now() - 86400000 * 3).toISOString()
-      },
-      {
-        id: 'sub-4',
-        type: 'what-if',
-        title: 'PLACEHOLDER: What if the PBA had a 3-point line from the start?',
-        description: 'PLACEHOLDER: Exploring how early PBA gameplay would have differed with the 3-point line introduced from the league\'s founding.',
-        author: 'RetroHoops',
-        votes: 45,
-        featured: true,
-        featuredEpisode: 'Episode 291',
-        createdAt: new Date(Date.now() - 86400000 * 7).toISOString()
-      },
-      {
-        id: 'sub-5',
-        type: 'question',
-        title: 'PLACEHOLDER: What was the most intense rivalry game ever played?',
-        description: 'PLACEHOLDER: Asking the hosts to debate and pick the single most intense game in PBA rivalry history.',
-        author: 'ClassicPBA',
-        votes: 19,
-        featured: false,
-        createdAt: new Date(Date.now() - 86400000 * 1).toISOString()
-      }
-    ];
+    return [];
   }
 
   // ---------- Render Submissions ----------
@@ -100,7 +48,7 @@ const Submissions = (() => {
     if (items.length === 0) {
       container.innerHTML = `
         <div class="empty-state">
-          <div class="empty-icon">&#128172;</div>
+          <div class="empty-icon"><i data-lucide="message-circle"></i></div>
           <h3>No submissions yet</h3>
           <p>Be the first to submit a question or scenario!</p>
         </div>
@@ -118,13 +66,13 @@ const Submissions = (() => {
             <span class="count">${sub.votes + (isUpvoted ? 1 : 0)}</span>
           </div>
           <div class="submission-content">
-            <span class="type-badge ${sub.featured ? 'featured-badge' : ''}">${sub.featured ? '&#11088; Featured' : typeLabel}</span>
+            <span class="type-badge ${sub.featured ? 'featured-badge' : ''}">${sub.featured ? '<i data-lucide="star"></i> Featured' : typeLabel}</span>
             <h4>${sub.title}</h4>
             <p>${sub.description}</p>
             <div class="episode-meta" style="margin-top:8px;">
               <span>by ${sub.author}</span>
               <span>${window.formatDate(sub.createdAt)}</span>
-              ${sub.featured && sub.featuredEpisode ? `<span>&#127908; ${sub.featuredEpisode}</span>` : ''}
+              ${sub.featured && sub.featuredEpisode ? `<span><i data-lucide="mic"></i> ${sub.featuredEpisode}</span>` : ''}
             </div>
           </div>
         </div>

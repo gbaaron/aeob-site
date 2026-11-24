@@ -136,7 +136,7 @@ function renderOpenQuestions() {
   if (!container) return;
 
   if (!openQs.length) {
-    container.innerHTML = `<div class="empty-state"><div class="empty-icon">&#9201;</div><h3>No open questions right now</h3><p>New picks drop before each episode.</p></div>`;
+    container.innerHTML = `<div class="empty-state"><div class="empty-icon"><i data-lucide="timer"></i></div><h3>No open questions right now</h3><p>New picks drop before each episode.</p></div>`;
     return;
   }
 
@@ -170,7 +170,7 @@ function renderOpenQuestions() {
           }).join('')}
         </div>
         ${locked
-          ? `<div class="question-footer locked"><span>&#128274; Locked in. Results after Ep ${q.episode}.</span></div>`
+          ? `<div class="question-footer locked"><span><i data-lucide="lock"></i> Locked in. Results after Ep ${q.episode}.</span></div>`
           : `<div class="question-footer"><span class="muted-sm">Choose one — your pick locks in immediately.</span></div>`}
       </div>
     `;

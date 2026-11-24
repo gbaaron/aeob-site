@@ -7,6 +7,12 @@
       "runtimeArgs": ["http-server", ".", "-c-1", "--cors"],
       "port": 8080,
       "autoPort": true
+    },
+    {
+      "name": "aeob-dev-live-data",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["http-server", ".", "-c-1", "--cors", "-p", "8081", "-P", "https://aeob.netlify.app"],
+      "port": 8081
     }
   ]
 }

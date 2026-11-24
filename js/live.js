@@ -230,11 +230,11 @@ if (watchPartyBtn) {
     const saved = localStorage.getItem('aeob-watchparty');
     if (saved) {
       localStorage.removeItem('aeob-watchparty');
-      watchPartyBtn.innerHTML = '&#128276; Remind Me When Live';
+      watchPartyBtn.innerHTML = '<i data-lucide="bell"></i> Remind Me When Live';
       liveToast('Reminder cancelled');
     } else {
       localStorage.setItem('aeob-watchparty', LIVE_CONFIG.nextEpisode.toISOString());
-      watchPartyBtn.innerHTML = '&#9989; Reminder Set';
+      watchPartyBtn.innerHTML = '<i data-lucide="check-circle"></i> Reminder Set';
       liveToast('We\'ll remind you 15 minutes before the stream');
       if ('Notification' in window && Notification.permission === 'default') {
         Notification.requestPermission();
@@ -242,7 +242,7 @@ if (watchPartyBtn) {
     }
   });
   if (localStorage.getItem('aeob-watchparty')) {
-    watchPartyBtn.innerHTML = '&#9989; Reminder Set';
+    watchPartyBtn.innerHTML = '<i data-lucide="check-circle"></i> Reminder Set';
   }
 }
 
@@ -392,7 +392,7 @@ function renderLivePolls() {
 
     if (poll.isLocked) {
       return `<div class="live-poll locked">
-        <div class="poll-lock-icon">&#128274;</div>
+        <div class="poll-lock-icon"><i data-lucide="lock"></i></div>
         <p class="poll-question">${escapeHtml(poll.question)}</p>
         <p class="muted-sm">Unlocks when the topic comes up on the show</p>
         ${adminControls}
@@ -622,7 +622,7 @@ function renderQuestions() {
       </div>
       <p class="question-text">${escapeHtml(q.text)}</p>
       <div class="question-foot">
-        <button class="question-like ${q.youLiked ? 'is-liked' : ''}" data-qid="${q.id}">&#128077; <span>${q.likeCount || 0}</span></button>
+        <button class="question-like ${q.youLiked ? 'is-liked' : ''}" data-qid="${q.id}"><i data-lucide="thumbs-up"></i> <span>${q.likeCount || 0}</span></button>
         ${isAdmin ? `<button class="question-delete" data-qid="${q.id}" title="Remove">&times;</button>` : ''}
       </div>
     </div>
@@ -1264,7 +1264,7 @@ function renderTopSupporters() {
   const btn = document.getElementById('stickerMuteBtn');
   if (!btn) return;
   const syncLabel = () => {
-    btn.innerHTML = STICKER_STATE.muted ? '&#128263;' : '&#128276;';
+    btn.innerHTML = STICKER_STATE.muted ? '<i data-lucide="volume-x"></i>' : '<i data-lucide="bell"></i>';
     btn.title = STICKER_STATE.muted ? 'Unmute sticker animations' : 'Mute sticker animations';
     btn.setAttribute('aria-pressed', STICKER_STATE.muted ? 'true' : 'false');
   };

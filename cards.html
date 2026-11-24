@@ -15,6 +15,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Oswald:wght@500;700&family=Bebas+Neue&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/styles.css">
   <link rel="stylesheet" href="/css/arena.css">
+  <link rel="stylesheet" href="/css/flow.css">
 
   <style>
     /* ============================================
@@ -182,12 +183,21 @@
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
     }
+    /* One-row scroll rail: eight chips of differing width wrapped into a
+       ragged four-row cloud on a phone. A chip cut off at the edge is what
+       says there is more. */
     .filter-group {
       display: flex;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
       gap: 8px;
       align-items: center;
+      overflow-x: auto;
+      scrollbar-width: none;
+      max-width: 100%;
+      min-width: 0;
     }
+    .filter-group::-webkit-scrollbar { display: none; }
+    .filter-group > * { flex: 0 0 auto; white-space: nowrap; }
     .filter-label {
       font-size: 0.75rem;
       text-transform: uppercase;
@@ -1141,7 +1151,7 @@
         <a href="/admin.html" data-admin style="display:none;">Admin</a>
       </nav>
       <div class="header-actions">
-        <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode">&#9790;</button>
+        <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode"><i data-lucide="moon"></i></button>
         <button class="btn-login" id="loginBtn">Sign In</button>
         <div class="user-avatar" id="userAvatar"></div>
         <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
@@ -1188,22 +1198,22 @@
         </div>
         <div class="rarity-pack-grid">
           <div class="rarity-pack common">
-            <div class="rarity-pack-icon">&#127936;</div>
+            <div class="rarity-pack-icon"><i data-lucide="dribbble"></i></div>
             <div class="rarity-pack-name">Common</div>
             <div class="rarity-pack-count" data-rarity-count="Common">— cards</div>
           </div>
           <div class="rarity-pack rare">
-            <div class="rarity-pack-icon">&#128142;</div>
+            <div class="rarity-pack-icon"><i data-lucide="gem"></i></div>
             <div class="rarity-pack-name">Rare</div>
             <div class="rarity-pack-count" data-rarity-count="Rare">— cards</div>
           </div>
           <div class="rarity-pack epic">
-            <div class="rarity-pack-icon">&#127775;</div>
+            <div class="rarity-pack-icon"><i data-lucide="sparkles"></i></div>
             <div class="rarity-pack-name">Epic</div>
             <div class="rarity-pack-count" data-rarity-count="Epic">— cards</div>
           </div>
           <div class="rarity-pack legendary">
-            <div class="rarity-pack-icon">&#128081;</div>
+            <div class="rarity-pack-icon"><i data-lucide="crown"></i></div>
             <div class="rarity-pack-name">Legendary</div>
             <div class="rarity-pack-count" data-rarity-count="Legendary">— cards</div>
           </div>
@@ -1224,7 +1234,7 @@
               <div class="balance-lbl">Your Credits</div>
               <div class="balance-amt" id="packBalanceAmount">0</div>
             </div>
-            <span>&#9889;</span>
+            <span><i data-lucide="zap"></i></span>
           </div>
         </div>
         <div class="pack-grid" id="packGrid">
@@ -1292,7 +1302,7 @@
 
         <!-- Empty state -->
         <div class="cards-status" id="cardsEmpty" style="display:none;">
-          <div class="big-icon">&#127912;</div>
+          <div class="big-icon"><i data-lucide="palette"></i></div>
           <h3>No cards match those filters</h3>
           <p>Try resetting the filters or clearing your search.</p>
           <button class="btn btn-outline" style="margin-top:14px;" id="clearFiltersBtn">Clear Filters</button>
@@ -1320,7 +1330,7 @@
             <img src="https://res.cloudinary.com/djngpyv15/image/upload/v1776447309/274701765_319754193505498_1268754374260370953_n-removebg-preview_k6uyha.png" alt="AEOB" style="height:40px;">
             <span style="color:#fff;">An Eternity of Basketball</span>
           </a>
-          <p>Reliving the golden eras of PBA basketball since day one. 300+ episodes and counting.</p>
+          <p>The players, coaches and imports who built the PBA, in their own words.</p>
         </div>
         <div>
           <h4>Browse</h4>
@@ -1337,21 +1347,19 @@
           <ul>
             <li><a href="/schedule.html">Schedule</a></li>
             <li><a href="/about.html">About</a></li>
-            <li><a href="#">Contact</a></li>
           </ul>
         </div>
         <div>
-          <h4>Listen On</h4>
+          <h4>Follow</h4>
           <ul>
-            <li><a href="#">YouTube</a></li>
-            <li><a href="#">Spotify</a></li>
-            <li><a href="#">Apple Podcasts</a></li>
-            <li><a href="#">Facebook</a></li>
+            <li><a href="https://www.youtube.com/@globallyballin5579" target="_blank" rel="noopener">YouTube</a></li>
+            <li><a href="https://instagram.com/aneternityofbasketball" target="_blank" rel="noopener">Instagram</a></li>
+            <li><a href="https://www.patreon.com/globallyballin" target="_blank" rel="noopener">Patreon</a></li>
           </ul>
         </div>
       </div>
       <div class="footer-bottom">
-        <span>&copy; 2024 An Eternity of Basketball. All rights reserved.</span>
+        <span>&copy; 2026 An Eternity of Basketball. All rights reserved.</span>
         <span class="network">Part of the Globally Ballin Network</span>
       </div>
     </div>

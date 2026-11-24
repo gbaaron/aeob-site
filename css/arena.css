@@ -184,7 +184,7 @@ body[data-design="arena-hype"] .page-hero-subtitle {
 
 /* Scorebug stat strip below hero title */
 body[data-design="arena-hype"] .page-hero .container::after {
-  content: '300+ EPISODES    •    4 ERAS    •    EST 1975    •    LIVE ARCHIVE';
+  content: 'PBA HISTORY    •    NEW EVERY SATURDAY    •    GLOBALLY BALLIN';
   display: block;
   font-family: 'Oswald', sans-serif;
   font-weight: 700;

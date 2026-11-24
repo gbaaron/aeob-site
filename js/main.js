@@ -6,12 +6,13 @@
    ============================================ */
 
 // ---------- Preloader ----------
-window.addEventListener('load', () => {
-  const preloader = document.getElementById('preloader');
-  if (preloader) {
-    setTimeout(() => preloader.classList.add('hidden'), 600);
-  }
-});
+// Lifts as soon as the page is laid out. Waiting for window 'load' held the
+// whole site behind a spinner until every cover image had downloaded.
+(function () {
+  const lift = () => { const p = document.getElementById('preloader'); if (p) p.classList.add('hidden'); };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => setTimeout(lift, 250));
+  else setTimeout(lift, 250);
+})();
 
 // ---------- Header Scroll Effect ----------
 const header = document.getElementById('header');
@@ -33,7 +34,7 @@ function setTheme(theme) {
   html.setAttribute('data-theme', theme);
   localStorage.setItem('aeob-theme', theme);
   if (darkToggle) {
-    darkToggle.innerHTML = theme === 'dark' ? '&#9788;' : '&#9790;';
+    darkToggle.innerHTML = `<i data-lucide="${theme === 'dark' ? 'sun' : 'moon'}"></i>`;
   }
 }
 
@@ -83,8 +84,9 @@ if (backToTop) {
 }
 
 // ---------- Scroll-Triggered Animations ----------
-const revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
-
+// Reveal once, never re-fire. Anything already on screen is shown without
+// waiting for the observer, and a timeout is the floor: content that failed
+// to animate is fine, content that stayed invisible is not.
 const revealObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
@@ -92,9 +94,24 @@ const revealObserver = new IntersectionObserver((entries) => {
       revealObserver.unobserve(entry.target);
     }
   });
-}, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+}, { threshold: 0.06, rootMargin: '0px 0px -8% 0px' });
 
-revealElements.forEach(el => revealObserver.observe(el));
+window.wireReveal = function(root) {
+  const vh = window.innerHeight || 800;
+  (root || document).querySelectorAll('.reveal:not(.visible), .reveal-left:not(.visible), .reveal-right:not(.visible)').forEach(el => {
+    if (el.dataset.revealWired) return;
+    el.dataset.revealWired = '1';
+    const r = el.getBoundingClientRect();
+    if (r.top < vh && r.bottom > 0) el.classList.add('visible');
+    else revealObserver.observe(el);
+  });
+};
+window.wireReveal();
+setTimeout(() => {
+  document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => {
+    if (!el.classList.contains('visible') && el.getBoundingClientRect().top < (window.innerHeight || 800) * 1.4) el.classList.add('visible');
+  });
+}, 1400);
 
 // ---------- Hero Counter Animation ----------
 function animateCounters() {
@@ -234,7 +251,7 @@ function updateMiniCountdown() {
 // Set next episode date text
 function setNextEpisodeDate() {
   const target = getNextSaturday10AM();
-  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+  const options = { weekday: 'long', month: 'long', day: 'numeric', timeZone: 'Asia/Manila' };
   const dateStr = target.toLocaleDateString('en-US', options) + ' at 10:00 AM PHT';
 
   const el1 = document.getElementById('nextEpisodeDate');
@@ -319,6 +336,82 @@ window.formatDuration = function(seconds) {
   return `${m}m`;
 };
 
+// ---------- Artwork ----------
+// The show's own cover art comes down the RSS feed at 3000x3000 (~2.6MB).
+// On Netlify it is resized through the Image CDN (see [images] in netlify.toml);
+// if that ever fails the <img> falls back to the original file, then to the logo.
+window.AEOB_LOGO = 'https://res.cloudinary.com/djngpyv15/image/upload/v1776447309/274701765_319754193505498_1268754374260370953_n-removebg-preview_k6uyha.png';
+
+window.escAttr = function(str) {
+  return String(str == null ? '' : str).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+};
+
+window.coverUrl = function(src, w) {
+  if (!src) return '';
+  const local = /^(localhost|127\.|\[::1\])/.test(location.hostname) || location.protocol === 'file:';
+  if (local || !/^https:\/\/d3t3ozftmdmh3i\.cloudfront\.net\//.test(src)) return src;
+  return `/.netlify/images?url=${encodeURIComponent(src)}&w=${w || 480}&q=72`;
+};
+
+// Best available art for an episode: its cover, then its YouTube frame.
+window.epArt = function(ep, w) {
+  if (!ep) return '';
+  return window.coverUrl(ep.image, w) || window.getYoutubeThumbnail(ep.youtubeUrl || '') || '';
+};
+
+window.coverFallback = function(img) {
+  const raw = img.getAttribute('data-raw');
+  if (raw && img.src !== raw && !img.dataset.triedRaw) { img.dataset.triedRaw = '1'; img.src = raw; return; }
+  img.onerror = null;
+  img.src = window.AEOB_LOGO;
+  img.classList.add('is-logo-fallback');
+};
+
+// <img> for an episode cover. Square, never cropped.
+window.coverImg = function(ep, w, cls, extra) {
+  const src = window.epArt(ep, w) || window.AEOB_LOGO;
+  return `<img class="${cls || 'cover'}" src="${window.escAttr(src)}" data-raw="${window.escAttr(ep.image || '')}" alt="${window.escAttr(ep.title || '')}" loading="lazy" decoding="async" onerror="coverFallback(this)" ${extra || ''}>`;
+};
+
+// Episode titles arrive as "Guest: What they did | Ep. 272".
+window.epParts = function(ep) {
+  const t = String(ep.title || '').replace(/\s*\|\s*Ep\.?\s*\d+\s*$/i, '').replace(/^EPISODE\s*\d+[:\s-]*/i, '');
+  const i = t.indexOf(':');
+  return i > 0 ? { guest: t.slice(0, i).trim(), line: t.slice(i + 1).trim() } : { guest: t.trim(), line: '' };
+};
+
+// One shared promise so every module reads the same episode list.
+window.getEpisodes = function() {
+  if (!window._aeobEpisodes) {
+    window._aeobEpisodes = window.apiFetch('episodes-list?pageSize=500')
+      .then(d => d.episodes || [])
+      .catch(() => []);
+  }
+  return window._aeobEpisodes;
+};
+
+function hideSection(el) {
+  const sec = el && el.closest('section');
+  if (sec) sec.style.display = 'none';
+}
+
+// ---------- Icons (Lucide) ----------
+// Pages build markup at runtime, so icons are drawn whenever an <i data-lucide>
+// lands in the document rather than once on load.
+(function wireIcons() {
+  let queued = false;
+  function draw() {
+    queued = false;
+    if (window.lucide && document.querySelector('i[data-lucide]')) window.lucide.createIcons();
+  }
+  function queue() { if (!queued) { queued = true; requestAnimationFrame(draw); } }
+  const s = document.createElement('script');
+  s.src = 'https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js';
+  s.onload = queue;
+  document.head.appendChild(s);
+  new MutationObserver(queue).observe(document.documentElement, { childList: true, subtree: true });
+})();
+
 // ---------- Top 5 Picks (Homepage) ----------
 (async function initTopPicks() {
   const grid = document.getElementById('topPicksGrid');
@@ -330,11 +423,12 @@ window.formatDuration = function(seconds) {
     const data = await window.apiFetch('top-picks');
     allPicks = data.picks || {};
   } catch (e) {
+    hideSection(grid);
     return;
   }
 
   const hasPicks = Object.values(allPicks).some(arr => arr.length > 0);
-  if (!hasPicks) return;
+  if (!hasPicks) { hideSection(grid); return; }
 
   // Display order
   const pickerOrder = ['Charlie Cuna', 'Sid Ventura', 'Noel Zarate', 'Jay Mercado', 'Aaron', 'Carla'];
@@ -354,9 +448,8 @@ window.formatDuration = function(seconds) {
       <ol class="picker-list">`;
 
     picks.forEach(pick => {
-      const ytThumb = window.getYoutubeThumbnail ? window.getYoutubeThumbnail(pick.youtubeUrl) : '';
       const epNum = pick.episodeNumber || '';
-      const thumbSrc = ytThumb || '';
+      const thumbSrc = window.epArt(pick, 160);
 
       html += `<li class="picker-item">
         ${thumbSrc ? `<img src="${thumbSrc}" alt="" class="picker-item-thumb" loading="lazy">` : ''}
@@ -381,14 +474,14 @@ window.formatDuration = function(seconds) {
     const data = await window.apiFetch('featured-lists');
     lists = data.lists || {};
   } catch (e) {
-    grid.innerHTML = '';
+    hideSection(grid);
     return;
   }
 
   const icons = {
-    'Top 10 of the Year': '&#127942;',
-    'Trending Last 30 Days': '&#128293;',
-    'All-Time Greatest': '&#127775;'
+    'Top 10 of the Year': '<i data-lucide="trophy"></i>',
+    'Trending Last 30 Days': '<i data-lucide="flame"></i>',
+    'All-Time Greatest': '<i data-lucide="sparkles"></i>'
   };
   const order = ['All-Time Greatest', 'Top 10 of the Year', 'Trending Last 30 Days'];
 
@@ -405,7 +498,7 @@ window.formatDuration = function(seconds) {
       <ol class="picker-list">`;
 
     items.forEach(item => {
-      const ytThumb = window.getYoutubeThumbnail ? window.getYoutubeThumbnail(item.youtubeUrl) : '';
+      const ytThumb = window.epArt(item, 160);
       const epNum = item.episodeNumber || '';
       const label = item.title.replace(/^EPISODE\s*\d+[:\s-]*/i, '');
 
@@ -418,5 +511,5 @@ window.formatDuration = function(seconds) {
     html += `</ol></div>`;
   });
 
-  if (html) grid.innerHTML = html;
+  if (html) grid.innerHTML = html; else hideSection(grid);
 })();

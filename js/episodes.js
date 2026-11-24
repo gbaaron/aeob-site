@@ -32,8 +32,8 @@ const Episodes = (() => {
   async function fetchEpisodes() {
     isLoading = true;
     try {
-      const data = await window.apiFetch('episodes-list?pageSize=500');
-      return data;
+      const episodes = await window.getEpisodes();
+      return { episodes, totalResults: episodes.length };
     } catch (err) {
       console.error('Failed to fetch episodes:', err);
       return { episodes: [], totalResults: 0 };
@@ -45,18 +45,15 @@ const Episodes = (() => {
   // ---------- Render Episode Card ----------
   function renderEpisodeCard(ep) {
     const isFav = favorites.has(ep.id);
-    const ytThumb = window.getYoutubeThumbnail ? window.getYoutubeThumbnail(ep.youtubeUrl || '') : '';
-    const epNum = ep.episodeNumber || ep.title.match(/\d+/)?.[0] || '';
-    const thumbSrc = ytThumb || `https://placehold.co/640x360/1a1f5e/ffffff?text=Ep+${epNum}`;
     const durationStr = window.formatDuration ? window.formatDuration(ep.duration) : '';
     const dateStr = ep.publishedAt && window.formatDate ? window.formatDate(ep.publishedAt) : '';
 
     return `
       <div class="card episode-card" data-id="${ep.id}">
         <div class="thumb-wrap">
-          <img src="${thumbSrc}" alt="${ep.title}" loading="lazy" onclick="Episodes.playInBar('${ep.id}')" style="cursor:pointer;">
+          ${window.coverImg(ep, 520, 'cover', `onclick="Episodes.playInBar('${ep.id}')" style="cursor:pointer;"`)}
           ${durationStr ? `<span class="duration">${durationStr}</span>` : ''}
-          <div class="play-overlay" onclick="Episodes.playInBar('${ep.id}')" aria-label="Play episode" title="Play">&#9654;</div>
+          <div class="play-overlay" onclick="Episodes.playInBar('${ep.id}')" aria-label="Play episode" title="Play"><i data-lucide="play"></i></div>
           <button class="fav-btn ${isFav ? 'active' : ''}" onclick="Episodes.toggleFav('${ep.id}', event)" aria-label="Favorite">
             ${isFav ? '&#9829;' : '&#9825;'}
           </button>
@@ -84,7 +81,7 @@ const Episodes = (() => {
     if (episodes.length === 0) {
       container.innerHTML = `
         <div class="empty-state" style="grid-column:1/-1;">
-          <div class="empty-icon">&#127936;</div>
+          <div class="empty-icon"><i data-lucide="dribbble"></i></div>
           <h3>No episodes found</h3>
           <p>Try adjusting your search or filters.</p>
         </div>
@@ -209,14 +206,11 @@ const Episodes = (() => {
 
     // Show a thumbnail + "Play episode" button instead of auto-embedding video.
     // Playback now happens in the sticky bar.
-    const ytThumb = window.getYoutubeThumbnail ? window.getYoutubeThumbnail(ep.youtubeUrl || '') : '';
-    const epNum = ep.episodeNumber || '';
-    const thumbSrc = ytThumb || `https://placehold.co/960x540/1a1f5e/ffffff?text=Ep+${epNum}`;
     videoWrap.innerHTML = `
-      <div class="modal-play-hero" style="position:relative;width:100%;height:100%;background:#000;display:flex;align-items:center;justify-content:center;cursor:pointer;" onclick="Episodes.playInBar('${ep.id}')">
-        <img src="${thumbSrc}" alt="${ep.title}" style="width:100%;height:100%;object-fit:cover;opacity:0.7;">
+      <div class="modal-play-hero" onclick="Episodes.playInBar('${ep.id}')">
+        ${window.coverImg(ep, 720, 'modal-play-art')}
         <button class="btn btn-primary" style="position:absolute;display:inline-flex;align-items:center;gap:8px;font-size:1.05rem;padding:12px 22px;" onclick="event.stopPropagation();Episodes.playInBar('${ep.id}')">
-          <span style="font-size:1.2rem;">&#9654;</span> Play episode
+          <span style="font-size:1.2rem;"><i data-lucide="play"></i></span> Play episode
         </button>
       </div>`;
 
@@ -338,14 +332,11 @@ const Episodes = (() => {
       if (section) section.style.display = '';
 
       recGrid.innerHTML = data.recommendations.slice(0, 6).map(ep => {
-        const ytThumb = window.getYoutubeThumbnail ? window.getYoutubeThumbnail(ep.youtubeUrl || '') : '';
-        const epNum = ep.episodeNumber || '';
-        const thumbSrc = ytThumb || `https://placehold.co/640x360/1a1f5e/ffffff?text=Ep+${epNum}`;
         return `
           <div class="card episode-card" data-id="${ep.id}">
             <div class="thumb-wrap">
-              <img src="${thumbSrc}" alt="${ep.title}" loading="lazy" onclick="Episodes.playInBar('${ep.id}')" style="cursor:pointer;">
-              <div class="play-overlay" onclick="Episodes.playInBar('${ep.id}')" aria-label="Play episode" title="Play">&#9654;</div>
+              ${window.coverImg(ep, 520, 'cover', `onclick="Episodes.playInBar('${ep.id}')" style="cursor:pointer;"`)}
+              <div class="play-overlay" onclick="Episodes.playInBar('${ep.id}')" aria-label="Play episode" title="Play"><i data-lucide="play"></i></div>
             </div>
             <div class="card-body" onclick="Episodes.openPlayer('${ep.id}')" style="cursor:pointer;">
               <h3>${ep.title}</h3>
@@ -397,10 +388,18 @@ const Episodes = (() => {
     }
 
     if (isHomePage) {
-      renderGrid(allEpisodes.slice(0, 3));
+      renderGrid(allEpisodes.slice(0, 8));
       loadRecommendations();
     } else if (isEpisodesPage) {
-      renderPage();
+      // Era, team and host only filter once episodes carry that data in Airtable.
+      const has = (fn) => allEpisodes.some(fn);
+      if (eraFilter && !has(ep => ep.era)) eraFilter.style.display = 'none';
+      if (teamFilter && !has(ep => ep.teams && ep.teams.length)) teamFilter.style.display = 'none';
+      if (hostFilter && !has(ep => ep.hosts && ep.hosts.length)) hostFilter.style.display = 'none';
+      // Deep link: /episodes.html?search=Jaworski
+      const q = new URLSearchParams(location.search).get('search');
+      if (q && searchInput) { searchInput.value = q; applyFilters(); }
+      else renderPage();
       renderFavorites();
     }
 

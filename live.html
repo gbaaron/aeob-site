@@ -14,6 +14,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/styles.css">
   <link rel="stylesheet" href="/css/arena.css">
+  <link rel="stylesheet" href="/css/flow.css">
 </head>
 <body data-design="arena-hype">
 
@@ -42,7 +43,7 @@
         <a href="/admin.html" data-admin style="display:none;">Admin</a>
       </nav>
       <div class="header-actions">
-        <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode">&#9790;</button>
+        <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode"><i data-lucide="moon"></i></button>
         <button class="btn-login" id="loginBtn">Sign In</button>
         <div class="user-avatar" id="userAvatar"></div>
         <button class="hamburger" id="hamburger" aria-label="Menu">
@@ -77,10 +78,10 @@
           <!-- Stream Platform Tabs -->
           <div class="stream-tabs" id="streamTabs">
             <button class="stream-tab active" data-stream="aeob">
-              <span class="stream-tab-icon">&#127936;</span> AEOB
+              <span class="stream-tab-icon"><i data-lucide="dribbble"></i></span> AEOB
             </button>
             <button class="stream-tab" data-stream="youtube">
-              <span class="stream-tab-icon">&#9654;</span> YouTube
+              <span class="stream-tab-icon"><i data-lucide="play"></i></span> YouTube
             </button>
             <button class="stream-tab" data-stream="facebook">
               <span class="stream-tab-icon">f</span> Facebook
@@ -92,7 +93,7 @@
             <!-- Offline state -->
             <div class="live-offline" id="liveOffline">
               <div class="live-offline-inner">
-                <div class="live-offline-icon">&#127936;</div>
+                <div class="live-offline-icon"><i data-lucide="dribbble"></i></div>
                 <h2>We&rsquo;re offline right now</h2>
                 <p>The next episode goes live in:</p>
                 <div class="countdown-blocks countdown-blocks-live" id="liveCountdown">
@@ -102,7 +103,7 @@
                   <div class="countdown-block"><div class="num" id="live-secs">--</div><div class="unit">Secs</div></div>
                 </div>
                 <div class="live-offline-actions">
-                  <button class="btn btn-primary" id="watchPartyBtn">&#128276; Remind Me When Live</button>
+                  <button class="btn btn-primary" id="watchPartyBtn"><i data-lucide="bell"></i> Remind Me When Live</button>
                   <a href="/episodes.html" class="btn btn-outline">Browse Past Episodes</a>
                 </div>
                 <p class="live-offline-note" id="nextEpisodeTitle">Loading next episode...</p>
@@ -117,7 +118,7 @@
                 <div class="sticker-stage" id="stickerStage" aria-hidden="true"></div>
                 <!-- Per-viewer mute toggle for sticker animations -->
                 <button class="sticker-mute" id="stickerMuteBtn" type="button"
-                        aria-label="Mute sticker animations" title="Mute sticker animations">&#128276;</button>
+                        aria-label="Mute sticker animations" title="Mute sticker animations"><i data-lucide="bell"></i></button>
               </div>
             </div>
           </div>
@@ -154,11 +155,11 @@
 
           <!-- Sidebar Tabs -->
           <div class="sidebar-tabs">
-            <button class="sidebar-tab active" data-sidebar="chat">&#128172; Chat</button>
+            <button class="sidebar-tab active" data-sidebar="chat"><i data-lucide="message-circle"></i> Chat</button>
             <button class="sidebar-tab" data-sidebar="questions">&#10067; Q&amp;A</button>
-            <button class="sidebar-tab" data-sidebar="polls">&#128200; Polls</button>
-            <button class="sidebar-tab" data-sidebar="stickers">&#127873; Stickers</button>
-            <button class="sidebar-tab" data-sidebar="viewers">&#128100; <span id="viewerCount">0</span></button>
+            <button class="sidebar-tab" data-sidebar="polls"><i data-lucide="trending-up"></i> Polls</button>
+            <button class="sidebar-tab" data-sidebar="stickers"><i data-lucide="gift"></i> Stickers</button>
+            <button class="sidebar-tab" data-sidebar="viewers"><i data-lucide="user"></i> <span id="viewerCount">0</span></button>
           </div>
 
           <!-- Chat Panel -->
@@ -168,7 +169,7 @@
             </div>
             <div class="chat-wrap" id="chatWrap">
               <div class="chat-placeholder">
-                <div class="chat-placeholder-icon">&#128172;</div>
+                <div class="chat-placeholder-icon"><i data-lucide="message-circle"></i></div>
                 <p>Chat appears here when we go live.</p>
                 <p class="muted-sm">Chat syncs with the stream platform you&rsquo;re watching on.</p>
               </div>
@@ -205,7 +206,7 @@
             <!-- Admin-only: Session + Create Poll + Stream Setup -->
             <div class="admin-live-tools" data-admin style="display:none;">
               <details class="admin-tool-card" open>
-                <summary>&#128308; Session control</summary>
+                <summary><i data-lucide="radio"></i> Session control</summary>
                 <div class="admin-stream-setup">
                   <p class="muted-sm" id="sessionStatus">No active session</p>
                   <form id="sessionStartForm" class="admin-poll-form">
@@ -218,7 +219,7 @@
                 </div>
               </details>
               <details class="admin-tool-card">
-                <summary>&#128736;&#65039; Create a live poll</summary>
+                <summary><i data-lucide="wrench"></i> Create a live poll</summary>
                 <form id="adminCreatePoll" class="admin-poll-form">
                   <input type="text" id="newPollQ" placeholder="Poll question" maxlength="160" required>
                   <input type="text" class="poll-opt-input" data-i="0" placeholder="Option 1" maxlength="80" required>
@@ -233,7 +234,7 @@
                 <p class="muted-sm" id="adminPollMsg"></p>
               </details>
               <details class="admin-tool-card">
-                <summary>&#128250; AEOB stream setup</summary>
+                <summary><i data-lucide="tv"></i> AEOB stream setup</summary>
                 <div class="admin-stream-setup">
                   <p class="muted-sm">
                     Netlify can't host RTMP ingest &mdash; you need a streaming provider in between.
@@ -275,7 +276,7 @@
               <h3>Send a Sticker</h3>
               <p class="muted-sm">Animated on the stream for everyone. The crew thanks supporters on-air.</p>
               <p class="sticker-balance" id="stickerBalanceRow">
-                <span class="sticker-balance-icon">&#127959;&#65039;</span>
+                <span class="sticker-balance-icon"><i data-lucide="landmark"></i></span>
                 <span class="sticker-balance-num" id="stickerBalance">&mdash;</span>
                 <span class="sticker-balance-label">credits</span>
                 <a href="/rewards.html" class="sticker-balance-earn">Earn more &rsaquo;</a>
@@ -288,7 +289,7 @@
             <!-- Admin-only: sticker management -->
             <div class="admin-sticker-tools" data-admin style="display:none;">
               <details class="admin-tool-card">
-                <summary>&#127873; Sticker catalog</summary>
+                <summary><i data-lucide="gift"></i> Sticker catalog</summary>
                 <div class="admin-stream-setup">
                   <p class="muted-sm">Manage the stickers fans can send. Soft-delete hides them but keeps history.</p>
                   <form id="adminStickerForm" class="admin-poll-form">
@@ -319,7 +320,7 @@
                 </div>
               </details>
               <details class="admin-tool-card">
-                <summary>&#128226; Broadcast a sticker (free)</summary>
+                <summary><i data-lucide="megaphone"></i> Broadcast a sticker (free)</summary>
                 <div class="admin-stream-setup">
                   <p class="muted-sm">Fire a sticker animation on the stream for a show bumper or sponsor moment. Costs nothing.</p>
                   <form id="adminBroadcastForm" class="admin-poll-form">
@@ -375,14 +376,19 @@
             <img src="https://res.cloudinary.com/djngpyv15/image/upload/v1776447309/274701765_319754193505498_1268754374260370953_n-removebg-preview_k6uyha.png" alt="AEOB" style="height:40px;">
             <span style="color:#fff;">An Eternity of Basketball</span>
           </a>
-          <p>Reliving the golden eras of PBA basketball since day one. 300+ episodes and counting.</p>
+          <p>The players, coaches and imports who built the PBA, in their own words.</p>
         </div>
         <div><h4>Browse</h4><ul><li><a href="/live.html">Watch Live</a></li><li><a href="/episodes.html">Episodes</a></li><li><a href="/predictions.html">Predictions</a></li><li><a href="/rewards.html">Rewards</a></li></ul></div>
-        <div><h4>More</h4><ul><li><a href="/schedule.html">Schedule</a></li><li><a href="/about.html">About</a></li><li><a href="#">Contact</a></li></ul></div>
-        <div><h4>Listen On</h4><ul><li><a href="#">YouTube</a></li><li><a href="#">Spotify</a></li><li><a href="#">Apple Podcasts</a></li><li><a href="#">Facebook</a></li></ul></div>
+        <div><h4>More</h4><ul><li><a href="/schedule.html">Schedule</a></li><li><a href="/about.html">About</a></li></ul></div>
+        <div><h4>Follow</h4>
+          <ul>
+            <li><a href="https://www.youtube.com/@globallyballin5579" target="_blank" rel="noopener">YouTube</a></li>
+            <li><a href="https://instagram.com/aneternityofbasketball" target="_blank" rel="noopener">Instagram</a></li>
+            <li><a href="https://www.patreon.com/globallyballin" target="_blank" rel="noopener">Patreon</a></li>
+          </ul></div>
       </div>
       <div class="footer-bottom">
-        <span>&copy; 2024 An Eternity of Basketball. All rights reserved.</span>
+        <span>&copy; 2026 An Eternity of Basketball. All rights reserved.</span>
         <span class="network">Part of the Globally Ballin Network</span>
       </div>
     </div>
